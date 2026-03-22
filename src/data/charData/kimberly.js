@@ -68,20 +68,8 @@ const kimberly = {
       { label: "風車",        startup: 22, onBlock: "-3", onHit: "+4",    cancel: "✕", note: "中段。ヒット時コンボ可能な貴重な択" },
       { label: "強武神旋風脚", startup: 8, onBlock: "-35", onHit: "ダウン", cancel: "✕", note: "対空無敵技。早めに出して安定対空" },
     ],
-    combos: [
-      { id: 1, name: "しゃがみ弱P始動 ノーゲージ",      input: "しゃがみ弱P×3 > 弱流天一文字",                                            damage: 1161, meter: "なし",        difficulty: "★☆☆", note: "発生4Fの最速暴れ始動。コンボ後+3Fで投げ択へ" },
-      { id: 2, name: "立ち中K始動 ラッシュコンボ",       input: "立ち中K > キャンセルラッシュ > しゃがみ中P×2 > 武神虎連牙 > 疾駆け > 影すくい", damage: 1950, meter: "Dゲージ3本",  difficulty: "★★☆", note: "メイン牽制からの主力コンボ。一気に画面端まで運べる" },
-      { id: 3, name: "ラッシュしゃがみ中攻撃始動",       input: "DRしゃがみ中P > しゃがみ中P > 武神虎連牙 > OD疾駆け > OD武神鉾刃脚 > 疾駆け > 胴刎ね", damage: 2550, meter: "Dゲージ3本",  difficulty: "★★★", note: "起き攻めから。OD技で画面端に運ぶルート" },
-      { id: 4, name: "SA2コンボ",                       input: "しゃがみ中K > SA2",                                                        damage: 2900, meter: "SAゲージ2本",  difficulty: "★☆☆", note: "SA2の基本始動。ヒット確認してから" },
-      { id: 5, name: "倒し切りコンボ（SA3）",            input: "しゃがみ弱P×2 > DRしゃがみ強P > 強流天一文字 > ジャンプ中P > SA2",           damage: 3800, meter: "Dゲージ4本+SA3", difficulty: "★★★", note: "相手の体力が半分以下の時に狙う。SA3でダメージUPも" },
-    ],
-    setplays: [
-      { id: 1, title: "細工手裏剣設置起き攻め",       situation: "画面端", after: "コンボ後の有利状況",                 action: "強細工手裏剣設置 → 起き攻め", advantage: "+3F",  tags: ["端", "有利", "SA2後"],   note: "起き攻めがヒットすれば爆発でコンボに繋がり、ガードされても攻め継続できる。前投げ後も成立。", difficulty: "★★☆" },
-      { id: 2, title: "前ステ2回から弱P重ね（中央）", situation: "画面中央", after: "通常投げ",                          action: "前ステ×2 → しゃがみ弱P重ね", advantage: "+3F",  tags: ["有利", "中央", "投げ後"], note: "最も基本の起き攻め。密着+3Fで投げとしゃがみ弱Kの択へ。", difficulty: "★☆☆" },
-      { id: 3, title: "影すくい後の起き攻め",         situation: "画面端", after: "影すくい（疾駆けキャンセル）",         action: "前ステ×2 → アシスト強攻撃重ね", advantage: "+11F", tags: ["端", "有利"],             note: "影すくい後は前ステ2回で密着+11F。アシスト強攻撃（立ち強K相当）が重なる。", difficulty: "★★☆" },
-      { id: 4, title: "OD武神鉾刃脚後のセットプレイ", situation: "画面端", after: "OD疾駆け > OD武神鉾刃脚 > 疾駆け > 胴刎ね", action: "強細工手裏剣設置 → 投げ",   advantage: "−",    tags: ["端", "OD", "コンボ継続"], note: "胴刎ねのダウン後に細工手裏剣を最速設置。投げと打撃の択がかかった状態で爆発が爆ぜる。", difficulty: "★★★" },
-      { id: 5, title: "SA3後の全画面起き攻め",        situation: "全画面", after: "SA3（武神顕現神楽）",                  action: "前ステ×3 → しゃがみ弱P重ね", advantage: "+4F",  tags: ["SA3", "有利", "全画面"],  note: "SA3後の大きな有利フレームを活用。SA3後はダメージが10%UP状態なので更に強気に攻める。", difficulty: "★★☆" },
-    ],
+    combos: [],
+    setplays: [],
   },
 
   // ─── モダン ──────────────────────────────────────────────
@@ -100,19 +88,8 @@ const kimberly = {
       { label: "1ボタン武神旋風脚",   startup: 8,  onBlock: "-35", onHit: "ダウン", cancel: "✕", note: "1ボタン対空。モダン最大のアドバンテージ" },
       { label: "1ボタンSA1",         startup: 10, onBlock: "-25", onHit: "ダウン", cancel: "✕", note: "1ボタン割り込み。防御面を大きく補強" },
     ],
-    combos: [
-      { id: 1, name: "しゃがみ弱攻撃始動 ノーゲージ",   input: "しゃがみ弱攻撃×3 > 弱流天一文字",                                              damage: 1296, meter: "なし",        difficulty: "★☆☆", note: "暴れ・咄嗟の反撃から。コンボ後+3Fで投げ択へ" },
-      { id: 2, name: "しゃがみ弱攻撃始動 ゲージあり",   input: "しゃがみ弱攻撃×2 > DRしゃがみ弱攻撃 > 武神虎連牙 > 疾駆け > 影すくい",           damage: 1441, meter: "Dゲージ3本",  difficulty: "★★☆", note: "影すくい後は前ステ2回で密着+11F。画面端に到達したら追撃可" },
-      { id: 3, name: "DRしゃがみ中攻撃始動",            input: "DRしゃがみ中攻撃 > 武神虎連牙 > 疾駆け > 影すくい > 中武神旋風脚",                damage: 2237, meter: "Dゲージ1本",  difficulty: "★★☆", note: "ガードさせて+5Fで攻め継続。画面端に到達していれば武神旋風脚で追撃" },
-      { id: 4, name: "アシスト中攻撃始動 ダメージ重視", input: "アシスト中攻撃 > DRしゃがみ中攻撃 > しゃがみ強P > 強流天一文字 > ジャンプ中P > 空中武神旋風脚", damage: 2226, meter: "Dゲージ3本",  difficulty: "★★★", note: "相手の残り体力が3,000程度ならSA2に置き換えて倒し切り可能" },
-      { id: 5, name: "アシスト強攻撃始動 起き攻め重視", input: "アシスト強攻撃 > 武神虎連牙 > OD疾駆け > OD武神鉾刃脚 > 疾駆け > 胴刎ね > 強細工手裏剣", damage: 2269, meter: "Dゲージ2本",  difficulty: "★★☆", note: "中央から画面端セットプレイへ。細工手裏剣の設置タイミングは少し遅らせる" },
-      { id: 6, name: "倒し切りコンボ（SA3）",           input: "アシスト強攻撃 > 立ち中攻撃 > DRアシスト強攻撃 > しゃがみ強P×2 > 弱流天一文字 > SA3", damage: 4920, meter: "Dゲージ6本+SA3", difficulty: "★★★", note: "相手の体力が半分以下で狙う。モダン入力SA3でダメージ変化なし" },
-    ],
-    setplays: [
-      { id: 1, title: "前ステ2回から弱P重ね（中央）", situation: "画面中央", after: "通常投げ",                          action: "前ステ×2 → しゃがみ弱攻撃重ね", advantage: "+3F",  tags: ["有利", "中央", "投げ後"], note: "モダンでも成立する基本起き攻め。密着+3Fで投げと下段択へ。", difficulty: "★☆☆" },
-      { id: 2, title: "影すくい後の起き攻め",         situation: "画面端", after: "疾駆け > 影すくい",                   action: "前ステ×2 → アシスト強攻撃重ね", advantage: "+11F", tags: ["端", "有利"],             note: "影すくい後は前ステ2回で密着+11F。アシスト強攻撃が重なる。", difficulty: "★★☆" },
-      { id: 3, title: "細工手裏剣設置起き攻め",       situation: "画面端", after: "OD武神鉾刃脚 > 疾駆け > 胴刎ね",      action: "強細工手裏剣設置 → 起き攻め", advantage: "−",    tags: ["端", "OD", "コンボ継続"], note: "コマンド入力で細工手裏剣を設置できる。設置後は投げと打撃の択がかかった状態で爆発。", difficulty: "★★★" },
-    ],
+    combos: [],
+    setplays: [],
   },
 };
 
