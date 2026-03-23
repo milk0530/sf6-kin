@@ -39,6 +39,8 @@ function parseBattle(battle, playerId) {
     oppInput:     oppInfo?.battle_input_type,
     oppName:      oppInfo?.player?.fighter_id ?? "???",
     win:          myWins > oppWins,
+    roundWon:     myWins,
+    roundLost:    oppWins,
     lp:           myInfo?.league_point ?? null,
     masterRating: myInfo?.master_rating > 0 ? myInfo.master_rating : null,
     replayId:     battle.replay_id ?? null,
@@ -162,8 +164,8 @@ const EMPTY_FILTER = {
   myChar:"", myInput:"", oppChar:"", oppInput:"", gameMode:"",
   dateFrom: DEFAULT_DATE_FROM, dateTo: DEFAULT_DATE_TO,
 };
-// ランク統計専用フィルタ（操作タイプ・gameModeなし、デフォルト日付=今月）
-const RANK_EMPTY_FILTER = { myChar:"", dateFrom: DEFAULT_DATE_FROM, dateTo: DEFAULT_DATE_TO };
+// ランク統計専用フィルタ（操作タイプ・gameModeなし、日付は全期間）
+const RANK_EMPTY_FILTER = { myChar:"", dateFrom:"", dateTo:"" };
 
 function applyRankFilter(parsed, f) {
   return parsed.filter(b => {
@@ -236,9 +238,43 @@ function FilterPanel({ draft, setDraft, onSearch, onReset, showOpp, showGameMode
 }
 
 // ── 対戦タブ ────────────────────────────────────────────
+const PER_PAGE = 20;
+
 function BattlesTab({ filtered, playerName }) {
+  const [page, setPage] = useState(0);
+  const [tooltip, setTooltip] = useState(null);
+
+  // フィルタ変更でページリセット
+  useEffect(() => { setPage(0); }, [filtered]);
+
+  const totalPages = Math.ceil(filtered.length / PER_PAGE);
+  const pageData   = filtered.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
+
   return (
     <div style={{ ...CARD, overflow:"hidden", padding:0 }}>
+      {/* ツールチップ */}
+      {tooltip && (
+        <div style={{
+          position:"fixed", left: tooltip.x + 14, top: tooltip.y - 10,
+          background:"#1a1a2e", border:"1px solid #2a2a3e", borderRadius:8,
+          padding:"10px 14px", zIndex:1000, fontSize:11, color:"#e8e8f0",
+          pointerEvents:"none", lineHeight:1.8, minWidth:160,
+        }}>
+          <div style={{ fontWeight:700, marginBottom:4, color: tooltip.b.win ? "#27ae60" : "#e74c3c" }}>
+            {tooltip.b.win ? "WIN" : "LOSE"} {tooltip.b.roundWon} - {tooltip.b.roundLost}
+          </div>
+          {tooltip.b.lp != null && (
+            <div style={{ color:"#a78bfa" }}>LP: {tooltip.b.lp.toLocaleString()}</div>
+          )}
+          {tooltip.b.masterRating != null && (
+            <div style={{ color:"#3b82f6" }}>MR: {tooltip.b.masterRating}</div>
+          )}
+          <div style={{ color:"#555", fontSize:10, marginTop:4 }}>
+            {modeName(tooltip.b.battle_type)}
+          </div>
+        </div>
+      )}
+
       <div style={{ overflowX:"auto" }}>
         <table style={{ width:"100%", borderCollapse:"collapse" }}>
           <thead>
@@ -249,8 +285,12 @@ function BattlesTab({ filtered, playerName }) {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((b, i) => (
-              <tr key={i} style={{ borderBottom:"1px solid #1a1a2e" }}>
+            {pageData.map((b, i) => (
+              <tr key={i}
+                style={{ borderBottom:"1px solid #1a1a2e", cursor:"default" }}
+                onMouseMove={e => setTooltip({ x: e.clientX, y: e.clientY, b })}
+                onMouseLeave={() => setTooltip(null)}
+              >
                 <td style={{...TD, color:"#e8e8f0"}}>{playerName ?? "?"}</td>
                 <td style={{...TD, color:"#888"}}>
                   {b.myCharName}
@@ -277,6 +317,25 @@ function BattlesTab({ filtered, playerName }) {
           <div style={{ padding:"48px 0", textAlign:"center", color:"#2a2a3e", fontSize:12 }}>データなし</div>
         )}
       </div>
+
+      {/* ページネーション */}
+      {totalPages > 1 && (
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 16px", borderTop:"1px solid #1a1a2e" }}>
+          <button
+            onClick={() => setPage(p => Math.max(0, p - 1))}
+            disabled={page === 0}
+            style={{ padding:"4px 14px", borderRadius:5, fontSize:12, cursor: page===0 ? "default":"pointer", background:"transparent", border:"1px solid #2a2a3e", color: page===0 ? "#333" : "#888" }}
+          >← 前</button>
+          <span style={{ fontSize:11, color:"#555" }}>
+            {page + 1} / {totalPages}（{filtered.length}件）
+          </span>
+          <button
+            onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+            disabled={page === totalPages - 1}
+            style={{ padding:"4px 14px", borderRadius:5, fontSize:12, cursor: page===totalPages-1 ? "default":"pointer", background:"transparent", border:"1px solid #2a2a3e", color: page===totalPages-1 ? "#333" : "#888" }}
+          >次 →</button>
+        </div>
+      )}
     </div>
   );
 }
@@ -391,6 +450,15 @@ export default function StatsPage() {
     battles.map(b => parseBattle(b, playerId)),
     [battles, playerId]
   );
+
+  // プレイヤーID変更時に全フィルタをリセット
+  useEffect(() => {
+    rankInitialized.current = false;
+    setFilterDraft(EMPTY_FILTER);
+    setActiveFilter(EMPTY_FILTER);
+    setRankDraft(RANK_EMPTY_FILTER);
+    setRankFilter(RANK_EMPTY_FILTER);
+  }, [playerId]);
 
   // バトルデータが揃ったら、ランクマで最後に使ったキャラをデフォルトに
   useEffect(() => {
