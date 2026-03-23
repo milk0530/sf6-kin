@@ -7,15 +7,18 @@ const CHAR_JA = {
   manon:"マノン", zangief:"ザンギエフ", jp:"JP", dhalsim:"ダルシム",
   cammy:"キャミィ", ken:"ケン", deejay:"ディージェイ", lily:"リリー",
   rashid:"ラシード", blanka:"ブランカ", juri:"ユリ", marisa:"マリーザ",
-  guile:"ガイル", ehonda:"E.本田", jamie:"ジェイミー", akuma:"豪鬼",
-  bison:"ベガ", ed:"エド", terry:"テリー", mai:"マイ", elena:"エレナ",
+  guile:"ガイル", ehonda:"E.本田", jamie:"ジェイミー",
+  gouki:"豪鬼", akuma:"豪鬼",   // gouki が実際のtool_name
+  bison:"ベガ", mbison:"ベガ",
+  ed:"エド", terry:"テリー", mai:"マイ", elena:"エレナ",
   alex:"アレックス",
 };
-function toJa(tool, eng) { return CHAR_JA[tool] ?? eng ?? tool ?? "?"; }
+function toJa(tool, eng) { return CHAR_JA[tool?.toLowerCase()] ?? eng ?? tool ?? "?"; }
 
 const GAME_MODES = { 1:"ランクマ", 2:"カジュアル", 3:"バトルハブ", 4:"カスタム", 6:"トーナメント" };
 function modeName(t)   { return GAME_MODES[t] ?? `-`; }
-function inputLabel(t) { return t === 1 ? "M" : t === 2 ? "C" : "?"; }
+// 0=クラシック, 1=モダン, 2=ダイナミック
+function inputLabel(t) { return t === 0 ? "C" : t === 1 ? "M" : t === 2 ? "D" : "?"; }
 
 function parseBattle(battle, playerId) {
   const pid    = Number(playerId);
@@ -134,7 +137,7 @@ function applyFilter(parsed, f) {
 
 function FilterPanel({ draft, setDraft, onSearch, onReset, showOpp, charOptions }) {
   const modeOpts  = [["","全て"], ...Object.entries(GAME_MODES)];
-  const inputOpts = [["","全て"], ["1","M（モダン）"], ["2","C（クラシック）"]];
+  const inputOpts = [["","全て"], ["1","M（モダン）"], ["0","C（クラシック）"], ["2","D（ダイナミック）"]];
   const set = key => e => setDraft(d => ({...d, [key]: e.target.value}));
 
   return (
