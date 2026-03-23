@@ -20,14 +20,34 @@ function modeName(t)   { return GAME_MODES[t] ?? `-`; }
 // 0=クラシック, 1=モダン, 2=ダイナミック
 function inputLabel(t) { return t === 0 ? "C" : t === 1 ? "M" : t === 2 ? "D" : "?"; }
 
+let _debugLogged = false;
 function parseBattle(battle, playerId) {
   const pid    = Number(playerId);
   const p1     = battle.player1_info;
   const p2     = battle.player2_info;
-  const myInfo  = p1?.player?.short_id === pid ? p1 : p2;
-  const oppInfo = p1?.player?.short_id === pid ? p2 : p1;
+  const isP1   = p1?.player?.short_id === pid;
+  const myInfo  = isP1 ? p1 : p2;
+  const oppInfo = isP1 ? p2 : p1;
+
+  if (!_debugLogged) {
+    console.log("[SF6] battle sample:", JSON.stringify(battle, null, 2));
+    _debugLogged = true;
+  }
+
+  // win_flg が存在すれば優先使用（1=勝ち, 0=負け）
+  let win;
+  if (myInfo?.win_flg !== undefined && myInfo?.win_flg !== null) {
+    win = myInfo.win_flg === 1 || myInfo.win_flg === true;
+  } else {
+    // フォールバック: round_results で判定
+    const myWins  = (myInfo?.round_results  ?? []).filter(r => r === 1).length;
+    const oppWins = (oppInfo?.round_results ?? []).filter(r => r === 1).length;
+    win = myWins > oppWins;
+  }
+
   const myWins  = (myInfo?.round_results  ?? []).filter(r => r === 1).length;
   const oppWins = (oppInfo?.round_results ?? []).filter(r => r === 1).length;
+
   return {
     battle_at:    battle.uploaded_at,
     battle_type:  battle.replay_battle_type,
@@ -38,7 +58,7 @@ function parseBattle(battle, playerId) {
     oppCharName:  toJa(oppInfo?.character_tool_name, oppInfo?.character_name),
     oppInput:     oppInfo?.battle_input_type,
     oppName:      oppInfo?.player?.fighter_id ?? "???",
-    win:          myWins > oppWins,
+    win,
     roundWon:     myWins,
     roundLost:    oppWins,
     lp:           myInfo?.league_point ?? null,
