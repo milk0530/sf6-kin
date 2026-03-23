@@ -433,6 +433,19 @@ const TABS = [
   { id:"rankStats", label:"ランク統計" },
 ];
 
+const HISTORY_KEY = "sf6_player_history";
+const MAX_HISTORY = 50;
+
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) ?? []; }
+  catch { return []; }
+}
+function saveHistory(id, name) {
+  const prev = loadHistory().filter(h => h.id !== id);
+  const next = [{ id, name }, ...prev].slice(0, MAX_HISTORY);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
+}
+
 export default function StatsPage() {
   const [inputId,      setInputId]      = useState("");
   const [playerId,     setPlayerId]     = useState("");
@@ -441,6 +454,7 @@ export default function StatsPage() {
   const [activeFilter, setActiveFilter] = useState(EMPTY_FILTER);
   const [rankDraft,    setRankDraft]    = useState(RANK_EMPTY_FILTER);
   const [rankFilter,   setRankFilter]   = useState(RANK_EMPTY_FILTER);
+  const [history,      setHistory]      = useState(loadHistory);
   const rankInitialized = useRef(false);
 
   const { battles, loading, error, playerName } = useBattleLog(playerId);
@@ -449,6 +463,20 @@ export default function StatsPage() {
     battles.map(b => parseBattle(b, playerId)),
     [battles, playerId]
   );
+
+  // 検索成功時に履歴保存
+  useEffect(() => {
+    if (!playerName || !playerId) return;
+    saveHistory(playerId, playerName);
+    setHistory(loadHistory());
+  }, [playerName, playerId]);
+
+  const search = id => {
+    const trimmed = id.trim();
+    if (!trimmed) return;
+    setInputId(trimmed);
+    setPlayerId(trimmed);
+  };
 
   // プレイヤーID変更時に全フィルタをリセット
   useEffect(() => {
@@ -493,13 +521,13 @@ export default function StatsPage() {
           <input
             value={inputId}
             onChange={e => setInputId(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && setPlayerId(inputId)}
+            onKeyDown={e => e.key === "Enter" && search(inputId)}
             placeholder="例: 2808191869"
             style={{ ...SEL, fontSize:14, padding:"8px 12px", boxSizing:"border-box" }}
           />
         </div>
         <button
-          onClick={() => setPlayerId(inputId)}
+          onClick={() => search(inputId)}
           disabled={loading}
           style={{
             padding:"9px 24px", borderRadius:6, fontSize:13, cursor:"pointer",
@@ -577,6 +605,31 @@ export default function StatsPage() {
       {!loading && !error && !playerName && playerId && (
         <div style={{ color:"#2a2a3e", fontSize:13, padding:"48px 0", textAlign:"center" }}>
           データが見つかりませんでした
+        </div>
+      )}
+
+      {!playerId && history.length > 0 && (
+        <div style={{ marginTop:8 }}>
+          <div style={{ fontSize:10, color:"#333", fontWeight:700, letterSpacing:2, marginBottom:10 }}>RECENT PLAYERS</div>
+          <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
+            {history.map(h => (
+              <button
+                key={h.id}
+                onClick={() => search(h.id)}
+                style={{
+                  display:"flex", alignItems:"center", gap:12,
+                  background:"transparent", border:"1px solid #1e1e2e",
+                  borderRadius:8, padding:"10px 14px", cursor:"pointer",
+                  textAlign:"left", fontFamily:"inherit", transition:"all 0.15s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background="#13131f"; e.currentTarget.style.borderColor="#2a2a3e"; }}
+                onMouseLeave={e => { e.currentTarget.style.background="transparent"; e.currentTarget.style.borderColor="#1e1e2e"; }}
+              >
+                <div style={{ fontSize:13, fontWeight:700, color:"#e8e8f0" }}>{h.name}</div>
+                <div style={{ fontSize:11, color:"#333" }}>{h.id}</div>
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>
