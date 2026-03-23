@@ -1,18 +1,20 @@
 import { useState, useMemo } from "react";
 import { useBattleLog } from "../hooks/useBattleLog";
 
-const CHARS = {
-  1: "リュウ", 2: "ルーク", 3: "キンバリー", 4: "春麗",
-  5: "マノン", 6: "ザンギエフ", 7: "JP", 8: "ダルシム",
-  9: "キャミィ", 10: "ケン", 11: "ディージェイ", 12: "リリー",
-  13: "ラシード", 14: "ブランカ", 15: "ユリ", 16: "マリーザ",
-  17: "ガイル", 18: "E.本田", 19: "ジェイミー", 20: "豪鬼",
-  21: "ベガ", 22: "エド", 23: "テリー", 24: "マイ", 25: "エレナ",
+// character_tool_name → 日本語名
+const CHAR_JA = {
+  ryu:"リュウ", luke:"ルーク", kimberly:"キンバリー", chunli:"春麗",
+  manon:"マノン", zangief:"ザンギエフ", jp:"JP", dhalsim:"ダルシム",
+  cammy:"キャミィ", ken:"ケン", deejay:"ディージェイ", lily:"リリー",
+  rashid:"ラシード", blanka:"ブランカ", juri:"ユリ", marisa:"マリーザ",
+  guile:"ガイル", ehonda:"E.本田", jamie:"ジェイミー", akuma:"豪鬼",
+  bison:"ベガ", ed:"エド", terry:"テリー", mai:"マイ", elena:"エレナ",
+  alex:"アレックス",
 };
-const GAME_MODES = { 1: "ランクマ", 2: "カジュアル", 3: "バトルハブ", 4: "カスタム", 6: "トーナメント" };
+function toJa(tool, eng) { return CHAR_JA[tool] ?? eng ?? tool ?? "?"; }
 
-function charName(id) { return CHARS[id] ?? `?`; }
-function modeName(t)  { return GAME_MODES[t] ?? `-`; }
+const GAME_MODES = { 1:"ランクマ", 2:"カジュアル", 3:"バトルハブ", 4:"カスタム", 6:"トーナメント" };
+function modeName(t)   { return GAME_MODES[t] ?? `-`; }
 function inputLabel(t) { return t === 1 ? "M" : t === 2 ? "C" : "?"; }
 
 function parseBattle(battle, playerId) {
@@ -26,9 +28,11 @@ function parseBattle(battle, playerId) {
   return {
     battle_at:    battle.uploaded_at,
     battle_type:  battle.replay_battle_type,
-    myChar:       myInfo?.character_id,
+    myCharTool:   myInfo?.character_tool_name ?? "",
+    myCharName:   toJa(myInfo?.character_tool_name, myInfo?.character_name),
     myInput:      myInfo?.battle_input_type,
-    oppChar:      oppInfo?.character_id,
+    oppCharTool:  oppInfo?.character_tool_name ?? "",
+    oppCharName:  toJa(oppInfo?.character_tool_name, oppInfo?.character_name),
     oppInput:     oppInfo?.battle_input_type,
     oppName:      oppInfo?.player?.fighter_id ?? "???",
     win:          myWins > oppWins,
@@ -42,23 +46,30 @@ function formatDate(ts) {
   if (!ts) return "-";
   const d    = new Date(ts * 1000);
   const now  = new Date();
-  const today    = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-  const dDay     = new Date(d.getFullYear(),   d.getMonth(),   d.getDate()).getTime();
+  const today   = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const dDay    = new Date(d.getFullYear(),   d.getMonth(),   d.getDate()).getTime();
   const time = `${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
-  if (dDay === today)             return `今日 ${time}`;
-  if (dDay === today - 86400000)  return `昨日 ${time}`;
+  if (dDay === today)            return `今日 ${time}`;
+  if (dDay === today - 86400000) return `昨日 ${time}`;
   return `${d.getMonth()+1}/${d.getDate()} ${time}`;
 }
 
-// ── スタイル定数 ────────────────────────────────────────
-const CARD = { background: "#13131f", border: "1px solid #2a2a3e", borderRadius: 10 };
+function toDateStr(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+const _now = new Date();
+const DEFAULT_DATE_FROM = toDateStr(new Date(_now.getFullYear(), _now.getMonth(), 1));
+const DEFAULT_DATE_TO   = toDateStr(_now);
+
+// ── スタイル ────────────────────────────────────────────
+const CARD = { background:"#13131f", border:"1px solid #2a2a3e", borderRadius:10 };
 const SEL  = {
-  background: "#0e0e16", border: "1px solid #2a2a3e", borderRadius: 6,
-  color: "#e8e8f0", fontSize: 12, padding: "6px 10px", outline: "none", width: "100%",
+  background:"#0e0e16", border:"1px solid #2a2a3e", borderRadius:6,
+  color:"#e8e8f0", fontSize:12, padding:"6px 10px", outline:"none", width:"100%",
 };
-const LBL  = { fontSize: 10, color: "#555", marginBottom: 3 };
-const TH   = { padding: "8px 12px", color: "#444", fontWeight: 700, textAlign: "left", borderBottom: "1px solid #2a2a3e", whiteSpace: "nowrap", fontSize: 11 };
-const TD   = { padding: "8px 10px", fontSize: 12, whiteSpace: "nowrap" };
+const LBL = { fontSize:10, color:"#555", marginBottom:3 };
+const TH  = { padding:"8px 12px", color:"#444", fontWeight:700, textAlign:"left", borderBottom:"1px solid #2a2a3e", whiteSpace:"nowrap", fontSize:11 };
+const TD  = { padding:"8px 10px", fontSize:12, whiteSpace:"nowrap" };
 
 // ── トレンドチャート ────────────────────────────────────
 function TrendChart({ points, color, id }) {
@@ -77,7 +88,7 @@ function TrendChart({ points, color, id }) {
   const dtLabel = ts => { const d = new Date(ts * 1000); return `${d.getMonth()+1}/${d.getDate()}`; };
 
   return (
-    <svg viewBox={`0 0 ${W} ${H + 36}`} style={{ width: "100%", overflow: "visible" }}>
+    <svg viewBox={`0 0 ${W} ${H + 36}`} style={{ width:"100%", overflow:"visible" }}>
       <defs>
         <linearGradient id={`g_${id}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%"   stopColor={color} stopOpacity="0.25" />
@@ -86,15 +97,12 @@ function TrendChart({ points, color, id }) {
       </defs>
       <polygon points={areaStr} fill={`url(#g_${id})`} />
       <polyline points={lineStr} fill="none" stroke={color} strokeWidth={1.5} />
-      {/* 最新値 */}
       <text x={coords[coords.length-1][0]} y={coords[coords.length-1][1] - 8}
         textAnchor="end" fontSize={10} fill={color} fontWeight={700}>
         {vals[vals.length-1].toLocaleString()}
       </text>
-      {/* 最小・最大 */}
       <text x={2} y={H - 2} fontSize={9} fill="#555">{minV.toLocaleString()}</text>
       <text x={2} y={14}    fontSize={9} fill="#555">{maxV.toLocaleString()}</text>
-      {/* 日付ラベル */}
       {labelIdxs.map(idx => (
         <text key={idx} x={coords[idx][0]} y={H + 18}
           textAnchor="middle" fontSize={9} fill="#444">
@@ -105,37 +113,36 @@ function TrendChart({ points, color, id }) {
   );
 }
 
-// ── フィルターパネル ────────────────────────────────────
-const EMPTY_FILTER = { myChar:"", myInput:"", oppChar:"", oppInput:"", gameMode:"", dateFrom:"", dateTo:"" };
+// ── フィルター ──────────────────────────────────────────
+const EMPTY_FILTER = {
+  myChar:"", myInput:"", oppChar:"", oppInput:"", gameMode:"",
+  dateFrom: DEFAULT_DATE_FROM, dateTo: DEFAULT_DATE_TO,
+};
 
 function applyFilter(parsed, f) {
   return parsed.filter(b => {
-    if (f.myChar   && b.myChar      !== Number(f.myChar))   return false;
-    if (f.myInput  && b.myInput     !== Number(f.myInput))  return false;
-    if (f.oppChar  && b.oppChar     !== Number(f.oppChar))  return false;
-    if (f.oppInput && b.oppInput    !== Number(f.oppInput)) return false;
-    if (f.gameMode && b.battle_type !== Number(f.gameMode)) return false;
-    if (f.dateFrom) {
-      if (b.battle_at < new Date(f.dateFrom).getTime() / 1000) return false;
-    }
-    if (f.dateTo) {
-      if (b.battle_at > new Date(f.dateTo).getTime() / 1000 + 86400) return false;
-    }
+    if (f.myChar   && b.myCharTool  !== f.myChar)             return false;
+    if (f.myInput  && b.myInput     !== Number(f.myInput))    return false;
+    if (f.oppChar  && b.oppCharTool !== f.oppChar)            return false;
+    if (f.oppInput && b.oppInput    !== Number(f.oppInput))   return false;
+    if (f.gameMode && b.battle_type !== Number(f.gameMode))   return false;
+    if (f.dateFrom && b.battle_at < new Date(f.dateFrom).getTime() / 1000) return false;
+    if (f.dateTo   && b.battle_at > new Date(f.dateTo).getTime() / 1000 + 86400) return false;
     return true;
   });
 }
 
-function FilterPanel({ draft, setDraft, onSearch, onReset, showOpp }) {
-  const charOpts  = [["","全て"], ...Object.entries(CHARS)];
+function FilterPanel({ draft, setDraft, onSearch, onReset, showOpp, charOptions }) {
   const modeOpts  = [["","全て"], ...Object.entries(GAME_MODES)];
   const inputOpts = [["","全て"], ["1","M（モダン）"], ["2","C（クラシック）"]];
   const set = key => e => setDraft(d => ({...d, [key]: e.target.value}));
+
   return (
-    <div style={{ ...CARD, padding: "14px 16px", marginBottom: 14 }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 10, marginBottom: 12 }}>
+    <div style={{ ...CARD, padding:"14px 16px", marginBottom:14 }}>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(150px, 1fr))", gap:10, marginBottom:12 }}>
         <div><div style={LBL}>私のキャラクター</div>
           <select style={SEL} value={draft.myChar} onChange={set("myChar")}>
-            {charOpts.map(([v,l]) => <option key={v} value={v}>{l}</option>)}
+            {charOptions.map(([v,l]) => <option key={v} value={v}>{l}</option>)}
           </select></div>
         <div><div style={LBL}>私の操作タイプ</div>
           <select style={SEL} value={draft.myInput} onChange={set("myInput")}>
@@ -144,7 +151,7 @@ function FilterPanel({ draft, setDraft, onSearch, onReset, showOpp }) {
         {showOpp && <>
           <div><div style={LBL}>対戦相手のキャラクター</div>
             <select style={SEL} value={draft.oppChar} onChange={set("oppChar")}>
-              {charOpts.map(([v,l]) => <option key={v} value={v}>{l}</option>)}
+              {charOptions.map(([v,l]) => <option key={v} value={v}>{l}</option>)}
             </select></div>
           <div><div style={LBL}>対戦相手の操作タイプ</div>
             <select style={SEL} value={draft.oppInput} onChange={set("oppInput")}>
@@ -186,25 +193,20 @@ function BattlesTab({ filtered, playerName }) {
               <tr key={i} style={{ borderBottom:"1px solid #1a1a2e" }}>
                 <td style={{...TD, color:"#e8e8f0"}}>{playerName ?? "?"}</td>
                 <td style={{...TD, color:"#888"}}>
-                  {charName(b.myChar)}
+                  {b.myCharName}
                   <span style={{ fontSize:10, color:"#555", marginLeft:4 }}>{inputLabel(b.myInput)}</span>
                 </td>
                 <td style={{...TD, textAlign:"center"}}>
-                  <span style={{
-                    display:"inline-block", width:10, height:10, borderRadius:"50%",
-                    background: b.win ? "#27ae60" : "#e74c3c",
-                  }} />
+                  <span style={{ display:"inline-block", width:10, height:10, borderRadius:"50%", background: b.win ? "#27ae60" : "#e74c3c" }} />
                 </td>
                 <td style={{...TD, color:"#aaa"}}>{b.oppName}</td>
                 <td style={{...TD, color:"#888"}}>
-                  {charName(b.oppChar)}
+                  {b.oppCharName}
                   <span style={{ fontSize:10, color:"#555", marginLeft:4 }}>{inputLabel(b.oppInput)}</span>
                 </td>
                 <td style={{...TD, color:"#555"}}>{modeName(b.battle_type)}</td>
                 <td style={{...TD}}>
-                  <span style={{ fontSize:11, color:"#3b82f6", fontFamily:"monospace" }}>
-                    {b.replayId ?? "-"}
-                  </span>
+                  <span style={{ fontSize:11, color:"#3b82f6", fontFamily:"monospace" }}>{b.replayId ?? "-"}</span>
                 </td>
                 <td style={{...TD, color:"#444"}}>{formatDate(b.battle_at)}</td>
               </tr>
@@ -224,8 +226,8 @@ function CharStatsTab({ filtered }) {
   const groups = useMemo(() => {
     const map = {};
     filtered.forEach(b => {
-      const key = `${b.oppChar}_${b.oppInput}`;
-      if (!map[key]) map[key] = { oppChar: b.oppChar, oppInput: b.oppInput, wins: 0, losses: 0 };
+      const key = `${b.oppCharTool}_${b.oppInput}`;
+      if (!map[key]) map[key] = { name: b.oppCharName, input: b.oppInput, wins: 0, losses: 0 };
       if (b.win) map[key].wins++; else map[key].losses++;
     });
     return Object.values(map).sort((a, b) => (b.wins + b.losses) - (a.wins + a.losses));
@@ -250,8 +252,8 @@ function CharStatsTab({ filtered }) {
               const rateN = total > 0 ? g.wins / total * 100 : 50;
               return (
                 <tr key={i} style={{ borderBottom:"1px solid #1a1a2e", background: i%2===0 ? "#0e0e1640" : "transparent" }}>
-                  <td style={{...TD, color:"#e8e8f0"}}>{charName(g.oppChar)}</td>
-                  <td style={{...TD, color:"#888"}}>{inputLabel(g.oppInput)}</td>
+                  <td style={{...TD, color:"#e8e8f0"}}>{g.name}</td>
+                  <td style={{...TD, color:"#888"}}>{inputLabel(g.input)}</td>
                   <td style={{...TD, color:"#888"}}>{total}</td>
                   <td style={{...TD, color:"#27ae60"}}>{g.wins}</td>
                   <td style={{...TD, color:"#e74c3c"}}>{g.losses}</td>
@@ -280,16 +282,11 @@ function RankStatsTab({ filtered }) {
     [...filtered].filter(b => b.battle_type === 1).reverse(),
     [filtered]
   );
-
   const lpPoints = ranked.filter(b => b.lp != null).map(b => ({ value: b.lp, ts: b.battle_at }));
   const mrPoints = ranked.filter(b => b.masterRating != null).map(b => ({ value: b.masterRating, ts: b.battle_at }));
 
   if (ranked.length === 0) {
-    return (
-      <div style={{ ...CARD, padding:"48px 0", textAlign:"center", color:"#2a2a3e", fontSize:12 }}>
-        ランクマのデータがありません
-      </div>
-    );
+    return <div style={{ ...CARD, padding:"48px 0", textAlign:"center", color:"#2a2a3e", fontSize:12 }}>ランクマのデータがありません</div>;
   }
 
   return (
@@ -306,11 +303,6 @@ function RankStatsTab({ filtered }) {
           <TrendChart points={mrPoints} color="#3b82f6" id="mr" />
         </div>
       )}
-      {lpPoints.length < 2 && mrPoints.length < 2 && (
-        <div style={{ ...CARD, padding:"48px 0", textAlign:"center", color:"#2a2a3e", fontSize:12 }}>
-          チャートを表示するにはランクマのデータが2件以上必要です
-        </div>
-      )}
     </div>
   );
 }
@@ -324,10 +316,10 @@ const TABS = [
 ];
 
 export default function StatsPage() {
-  const [inputId,    setInputId]    = useState(DEFAULT_ID);
-  const [playerId,   setPlayerId]   = useState(DEFAULT_ID);
-  const [activeTab,  setActiveTab]  = useState("battles");
-  const [filterDraft, setFilterDraft] = useState(EMPTY_FILTER);
+  const [inputId,      setInputId]      = useState(DEFAULT_ID);
+  const [playerId,     setPlayerId]     = useState(DEFAULT_ID);
+  const [activeTab,    setActiveTab]    = useState("battles");
+  const [filterDraft,  setFilterDraft]  = useState(EMPTY_FILTER);
   const [activeFilter, setActiveFilter] = useState(EMPTY_FILTER);
 
   const { battles, loading, error, playerName } = useBattleLog(playerId);
@@ -337,13 +329,23 @@ export default function StatsPage() {
     [battles, playerId]
   );
 
+  // ローカルに登場したキャラ一覧をtool_nameから動的生成
+  const charOptions = useMemo(() => {
+    const seen = new Map();
+    parsed.forEach(b => {
+      if (b.myCharTool)  seen.set(b.myCharTool,  b.myCharName);
+      if (b.oppCharTool) seen.set(b.oppCharTool, b.oppCharName);
+    });
+    return [["","全て"], ...[...seen.entries()].sort((a, b) => a[1].localeCompare(b[1], "ja"))];
+  }, [parsed]);
+
   const filtered = useMemo(() =>
     applyFilter(parsed, activeFilter),
     [parsed, activeFilter]
   );
 
   return (
-    <div style={{ maxWidth: 960, margin: "0 auto" }}>
+    <div style={{ maxWidth:960, margin:"0 auto" }}>
       {/* プレイヤーID入力 */}
       <div style={{ display:"flex", gap:10, marginBottom:20, alignItems:"flex-end" }}>
         <div style={{ flex:1 }}>
@@ -367,21 +369,17 @@ export default function StatsPage() {
         >{loading ? "取得中…" : "検索"}</button>
       </div>
 
-      {/* エラー */}
       {error && (
         <div style={{ background:"#2d0e0e", border:"1px solid #e74c3c", borderRadius:8, padding:"12px 16px", marginBottom:16, fontSize:12, color:"#e74c3c" }}>
           <strong>エラー: </strong>{error}
         </div>
       )}
-
-      {/* ローディング */}
       {loading && (
         <div style={{ color:"#444", fontSize:13, padding:"48px 0", textAlign:"center" }}>取得中…</div>
       )}
 
       {!loading && playerName && (
         <>
-          {/* プレイヤー名 */}
           <div style={{ marginBottom:16 }}>
             <span style={{ fontSize:22, fontWeight:700, color:"#e8e8f0" }}>{playerName}</span>
           </div>
@@ -394,22 +392,20 @@ export default function StatsPage() {
                 background:"none", border:"none",
                 borderBottom: activeTab === t.id ? "2px solid #ff6b2b" : "2px solid transparent",
                 color: activeTab === t.id ? "#ff6b2b" : "#555",
-                fontWeight: activeTab === t.id ? 700 : 400,
-                marginBottom: -1,
+                fontWeight: activeTab === t.id ? 700 : 400, marginBottom:-1,
               }}>{t.label}</button>
             ))}
           </div>
 
-          {/* フィルター */}
           <FilterPanel
             draft={filterDraft}
             setDraft={setFilterDraft}
             onSearch={() => setActiveFilter({ ...filterDraft })}
             onReset={() => { setFilterDraft(EMPTY_FILTER); setActiveFilter(EMPTY_FILTER); }}
             showOpp={activeTab === "battles"}
+            charOptions={charOptions}
           />
 
-          {/* タブコンテンツ */}
           {activeTab === "battles"   && <BattlesTab   filtered={filtered} playerName={playerName} />}
           {activeTab === "charStats" && <CharStatsTab  filtered={filtered} />}
           {activeTab === "rankStats" && <RankStatsTab  filtered={filtered} />}
