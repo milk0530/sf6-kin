@@ -29,6 +29,10 @@ export default function SetplayPostForm({ initialValues, color = "#ff6b2b", onSu
     title:     iv.title     ?? "",
     steps:     iv.steps     ?? "",
     damage:    iv.damage    ?? "",
+    down:      iv.down      ?? "",
+    hit:       iv.hit       ?? "",
+    guard:     iv.guard     ?? "",
+    tags:      iv.tags      ?? "",
     note:      iv.note      ?? "",
   });
   const [file, setFile] = useState(null);
@@ -55,7 +59,7 @@ export default function SetplayPostForm({ initialValues, color = "#ff6b2b", onSu
 
   const handleSubmit = async e => {
     e.preventDefault();
-    if (!values.situation.trim() || !values.title.trim() || !values.steps.trim()) return;
+    if (!values.situation.trim() || !values.steps.trim()) return;
     setSubmitting(true);
 
     let media_url = iv.media_url ?? null;
@@ -92,33 +96,56 @@ export default function SetplayPostForm({ initialValues, color = "#ff6b2b", onSu
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {/* 状況 / タイトル */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          <Field label="状況" required>
-            <input style={INPUT} value={values.situation} onChange={e => set("situation", e.target.value)} placeholder="例: +4有利, ダウン後" />
+          <Field label="状況（グループ名）" required>
+            <input style={INPUT} value={values.situation} onChange={e => set("situation", e.target.value)} placeholder="例: ダウン 17F" />
           </Field>
-          <Field label="タイトル" required>
+          <Field label="タイトル">
             <input style={INPUT} value={values.title} onChange={e => set("title", e.target.value)} placeholder="例: 重ね択" />
           </Field>
         </div>
 
-        {/* 内容 */}
-        <Field label="内容 / 手順" required>
+        {/* レシピ */}
+        <Field label="レシピ / 手順" required>
           <textarea
-            style={{ ...INPUT, minHeight: 80, resize: "vertical" }}
+            style={{ ...INPUT, minHeight: 60, resize: "vertical" }}
             value={values.steps}
             onChange={e => set("steps", e.target.value)}
-            placeholder="手順を記入…"
+            placeholder="例: 2MK > 214LP"
           />
         </Field>
 
-        {/* ダメージ / メモ */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 10 }}>
+        {/* ダメージ / ダウンF */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           <Field label="ダメージ">
             <input style={INPUT} value={values.damage} onChange={e => set("damage", e.target.value)} placeholder="例: 2800" />
           </Field>
-          <Field label="メモ">
-            <input style={INPUT} value={values.note} onChange={e => set("note", e.target.value)} placeholder="補足など" />
+          <Field label="ダウンF">
+            <input style={INPUT} value={values.down} onChange={e => set("down", e.target.value)} placeholder="例: 26F" />
           </Field>
         </div>
+
+        {/* HIT有利 / ガード有利 / タグ */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 2fr", gap: 10 }}>
+          <Field label="HIT有利">
+            <input style={INPUT} value={values.hit} onChange={e => set("hit", e.target.value)} placeholder="例: +4" />
+          </Field>
+          <Field label="ガード有利">
+            <input style={INPUT} value={values.guard} onChange={e => set("guard", e.target.value)} placeholder="例: -2" />
+          </Field>
+          <Field label="タグ（カンマ区切り）">
+            <input style={INPUT} value={values.tags} onChange={e => set("tags", e.target.value)} placeholder="例: 投げ後, 9F詐欺重ね" />
+          </Field>
+        </div>
+
+        {/* メモ */}
+        <Field label="メモ">
+          <textarea
+            style={{ ...INPUT, minHeight: 60, resize: "vertical" }}
+            value={values.note}
+            onChange={e => set("note", e.target.value)}
+            placeholder="補足説明など"
+          />
+        </Field>
 
         {/* メディア */}
         <Field label="メディア（動画 / 画像）">

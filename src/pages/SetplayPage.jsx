@@ -76,10 +76,11 @@ export default function SetplayPage({ data, char }) {
                   }}>{grouped.map[situation].length}</span>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingLeft: 11 }}>
-                  {grouped.map[situation].map(sp => (
+                  {grouped.map[situation].map((sp, i) => (
                     <CommunitySetplayCard
                       key={sp.id}
                       sp={sp}
+                      index={i + 1}
                       color={color}
                       selected={selected?.id === sp.id}
                       onSelect={handleSelect}
