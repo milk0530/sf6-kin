@@ -1,4 +1,5 @@
 import { useState } from "react";
+import CommandRenderer from "../components/ui/CommandRenderer";
 
 export default function FramePage({ data, char }) {
   const [mode, setMode] = useState("classic");
@@ -110,7 +111,7 @@ export default function FramePage({ data, char }) {
                         onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                       >
                         <td style={{ padding: "9px 12px", color: "#e8e8f0", fontWeight: 700, whiteSpace: "nowrap" }}>{m.label}</td>
-                        <td style={{ padding: "9px 12px", color: "#888", fontFamily: "monospace", whiteSpace: "nowrap" }}>{m.command ?? "-"}</td>
+                        <td style={{ padding: "9px 12px", whiteSpace: "nowrap" }}><CommandRenderer command={m.command ?? "-"} /></td>
                         <td style={{ padding: "9px 12px", color: "#ff6b2b", whiteSpace: "nowrap" }}>
                           {m.startup != null && m.startup !== "-" ? (typeof m.startup === "number" ? m.startup + "F" : m.startup) : "-"}
                         </td>
