@@ -1,4 +1,8 @@
-export default function Header({ char, sidebarOpen, onToggleSidebar }) {
+import { useState } from "react";
+
+export default function Header({ char, sidebarOpen, onToggleSidebar, onShowStats, showStats }) {
+  const [hoverStats, setHoverStats] = useState(false);
+
   return (
     <header style={{
       background: "#13131f",
@@ -38,7 +42,28 @@ export default function Header({ char, sidebarOpen, onToggleSidebar }) {
         SF6支部
       </span>
 
-      <span style={{ fontSize: 11, color: "#2a2a3e", marginLeft: "auto", whiteSpace: "nowrap" }}>
+      <button
+        onClick={onShowStats}
+        onMouseEnter={() => setHoverStats(true)}
+        onMouseLeave={() => setHoverStats(false)}
+        style={{
+          marginLeft: "auto",
+          background: showStats ? "#7c3aed22" : hoverStats ? "#1e1e2e" : "transparent",
+          border: showStats ? "1px solid #7c3aed" : "1px solid #2a2a3e",
+          borderRadius: 6,
+          padding: "5px 14px",
+          cursor: "pointer",
+          color: showStats ? "#a78bfa" : hoverStats ? "#a78bfa" : "#555",
+          fontSize: 12,
+          fontWeight: showStats ? 700 : 400,
+          whiteSpace: "nowrap",
+          transition: "all 0.15s",
+        }}
+      >
+        📊 戦績
+      </button>
+
+      <span style={{ fontSize: 11, color: "#2a2a3e", whiteSpace: "nowrap" }}>
         by ミルク
       </span>
     </header>
