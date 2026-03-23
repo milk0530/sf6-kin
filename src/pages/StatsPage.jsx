@@ -427,7 +427,6 @@ function RankStatsTab({ parsed, rankFilter }) {
 }
 
 // ── メイン ──────────────────────────────────────────────
-const DEFAULT_ID = "2808191869";
 const TABS = [
   { id:"battles",   label:"対戦" },
   { id:"charStats", label:"キャラ別統計" },
@@ -435,8 +434,8 @@ const TABS = [
 ];
 
 export default function StatsPage() {
-  const [inputId,      setInputId]      = useState(DEFAULT_ID);
-  const [playerId,     setPlayerId]     = useState(DEFAULT_ID);
+  const [inputId,      setInputId]      = useState("");
+  const [playerId,     setPlayerId]     = useState("");
   const [activeTab,    setActiveTab]    = useState("battles");
   const [filterDraft,  setFilterDraft]  = useState(EMPTY_FILTER);
   const [activeFilter, setActiveFilter] = useState(EMPTY_FILTER);
@@ -527,15 +526,24 @@ export default function StatsPage() {
 
           {/* タブ */}
           <div style={{ display:"flex", borderBottom:"1px solid #2a2a3e", marginBottom:14 }}>
-            {TABS.map(t => (
-              <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
-                padding:"8px 24px", fontSize:13, cursor:"pointer",
-                background:"none", border:"none",
-                borderBottom: activeTab === t.id ? "2px solid #ff6b2b" : "2px solid transparent",
-                color: activeTab === t.id ? "#ff6b2b" : "#555",
-                fontWeight: activeTab === t.id ? 700 : 400, marginBottom:-1,
-              }}>{t.label}</button>
-            ))}
+            {TABS.map(t => {
+              const active = activeTab === t.id;
+              return (
+                <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
+                  background:"none", border:"none",
+                  padding:"9px 20px", fontSize:12,
+                  color: active ? "#ff6b2b" : "#555",
+                  cursor:"pointer", whiteSpace:"nowrap",
+                  borderBottom: active ? "2px solid #ff6b2b" : "2px solid transparent",
+                  marginBottom:-1,
+                  fontFamily:"inherit",
+                  transition:"color 0.15s, border-color 0.15s",
+                }}
+                onMouseEnter={e => { if (!active) e.currentTarget.style.color = "#888"; }}
+                onMouseLeave={e => { if (!active) e.currentTarget.style.color = "#555"; }}
+                >{t.label}</button>
+              );
+            })}
           </div>
 
           {activeTab === "rankStats" ? (
