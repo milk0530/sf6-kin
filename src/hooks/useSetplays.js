@@ -30,5 +30,10 @@ export function useSetplays(charId, mode) {
     await fetch();
   };
 
-  return { setplays, loading, add, remove };
+  const update = async (id, row) => {
+    await supabase.from("setplays").update(row).eq("id", id);
+    await fetch();
+  };
+
+  return { setplays, loading, add, remove, update };
 }
