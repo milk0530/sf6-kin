@@ -8,7 +8,7 @@ export function useBattleLog(playerId, type = "all") {
   const [error,      setError]      = useState(null);
   const [playerName, setPlayerName] = useState(null);
 
-  const fetch = useCallback(async () => {
+  const fetchAll = useCallback(async () => {
     if (!playerId) return;
     setLoading(true);
     setError(null);
@@ -57,7 +57,7 @@ export function useBattleLog(playerId, type = "all") {
     }
   }, [playerId, type]);
 
-  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => { fetchAll(); }, [fetchAll]);
 
-  return { battles, loading, error, playerName, refetch: fetch };
+  return { battles, loading, error, playerName, refetch: fetchAll };
 }

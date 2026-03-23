@@ -228,9 +228,9 @@ function FilterPanel({ draft, setDraft, onSearch, onReset, showOpp, showGameMode
               {modeOpts.map(([v,l]) => <option key={v} value={v}>{l}</option>)}
             </select></div>
         )}
-        <div><div style={LBL}>始日</div>
+        <div><div style={LBL}>開始日</div>
           <input type="date" style={{...SEL, boxSizing:"border-box"}} value={draft.dateFrom} onChange={set("dateFrom")} /></div>
-        <div><div style={LBL}>了日</div>
+        <div><div style={LBL}>終了日</div>
           <input type="date" style={{...SEL, boxSizing:"border-box"}} value={draft.dateTo} onChange={set("dateTo")} /></div>
       </div>
       <div style={{ display:"flex", gap:8 }}>
@@ -499,25 +499,25 @@ export default function StatsPage() {
     setRankFilter(RANK_EMPTY_FILTER);
   }, [playerId]);
 
-  // バトルデータが揃ったら、ランクマで最後に使ったキャラをデフォルトに
+  // ランクデータが揃ったら、最後に使ったキャラをデフォルトに
   useEffect(() => {
-    if (parsed.length === 0 || rankInitialized.current) return;
-    const lastChar = parsed.find(b => b.battle_type === 1)?.myCharTool ?? parsed[0]?.myCharTool ?? "";
+    if (parsedRank.length === 0 || rankInitialized.current) return;
+    const lastChar = parsedRank[0]?.myCharTool ?? "";
     if (!lastChar) return;
     rankInitialized.current = true;
     setRankDraft(d => ({ ...d, myChar: lastChar }));
     setRankFilter(f => ({ ...f, myChar: lastChar }));
-  }, [parsed]);
+  }, [parsedRank]);
 
-  // ローカルに登場したキャラ一覧をtool_nameから動的生成
+  // ローカルに登場したキャラ一覧をtool_nameから動的生成（全+ランク両方から収集）
   const charOptions = useMemo(() => {
     const seen = new Map();
-    parsed.forEach(b => {
+    [...parsed, ...parsedRank].forEach(b => {
       if (b.myCharTool)  seen.set(b.myCharTool,  b.myCharName);
       if (b.oppCharTool) seen.set(b.oppCharTool, b.oppCharName);
     });
     return [["","全て"], ...[...seen.entries()].sort((a, b) => a[1].localeCompare(b[1], "ja"))];
-  }, [parsed]);
+  }, [parsed, parsedRank]);
 
   const filtered = useMemo(() =>
     applyFilter(parsed, activeFilter),
