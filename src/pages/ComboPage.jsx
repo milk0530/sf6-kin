@@ -69,7 +69,7 @@ export default function ComboPage({ data, char }) {
         )}
 
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-          <ModeToggle mode={mode} onChange={handleModeChange} />
+          <ModeToggle mode={mode} onChange={handleModeChange} color={color} />
           <span style={{ flex: 1 }} />
           <button
             onClick={() => setShowForm(true)}
