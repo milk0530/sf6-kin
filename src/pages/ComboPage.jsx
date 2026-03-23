@@ -3,6 +3,7 @@ import ModeToggle from "../components/ui/ModeToggle";
 import CommunityComboCard from "../components/community/CommunityComboCard";
 import ComboPostForm from "../components/community/ComboPostForm";
 import { useCombos } from "../hooks/useCombos";
+import { useIsMobile } from "../hooks/useIsMobile";
 
 export default function ComboPage({ data, char }) {
   const [mode, setMode] = useState("classic");
@@ -13,6 +14,7 @@ export default function ComboPage({ data, char }) {
   const [selected, setSelected] = useState(null);
 
   const color = char?.color ?? "#ff6b2b";
+  const isMobile = useIsMobile();
   const { combos, loading, add, remove, update } = useCombos(char.id, mode);
 
   const filtered = useMemo(() => {
@@ -169,8 +171,8 @@ export default function ComboPage({ data, char }) {
         )}
       </div>
 
-      {/* 右: メディアパネル */}
-      <div style={{
+      {/* 右: メディアパネル（PC only） */}
+      {!isMobile && <div style={{
         width: 260, flexShrink: 0, position: "sticky", top: 0,
         background: "#13131f", border: "1px solid #2a2a3e", borderRadius: 12,
         overflow: "hidden",
@@ -208,7 +210,7 @@ export default function ComboPage({ data, char }) {
             </span>
           </div>
         )}
-      </div>
+      </div>}
 
     </div>
   );

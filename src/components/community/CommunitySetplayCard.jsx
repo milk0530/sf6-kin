@@ -1,8 +1,12 @@
 import { useState } from "react";
 import SetplayPostForm from "./SetplayPostForm";
+import MediaModal from "./MediaModal";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 export default function CommunitySetplayCard({ sp, color, onDelete, onUpdate, onSelect, selected }) {
   const [editing, setEditing] = useState(false);
+  const [showMedia, setShowMedia] = useState(false);
+  const isMobile = useIsMobile();
   const hasMedia = !!sp.media_url;
 
   if (editing) {
@@ -54,15 +58,32 @@ export default function CommunitySetplayCard({ sp, color, onDelete, onUpdate, on
       </div>
 
       {/* 再生ボタン */}
-      <div style={{ flexShrink: 0, display: "flex", alignItems: "center" }}>
+      <div
+        style={{ flexShrink: 0, display: "flex", alignItems: "center" }}
+        onClick={e => {
+          if (!hasMedia) return;
+          e.stopPropagation();
+          if (isMobile) setShowMedia(true);
+          else onSelect?.(sp);
+        }}
+      >
         <div style={{
           width: 28, height: 28, borderRadius: 6,
           background: hasMedia ? color + "22" : "#1a1a2e",
           border: `1px solid ${hasMedia ? color : "#2a2a3e"}`,
           display: "flex", alignItems: "center", justifyContent: "center",
           color: hasMedia ? color : "#444", fontSize: 12,
+          cursor: hasMedia ? "pointer" : "default",
         }}>▶</div>
       </div>
+
+      {showMedia && sp.media_url && (
+        <MediaModal
+          url={sp.media_url}
+          title={sp.title}
+          onClose={() => setShowMedia(false)}
+        />
+      )}
     </div>
   );
 }

@@ -1,9 +1,13 @@
 import { useState } from "react";
 import CommandRenderer from "../ui/CommandRenderer";
 import ComboPostForm from "./ComboPostForm";
+import MediaModal from "./MediaModal";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 export default function CommunityComboCard({ combo, index, color, onDelete, onUpdate, onSelect, selected }) {
   const [editing, setEditing] = useState(false);
+  const [showMedia, setShowMedia] = useState(false);
+  const isMobile = useIsMobile();
 
   const diff = combo.difficulty;
   const diffColor = diff === "難" ? "#e74c3c" : diff === "中" ? "#f59e0b" : "#27ae60";
@@ -116,16 +120,33 @@ export default function CommunityComboCard({ combo, index, color, onDelete, onUp
         </div>
 
         {/* 右: 再生ボタン */}
-        <div style={{ flexShrink: 0, display: "flex", alignItems: "center" }}>
+        <div
+          style={{ flexShrink: 0, display: "flex", alignItems: "center" }}
+          onClick={e => {
+            if (!hasMedia) return;
+            e.stopPropagation();
+            if (isMobile) setShowMedia(true);
+            else onSelect(combo);
+          }}
+        >
           <div style={{
             width: 28, height: 28, borderRadius: 6,
             background: hasMedia ? color + "22" : "#1a1a2e",
             border: `1px solid ${hasMedia ? color : "#2a2a3e"}`,
             display: "flex", alignItems: "center", justifyContent: "center",
             color: hasMedia ? color : "#444", fontSize: 12,
+            cursor: hasMedia ? "pointer" : "default",
           }}>▶</div>
         </div>
       </div>
+
+      {showMedia && combo.media_url && (
+        <MediaModal
+          url={combo.media_url}
+          title={combo.title}
+          onClose={() => setShowMedia(false)}
+        />
+      )}
 
     </>
   );
