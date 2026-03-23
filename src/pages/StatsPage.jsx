@@ -166,9 +166,9 @@ function FilterPanel({ draft, setDraft, onSearch, onReset, showOpp, charOptions 
             {modeOpts.map(([v,l]) => <option key={v} value={v}>{l}</option>)}
           </select></div>
         <div><div style={LBL}>始日</div>
-          <input type="date" style={{...SEL, boxSizing:"border-box"}} value={draft.dateFrom} onChange={set("dateFrom")} /></div>
+          <input type="text" placeholder="YYYY-MM-DD" style={{...SEL, boxSizing:"border-box"}} value={draft.dateFrom} onChange={set("dateFrom")} /></div>
         <div><div style={LBL}>了日</div>
-          <input type="date" style={{...SEL, boxSizing:"border-box"}} value={draft.dateTo} onChange={set("dateTo")} /></div>
+          <input type="text" placeholder="YYYY-MM-DD" style={{...SEL, boxSizing:"border-box"}} value={draft.dateTo} onChange={set("dateTo")} /></div>
       </div>
       <div style={{ display:"flex", gap:8 }}>
         <button onClick={onSearch} style={{ padding:"6px 20px", borderRadius:6, fontSize:12, cursor:"pointer", background:"#3b82f6", border:"none", color:"#fff", fontWeight:700 }}>検索</button>
