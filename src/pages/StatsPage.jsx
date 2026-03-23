@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useBattleLog } from "../hooks/useBattleLog";
 
 // character_tool_name → 日本語名
@@ -77,38 +77,79 @@ const TD  = { padding:"8px 10px", fontSize:12, whiteSpace:"nowrap" };
 // ── トレンドチャート ────────────────────────────────────
 function TrendChart({ points, color, id }) {
   if (points.length < 2) return null;
-  const W = 560, H = 140;
+  const PL = 58, PR = 44, PT = 20, PB = 56;
+  const CW = 500, CH = 150;
+  const W = PL + CW + PR, H = PT + CH + PB;
+
   const vals = points.map(p => p.value);
   const minV = Math.min(...vals), maxV = Math.max(...vals);
   const range = maxV - minV || 1;
-  const coords = points.map((p, i) => [
-    (i / (points.length - 1)) * W,
-    H - ((p.value - minV) / range) * H,
-  ]);
+
+  const cx = i => PL + (i / (points.length - 1)) * CW;
+  const cy = v => PT + CH - ((v - minV) / range) * CH;
+  const coords = points.map((p, i) => [cx(i), cy(p.value)]);
   const lineStr = coords.map(([x, y]) => `${x},${y}`).join(" ");
-  const areaStr = `0,${H} ${lineStr} ${W},${H}`;
-  const labelIdxs = [0, Math.floor(points.length / 2), points.length - 1];
-  const dtLabel = ts => { const d = new Date(ts * 1000); return `${d.getMonth()+1}/${d.getDate()}`; };
+  const areaStr = `${PL},${PT + CH} ${lineStr} ${PL + CW},${PT + CH}`;
+
+  // Y軸 6段階
+  const yLevels = Array.from({ length: 6 }, (_, i) => minV + (range / 5) * i);
+  const fmtVal  = v => v >= 10000 ? `${(v / 1000).toFixed(0)}k` : Math.round(v).toLocaleString();
+
+  // X軸 最大8ラベル
+  const xCount = Math.min(8, points.length);
+  const xIdxs  = Array.from({ length: xCount }, (_, i) =>
+    Math.round(i * (points.length - 1) / (xCount - 1))
+  );
+  const dtLabel = ts => {
+    const d = new Date(ts * 1000);
+    return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
+  };
 
   return (
-    <svg viewBox={`0 0 ${W} ${H + 36}`} style={{ width:"100%", overflow:"visible" }}>
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", overflow:"visible" }}>
       <defs>
         <linearGradient id={`g_${id}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stopColor={color} stopOpacity="0.25" />
+          <stop offset="0%"   stopColor={color} stopOpacity="0.2" />
           <stop offset="100%" stopColor={color} stopOpacity="0" />
         </linearGradient>
       </defs>
+
+      {/* グリッド線 + Y軸ラベル */}
+      {yLevels.map((v, i) => (
+        <g key={i}>
+          <line x1={PL} y1={cy(v)} x2={PL + CW} y2={cy(v)} stroke="#1e1e2e" strokeWidth={1} />
+          <text x={PL - 6} y={cy(v) + 4} textAnchor="end" fontSize={9} fill="#555">
+            {fmtVal(v)}
+          </text>
+        </g>
+      ))}
+
+      {/* HIGH ライン */}
+      <line x1={PL} y1={PT} x2={PL + CW} y2={PT}
+        stroke={color} strokeWidth={0.8} strokeDasharray="4,3" opacity={0.5} />
+      <text x={PL - 6} y={PT + 4} textAnchor="end" fontSize={8} fill={color} fontWeight={700}>HIGH</text>
+
+      {/* エリア・ライン */}
       <polygon points={areaStr} fill={`url(#g_${id})`} />
       <polyline points={lineStr} fill="none" stroke={color} strokeWidth={1.5} />
-      <text x={coords[coords.length-1][0]} y={coords[coords.length-1][1] - 8}
-        textAnchor="end" fontSize={10} fill={color} fontWeight={700}>
-        {vals[vals.length-1].toLocaleString()}
+
+      {/* ドット */}
+      {coords.map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r={2} fill={color} />
+      ))}
+
+      {/* 最新値 */}
+      <text x={coords[coords.length-1][0] + 5} y={coords[coords.length-1][1] + 4}
+        fontSize={9} fill={color} fontWeight={700}>
+        {fmtVal(vals[vals.length - 1])}
       </text>
-      <text x={2} y={H - 2} fontSize={9} fill="#555">{minV.toLocaleString()}</text>
-      <text x={2} y={14}    fontSize={9} fill="#555">{maxV.toLocaleString()}</text>
-      {labelIdxs.map(idx => (
-        <text key={idx} x={coords[idx][0]} y={H + 18}
-          textAnchor="middle" fontSize={9} fill="#444">
+
+      {/* X軸ラベル（斜め） */}
+      {xIdxs.map(idx => (
+        <text key={idx}
+          x={coords[idx][0]} y={PT + CH + 14}
+          textAnchor="end" fontSize={8} fill="#555"
+          transform={`rotate(-35,${coords[idx][0]},${PT + CH + 14})`}>
           {dtLabel(points[idx].ts)}
         </text>
       ))}
@@ -121,16 +162,15 @@ const EMPTY_FILTER = {
   myChar:"", myInput:"", oppChar:"", oppInput:"", gameMode:"",
   dateFrom: DEFAULT_DATE_FROM, dateTo: DEFAULT_DATE_TO,
 };
-// ランク統計専用フィルタ（日付制限なし・gameModeなし）
-const RANK_EMPTY_FILTER = { myChar:"", myInput:"", dateFrom:"", dateTo:"" };
+// ランク統計専用フィルタ（操作タイプ・gameModeなし、デフォルト日付=今月）
+const RANK_EMPTY_FILTER = { myChar:"", dateFrom: DEFAULT_DATE_FROM, dateTo: DEFAULT_DATE_TO };
 
 function applyRankFilter(parsed, f) {
   return parsed.filter(b => {
-    if (b.battle_type !== 1)                                             return false;
-    if (f.myChar  && b.myCharTool !== f.myChar)                         return false;
-    if (f.myInput && b.myInput    !== Number(f.myInput))                return false;
-    if (f.dateFrom && b.battle_at < new Date(f.dateFrom).getTime() / 1000) return false;
-    if (f.dateTo   && b.battle_at > new Date(f.dateTo).getTime() / 1000 + 86400) return false;
+    if (b.battle_type !== 1)                                                        return false;
+    if (f.myChar   && b.myCharTool !== f.myChar)                                   return false;
+    if (f.dateFrom && b.battle_at < new Date(f.dateFrom).getTime() / 1000)         return false;
+    if (f.dateTo   && b.battle_at > new Date(f.dateTo).getTime() / 1000 + 86400)   return false;
     return true;
   });
 }
@@ -148,7 +188,7 @@ function applyFilter(parsed, f) {
   });
 }
 
-function FilterPanel({ draft, setDraft, onSearch, onReset, showOpp, showGameMode = true, charOptions }) {
+function FilterPanel({ draft, setDraft, onSearch, onReset, showOpp, showGameMode = true, showInputType = true, charOptions }) {
   const modeOpts  = [["","全て"], ...Object.entries(GAME_MODES)];
   const inputOpts = [["","全て"], ["1","M（モダン）"], ["0","C（クラシック）"], ["2","D（ダイナミック）"]];
   const set = key => e => setDraft(d => ({...d, [key]: e.target.value}));
@@ -160,10 +200,12 @@ function FilterPanel({ draft, setDraft, onSearch, onReset, showOpp, showGameMode
           <select style={SEL} value={draft.myChar} onChange={set("myChar")}>
             {charOptions.map(([v,l]) => <option key={v} value={v}>{l}</option>)}
           </select></div>
-        <div><div style={LBL}>私の操作タイプ</div>
-          <select style={SEL} value={draft.myInput} onChange={set("myInput")}>
-            {inputOpts.map(([v,l]) => <option key={v} value={v}>{l}</option>)}
-          </select></div>
+        {showInputType && (
+          <div><div style={LBL}>私の操作タイプ</div>
+            <select style={SEL} value={draft.myInput ?? ""} onChange={set("myInput")}>
+              {inputOpts.map(([v,l]) => <option key={v} value={v}>{l}</option>)}
+            </select></div>
+        )}
         {showOpp && <>
           <div><div style={LBL}>対戦相手のキャラクター</div>
             <select style={SEL} value={draft.oppChar} onChange={set("oppChar")}>
@@ -341,6 +383,17 @@ export default function StatsPage() {
   const [activeFilter, setActiveFilter] = useState(EMPTY_FILTER);
   const [rankDraft,    setRankDraft]    = useState(RANK_EMPTY_FILTER);
   const [rankFilter,   setRankFilter]   = useState(RANK_EMPTY_FILTER);
+  const rankInitialized = useRef(false);
+
+  // バトルデータが揃ったら、ランクマで最後に使ったキャラをデフォルトに
+  useEffect(() => {
+    if (parsed.length === 0 || rankInitialized.current) return;
+    const lastChar = parsed.find(b => b.battle_type === 1)?.myCharTool ?? parsed[0]?.myCharTool ?? "";
+    if (!lastChar) return;
+    rankInitialized.current = true;
+    setRankDraft(d => ({ ...d, myChar: lastChar }));
+    setRankFilter(f => ({ ...f, myChar: lastChar }));
+  }, [parsed]);
 
   const { battles, loading, error, playerName } = useBattleLog(playerId);
 
@@ -425,6 +478,7 @@ export default function StatsPage() {
               onReset={() => { setRankDraft(RANK_EMPTY_FILTER); setRankFilter(RANK_EMPTY_FILTER); }}
               showOpp={false}
               showGameMode={false}
+              showInputType={false}
               charOptions={charOptions}
             />
           ) : (
