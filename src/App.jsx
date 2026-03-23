@@ -61,8 +61,6 @@ export default function App() {
         char={char}
         sidebarOpen={sidebarOpen}
         onToggleSidebar={() => setSidebarOpen(v => !v)}
-        showStats={showStats}
-        onShowStats={() => setShowStats(v => !v)}
       />
 
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
@@ -70,6 +68,8 @@ export default function App() {
           open={sidebarOpen}
           activeChar={activeChar}
           onCharChange={handleCharChange}
+          showStats={showStats}
+          onShowStats={() => setShowStats(v => !v)}
         />
 
         <main style={{ flex: 1, minWidth: 0, overflowY: "auto", padding: "24px 28px" }}>
