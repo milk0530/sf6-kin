@@ -11,7 +11,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    const url = `https://www.streetfighter.com/6/buckler/profile/${playerId}/battlelog?page=${page}`;
+    const { type = "all" } = req.query;
+    const subPath = type === "rank" ? "/battlelog/rank" : "/battlelog";
+    const url = `https://www.streetfighter.com/6/buckler/profile/${playerId}${subPath}?page=${page}`;
     const response = await fetch(url, {
       headers: {
         Cookie: cookie,

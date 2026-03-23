@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 
 const MAX_PAGES = 15; // 最大1500戦まで取得
 
-export function useBattleLog(playerId) {
+export function useBattleLog(playerId, type = "all") {
   const [battles,    setBattles]    = useState([]);
   const [loading,    setLoading]    = useState(false);
   const [error,      setError]      = useState(null);
@@ -17,7 +17,7 @@ export function useBattleLog(playerId) {
     try {
       const fetchPage = async (page) => {
         const res = await window.fetch(
-          `/api/battlelog?playerId=${playerId}&page=${page}`,
+          `/api/battlelog?playerId=${playerId}&page=${page}&type=${type}`,
           { headers: { Accept: "application/json" } }
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -28,6 +28,7 @@ export function useBattleLog(playerId) {
       const first = await fetchPage(1);
       const items = [...(first.list ?? [])];
       const totalPages = Math.min(first.total_page ?? 1, MAX_PAGES);
+      console.log(`[BattleLog] total_page=${first.total_page}, fetching ${totalPages} pages`);
 
       // 残りページを並列取得
       if (totalPages > 1) {
@@ -54,7 +55,7 @@ export function useBattleLog(playerId) {
     } finally {
       setLoading(false);
     }
-  }, [playerId]);
+  }, [playerId, type]);
 
   useEffect(() => { fetch(); }, [fetch]);
 

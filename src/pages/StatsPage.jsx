@@ -461,11 +461,19 @@ export default function StatsPage() {
   const [history,      setHistory]      = useState(loadHistory);
   const rankInitialized = useRef(false);
 
-  const { battles, loading, error, playerName } = useBattleLog(playerId);
+  // 対戦・キャラ別統計用（全種別）
+  const { battles, loading, error, playerName } = useBattleLog(playerId, "all");
+  // ランク統計用（ランクマのみ・ページ数が多く取れる）
+  const { battles: rankBattles } = useBattleLog(playerId, "rank");
 
   const parsed = useMemo(() =>
     battles.map(b => parseBattle(b, playerId)),
     [battles, playerId]
+  );
+
+  const parsedRank = useMemo(() =>
+    rankBattles.map(b => parseBattle(b, playerId)),
+    [rankBattles, playerId]
   );
 
   // 検索成功時に履歴保存
@@ -602,7 +610,7 @@ export default function StatsPage() {
 
           {activeTab === "battles"   && <BattlesTab   filtered={filtered} playerName={playerName} />}
           {activeTab === "charStats" && <CharStatsTab  filtered={filtered} />}
-          {activeTab === "rankStats" && <RankStatsTab  parsed={parsed} rankFilter={rankFilter} />}
+          {activeTab === "rankStats" && <RankStatsTab  parsed={parsedRank} rankFilter={rankFilter} />}
         </>
       )}
 
