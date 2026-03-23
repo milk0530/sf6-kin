@@ -121,6 +121,19 @@ const EMPTY_FILTER = {
   myChar:"", myInput:"", oppChar:"", oppInput:"", gameMode:"",
   dateFrom: DEFAULT_DATE_FROM, dateTo: DEFAULT_DATE_TO,
 };
+// ランク統計専用フィルタ（日付制限なし・gameModeなし）
+const RANK_EMPTY_FILTER = { myChar:"", myInput:"", dateFrom:"", dateTo:"" };
+
+function applyRankFilter(parsed, f) {
+  return parsed.filter(b => {
+    if (b.battle_type !== 1)                                             return false;
+    if (f.myChar  && b.myCharTool !== f.myChar)                         return false;
+    if (f.myInput && b.myInput    !== Number(f.myInput))                return false;
+    if (f.dateFrom && b.battle_at < new Date(f.dateFrom).getTime() / 1000) return false;
+    if (f.dateTo   && b.battle_at > new Date(f.dateTo).getTime() / 1000 + 86400) return false;
+    return true;
+  });
+}
 
 function applyFilter(parsed, f) {
   return parsed.filter(b => {
@@ -135,7 +148,7 @@ function applyFilter(parsed, f) {
   });
 }
 
-function FilterPanel({ draft, setDraft, onSearch, onReset, showOpp, charOptions }) {
+function FilterPanel({ draft, setDraft, onSearch, onReset, showOpp, showGameMode = true, charOptions }) {
   const modeOpts  = [["","全て"], ...Object.entries(GAME_MODES)];
   const inputOpts = [["","全て"], ["1","M（モダン）"], ["0","C（クラシック）"], ["2","D（ダイナミック）"]];
   const set = key => e => setDraft(d => ({...d, [key]: e.target.value}));
@@ -161,14 +174,16 @@ function FilterPanel({ draft, setDraft, onSearch, onReset, showOpp, charOptions 
               {inputOpts.map(([v,l]) => <option key={v} value={v}>{l}</option>)}
             </select></div>
         </>}
-        <div><div style={LBL}>ゲームモード</div>
-          <select style={SEL} value={draft.gameMode} onChange={set("gameMode")}>
-            {modeOpts.map(([v,l]) => <option key={v} value={v}>{l}</option>)}
-          </select></div>
+        {showGameMode && (
+          <div><div style={LBL}>ゲームモード</div>
+            <select style={SEL} value={draft.gameMode} onChange={set("gameMode")}>
+              {modeOpts.map(([v,l]) => <option key={v} value={v}>{l}</option>)}
+            </select></div>
+        )}
         <div><div style={LBL}>始日</div>
-          <input type="text" placeholder="YYYY-MM-DD" style={{...SEL, boxSizing:"border-box"}} value={draft.dateFrom} onChange={set("dateFrom")} /></div>
+          <input type="date" style={{...SEL, boxSizing:"border-box"}} value={draft.dateFrom} onChange={set("dateFrom")} /></div>
         <div><div style={LBL}>了日</div>
-          <input type="text" placeholder="YYYY-MM-DD" style={{...SEL, boxSizing:"border-box"}} value={draft.dateTo} onChange={set("dateTo")} /></div>
+          <input type="date" style={{...SEL, boxSizing:"border-box"}} value={draft.dateTo} onChange={set("dateTo")} /></div>
       </div>
       <div style={{ display:"flex", gap:8 }}>
         <button onClick={onSearch} style={{ padding:"6px 20px", borderRadius:6, fontSize:12, cursor:"pointer", background:"#3b82f6", border:"none", color:"#fff", fontWeight:700 }}>検索</button>
@@ -280,10 +295,10 @@ function CharStatsTab({ filtered }) {
 }
 
 // ── ランク統計タブ ──────────────────────────────────────
-function RankStatsTab({ filtered }) {
+function RankStatsTab({ parsed, rankFilter }) {
   const ranked = useMemo(() =>
-    [...filtered].filter(b => b.battle_type === 1).reverse(),
-    [filtered]
+    [...applyRankFilter(parsed, rankFilter)].reverse(),
+    [parsed, rankFilter]
   );
   const lpPoints = ranked.filter(b => b.lp != null).map(b => ({ value: b.lp, ts: b.battle_at }));
   const mrPoints = ranked.filter(b => b.masterRating != null).map(b => ({ value: b.masterRating, ts: b.battle_at }));
@@ -324,6 +339,8 @@ export default function StatsPage() {
   const [activeTab,    setActiveTab]    = useState("battles");
   const [filterDraft,  setFilterDraft]  = useState(EMPTY_FILTER);
   const [activeFilter, setActiveFilter] = useState(EMPTY_FILTER);
+  const [rankDraft,    setRankDraft]    = useState(RANK_EMPTY_FILTER);
+  const [rankFilter,   setRankFilter]   = useState(RANK_EMPTY_FILTER);
 
   const { battles, loading, error, playerName } = useBattleLog(playerId);
 
@@ -400,18 +417,30 @@ export default function StatsPage() {
             ))}
           </div>
 
-          <FilterPanel
-            draft={filterDraft}
-            setDraft={setFilterDraft}
-            onSearch={() => setActiveFilter({ ...filterDraft })}
-            onReset={() => { setFilterDraft(EMPTY_FILTER); setActiveFilter(EMPTY_FILTER); }}
-            showOpp={activeTab === "battles"}
-            charOptions={charOptions}
-          />
+          {activeTab === "rankStats" ? (
+            <FilterPanel
+              draft={rankDraft}
+              setDraft={setRankDraft}
+              onSearch={() => setRankFilter({ ...rankDraft })}
+              onReset={() => { setRankDraft(RANK_EMPTY_FILTER); setRankFilter(RANK_EMPTY_FILTER); }}
+              showOpp={false}
+              showGameMode={false}
+              charOptions={charOptions}
+            />
+          ) : (
+            <FilterPanel
+              draft={filterDraft}
+              setDraft={setFilterDraft}
+              onSearch={() => setActiveFilter({ ...filterDraft })}
+              onReset={() => { setFilterDraft(EMPTY_FILTER); setActiveFilter(EMPTY_FILTER); }}
+              showOpp={activeTab === "battles"}
+              charOptions={charOptions}
+            />
+          )}
 
           {activeTab === "battles"   && <BattlesTab   filtered={filtered} playerName={playerName} />}
           {activeTab === "charStats" && <CharStatsTab  filtered={filtered} />}
-          {activeTab === "rankStats" && <RankStatsTab  filtered={filtered} />}
+          {activeTab === "rankStats" && <RankStatsTab  parsed={parsed} rankFilter={rankFilter} />}
         </>
       )}
 
