@@ -35,6 +35,7 @@ export default function App() {
   const handleCharChange = id => {
     setActiveChar(id);
     setActiveTab("top");
+    setShowStats(false);
   };
 
   const pageTitle = () => {
