@@ -385,6 +385,13 @@ export default function StatsPage() {
   const [rankFilter,   setRankFilter]   = useState(RANK_EMPTY_FILTER);
   const rankInitialized = useRef(false);
 
+  const { battles, loading, error, playerName } = useBattleLog(playerId);
+
+  const parsed = useMemo(() =>
+    battles.map(b => parseBattle(b, playerId)),
+    [battles, playerId]
+  );
+
   // バトルデータが揃ったら、ランクマで最後に使ったキャラをデフォルトに
   useEffect(() => {
     if (parsed.length === 0 || rankInitialized.current) return;
@@ -394,13 +401,6 @@ export default function StatsPage() {
     setRankDraft(d => ({ ...d, myChar: lastChar }));
     setRankFilter(f => ({ ...f, myChar: lastChar }));
   }, [parsed]);
-
-  const { battles, loading, error, playerName } = useBattleLog(playerId);
-
-  const parsed = useMemo(() =>
-    battles.map(b => parseBattle(b, playerId)),
-    [battles, playerId]
-  );
 
   // ローカルに登場したキャラ一覧をtool_nameから動的生成
   const charOptions = useMemo(() => {
