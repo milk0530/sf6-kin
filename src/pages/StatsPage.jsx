@@ -10,31 +10,31 @@ const CHARS = {
   21: "ベガ", 22: "エド", 23: "テリー", 24: "マイ", 25: "エレナ",
 };
 
-const BATTLE_TYPES = { 1: "ランクマ", 2: "カジュアル", 3: "バトルハブ", 6: "カスタム" };
+const BATTLE_TYPES = { 1: "ランクマ", 2: "カジュアル", 3: "バトルハブ", 4: "カスタム", 6: "トーナメント" };
 
 function charName(id) { return CHARS[id] ?? `ID:${id}`; }
 
 function parseBattle(battle, playerId) {
-  const pid = String(playerId);
-  const p1  = battle.player1_info;
-  const p2  = battle.player2_info;
-  const myInfo  = String(p1?.player?.fighter_id) === pid ? p1 : p2;
-  const oppInfo = String(p1?.player?.fighter_id) === pid ? p2 : p1;
-  const mySide  = String(p1?.player?.fighter_id) === pid ? 1 : 2;
-  const win     = battle.winner_side === mySide;
+  const pid    = Number(playerId);
+  const p1     = battle.player1_info;
+  const p2     = battle.player2_info;
+  const myInfo  = p1?.player?.short_id === pid ? p1 : p2;
+  const oppInfo = p1?.player?.short_id === pid ? p2 : p1;
+
+  const myWins  = (myInfo?.round_results  ?? []).filter(r => r === 1).length;
+  const oppWins = (oppInfo?.round_results ?? []).filter(r => r === 1).length;
+  const win     = myWins > oppWins;
 
   return {
-    battle_at:    battle.battle_at,
-    battle_type:  battle.battle_type,
-    myChar:       myInfo?.character_id,
-    oppChar:      oppInfo?.character_id,
-    oppName:      oppInfo?.player?.name ?? "???",
+    battle_at:   battle.uploaded_at,
+    battle_type: battle.replay_battle_type,
+    myChar:      myInfo?.character_id,
+    oppChar:     oppInfo?.character_id,
+    oppName:     oppInfo?.player?.fighter_id ?? "???",
     win,
-    lpBefore:     myInfo?.old_league_point,
-    lpAfter:      myInfo?.new_league_point,
-    lpDiff:       (myInfo?.new_league_point ?? 0) - (myInfo?.old_league_point ?? 0),
-    roundWon:     myInfo?.round_won ?? 0,
-    roundCnt:     myInfo?.round_cnt ?? 0,
+    lp:          myInfo?.league_point ?? null,
+    roundWon:    myWins,
+    roundCnt:    (myInfo?.round_results ?? []).length,
   };
 }
 
@@ -168,9 +168,9 @@ export default function StatsPage() {
 
     // LP 推移（ランクマのみ・時系列順）
     const lpSeries = [...filtered]
-      .filter(b => b.battle_type === 1 && b.lpAfter != null)
+      .filter(b => b.battle_type === 1 && b.lp != null)
       .reverse()
-      .map(b => b.lpAfter);
+      .map(b => b.lp);
 
     // 直近ストリーク
     let streak = 0;
@@ -229,10 +229,7 @@ export default function StatsPage() {
           background: "#2d0e0e", border: "1px solid #e74c3c", borderRadius: 8,
           padding: "14px 16px", marginBottom: 20, fontSize: 12, color: "#e74c3c",
         }}>
-          <strong>取得エラー: </strong>{error}<br />
-          <span style={{ color: "#666", fontSize: 11 }}>
-            ※ npm run dev で起動している場合のみ動作します（Vite プロキシ使用）
-          </span>
+          <strong>取得エラー: </strong>{error}
         </div>
       )}
 
@@ -255,7 +252,7 @@ export default function StatsPage() {
 
           {/* フィルタ */}
           <div style={{ display: "flex", gap: 6, marginBottom: 20, flexWrap: "wrap" }}>
-            {[null, 1, 2, 3].map(t => (
+            {[null, 1, 2, 3, 4].map(t => (
               <button
                 key={t ?? "all"}
                 onClick={() => setFilterType(t)}
@@ -286,11 +283,10 @@ export default function StatsPage() {
                 color="#ff6b2b"
               />
             )}
-            {stats.lpSeries.length > 0 && (
+            {filtered[0]?.lp != null && (
               <StatCard
-                label="現在LP"
-                value={stats.lpSeries[stats.lpSeries.length - 1].toLocaleString()}
-                sub="ランクマ"
+                label="最新LP"
+                value={filtered[0].lp.toLocaleString()}
                 color="#a78bfa"
               />
             )}
@@ -326,7 +322,7 @@ export default function StatsPage() {
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
                 <thead>
                   <tr style={{ background: "#0e0e16" }}>
-                    {["結果", "自分", "相手キャラ", "対戦相手", "LP変動", "種別", "日時"].map(h => (
+                    {["結果", "自分", "相手キャラ", "対戦相手", "LP", "種別", "日時"].map(h => (
                       <th key={h} style={{ padding: "8px 12px", color: "#444", fontWeight: 700, textAlign: "left", borderBottom: "1px solid #2a2a3e", whiteSpace: "nowrap" }}>{h}</th>
                     ))}
                   </tr>
@@ -345,9 +341,8 @@ export default function StatsPage() {
                       <td style={{ padding: "8px 12px", color: "#e8e8f0", whiteSpace: "nowrap" }}>{charName(b.myChar)}</td>
                       <td style={{ padding: "8px 12px", color: "#888", whiteSpace: "nowrap" }}>{charName(b.oppChar)}</td>
                       <td style={{ padding: "8px 12px", color: "#666", whiteSpace: "nowrap" }}>{b.oppName}</td>
-                      <td style={{ padding: "8px 12px", fontWeight: 700, whiteSpace: "nowrap",
-                        color: b.lpDiff > 0 ? "#27ae60" : b.lpDiff < 0 ? "#e74c3c" : "#888" }}>
-                        {b.lpDiff > 0 ? "+" : ""}{b.lpDiff}
+                      <td style={{ padding: "8px 12px", whiteSpace: "nowrap", color: "#a78bfa" }}>
+                        {b.lp != null ? b.lp.toLocaleString() : "-"}
                       </td>
                       <td style={{ padding: "8px 12px", color: "#444", whiteSpace: "nowrap" }}>
                         {BATTLE_TYPES[b.battle_type] ?? "-"}

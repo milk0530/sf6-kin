@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 
 export function useBattleLog(playerId) {
-  const [battles, setBattles]   = useState([]);
-  const [loading, setLoading]   = useState(false);
-  const [error,   setError]     = useState(null);
+  const [battles,    setBattles]    = useState([]);
+  const [loading,    setLoading]    = useState(false);
+  const [error,      setError]      = useState(null);
   const [playerName, setPlayerName] = useState(null);
 
   const fetch = useCallback(async () => {
@@ -14,30 +14,23 @@ export function useBattleLog(playerId) {
 
     try {
       const res = await window.fetch(
-        `/api/battlelog?playerId=${playerId}&page=1&limit=100`,
-        { headers: { "Accept": "application/json" } }
+        `/api/battlelog?playerId=${playerId}&page=1`,
+        { headers: { Accept: "application/json" } }
       );
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
       const json = await res.json();
+      const items = json?.list ?? [];
 
-      // レスポンス形式を柔軟に対応
-      const items =
-        json?.list ??
-        json?.items ??
-        json?.battle_log ??
-        json?.pageProps?.battleLog?.items ??
-        json?.pageProps?.battle_log ??
-        [];
-
-      // プレイヤー名を取得
-      const firstBattle = items[0];
-      if (firstBattle) {
-        const p1 = firstBattle.player1_info?.player;
-        const p2 = firstBattle.player2_info?.player;
-        const mine = String(p1?.fighter_id) === String(playerId) ? p1 : p2;
-        setPlayerName(mine?.name ?? mine?.fighter_id ?? null);
+      // プレイヤー名を取得（fighter_id が表示名、short_id が数値ID）
+      const pid = Number(playerId);
+      const first = items[0];
+      if (first) {
+        const p1 = first.player1_info?.player;
+        const p2 = first.player2_info?.player;
+        const mine = p1?.short_id === pid ? p1 : p2;
+        setPlayerName(mine?.fighter_id ?? String(playerId));
       }
 
       setBattles(items);
