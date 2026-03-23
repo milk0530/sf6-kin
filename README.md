@@ -1,4 +1,4 @@
-# DooD SF6攻略
+#SF6攻略
 
 Street Fighter 6 のキャラクター別攻略データベースサイト。
 
