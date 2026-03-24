@@ -2,10 +2,31 @@
 
 const NUMPAD = { '1':'↙','2':'↓','3':'↘','4':'←','5':'·','6':'→','7':'↖','8':'↑','9':'↗' };
 
-const BTN = {
-  '弱': { bg:'#0d1f3c', border:'#3b82f6', color:'#93c5fd' },
-  '中': { bg:'#2d1a00', border:'#f59e0b', color:'#fcd34d' },
-  '強': { bg:'#3c0d0d', border:'#ef4444', color:'#fca5a5' },
+// ボタンアイコン: [強度][種別] → ファイル名
+const BTN_ICON = {
+  '弱P': '/icons/icon_punch_l.png',
+  '中P': '/icons/icon_punch_m.png',
+  '強P': '/icons/icon_punch_h.png',
+  '弱K': '/icons/icon_kick_l.png',
+  '中K': '/icons/icon_kick_m.png',
+  '強K': '/icons/icon_kick_h.png',
+  'P':   '/icons/icon_punch.png',
+  'K':   '/icons/icon_kick.png',
+  '弱':  '/icons/modern_l.png',
+  '中':  '/icons/modern_m.png',
+  '強':  '/icons/modern_h.png',
+};
+
+// 方向矢印アイコン（白: 通常入力、黄: 溜めコマンド用）
+const DIR_ICON = {
+  '↙': '/icons/key-dl.png',
+  '↓': '/icons/key-d.png',
+  '↘': '/icons/key-dr.png',
+  '←': '/icons/key-l.png',
+  '→': '/icons/key-r.png',
+  '↖': '/icons/key-ul.png',
+  '↑': '/icons/key-u.png',
+  '↗': '/icons/key-ur.png',
 };
 
 function tokenize(cmd) {
@@ -90,6 +111,35 @@ function tokenize(cmd) {
   return tokens;
 }
 
+const IMG_STYLE = {
+  display: 'inline-block',
+  verticalAlign: 'middle',
+  flexShrink: 0,
+};
+
+function CmdImg({ src, size = 22 }) {
+  return (
+    <img
+      src={src}
+      width={size}
+      height={size}
+      style={IMG_STYLE}
+      draggable={false}
+    />
+  );
+}
+
+function BadgeImg({ src, h = 18 }) {
+  return (
+    <img
+      src={src}
+      height={h}
+      style={{ ...IMG_STYLE, width: 'auto' }}
+      draggable={false}
+    />
+  );
+}
+
 function Token({ tok }) {
   switch (tok.type) {
     case 'ctx':
@@ -99,32 +149,27 @@ function Token({ tok }) {
         </span>
       );
 
-    case 'sa':
+    case 'sa': {
+      // SA badge + number suffix
+      const num = tok.text.startsWith('CA') ? '' : tok.text.replace('SA', '');
       return (
-        <span style={{
-          display: 'inline-block', padding: '1px 5px', borderRadius: 3,
-          background: '#1e1240', border: '1px solid #7c3aed',
-          color: '#a78bfa', fontSize: 9, fontWeight: 700, whiteSpace: 'nowrap',
-        }}>{tok.text}</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
+          <BadgeImg src="/icons/badge-sa.png" h={18} />
+          {num && (
+            <span style={{
+              fontSize: 8, fontWeight: 700, color: '#e879f9',
+              marginLeft: 1, lineHeight: 1,
+            }}>{num}</span>
+          )}
+        </span>
       );
+    }
 
     case 'sp':
-      return (
-        <span style={{
-          display: 'inline-block', padding: '1px 5px', borderRadius: 3,
-          background: '#2d0e3a', border: '1px solid #c026d3',
-          color: '#e879f9', fontSize: 9, fontWeight: 700,
-        }}>SP</span>
-      );
+      return <BadgeImg src="/icons/modern_sp.png" h={18} />;
 
     case 'auto':
-      return (
-        <span style={{
-          display: 'inline-block', padding: '1px 5px', borderRadius: 3,
-          background: '#0d2e1a', border: '1px solid #22c55e',
-          color: '#86efac', fontSize: 9, fontWeight: 700,
-        }}>AUTO</span>
-      );
+      return <BadgeImg src="/icons/modern_auto.png" h={18} />;
 
     case 'jmod':
       return (
@@ -136,35 +181,20 @@ function Token({ tok }) {
       );
 
     case 'neutral':
-      return (
-        <span style={{
-          display: 'inline-block', padding: '1px 4px', borderRadius: 3,
-          background: '#1a1a2e', border: '1px solid #555',
-          color: '#999', fontSize: 9, fontWeight: 700,
-        }}>N</span>
-      );
+      return <CmdImg src="/icons/key-nutral.png" size={22} />;
 
     case 'di':
-      return (
-        <span style={{
-          display: 'inline-block', padding: '1px 5px', borderRadius: 3,
-          background: '#0a2a2a', border: '1px solid #06b6d4',
-          color: '#67e8f9', fontSize: 9, fontWeight: 700,
-        }}>DI</span>
-      );
+      return <BadgeImg src="/icons/badge-di.png" h={18} />;
 
     case 'dp':
-      return (
-        <span style={{
-          display: 'inline-block', padding: '1px 5px', borderRadius: 3,
-          background: '#0a1a2e', border: '1px solid #3b82f6',
-          color: '#93c5fd', fontSize: 9, fontWeight: 700,
-        }}>DP</span>
-      );
+      return <BadgeImg src="/icons/badge-dp.png" h={18} />;
 
     case 'dir':
     case 'numpad': {
       const arrow = tok.type === 'numpad' ? (NUMPAD[tok.d] ?? tok.d) : tok.d;
+      const src = DIR_ICON[arrow];
+      if (src) return <CmdImg src={src} size={20} />;
+      // '5' (ニュートラル) など矢印のないケース
       return (
         <span style={{ color: '#ccc', fontSize: 14, lineHeight: 1, fontFamily: 'monospace' }}>
           {arrow}
@@ -173,27 +203,23 @@ function Token({ tok }) {
     }
 
     case 'btn': {
-      const st = BTN[tok.s] ?? { bg: '#1a1a2e', border: '#555', color: '#999' };
+      const key = tok.s ? tok.s + tok.t : (tok.t || '');
+      const src = BTN_ICON[key];
+      if (src) return <CmdImg src={src} size={22} />;
+      // フォールバック: テキスト表示
       const label = tok.s ? tok.s + tok.t : tok.t;
       return (
         <span style={{
           display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
           width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
-          background: st.bg, border: `1.5px solid ${st.border}`,
-          color: st.color, fontSize: label.length <= 1 ? 11 : 8, fontWeight: 700,
+          background: '#1a1a2e', border: '1.5px solid #555',
+          color: '#999', fontSize: label.length <= 1 ? 11 : 8, fontWeight: 700,
         }}>{label}</span>
       );
     }
 
     case 'anybtn':
-      return (
-        <span style={{
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          width: 20, height: 20, borderRadius: '50%', flexShrink: 0,
-          background: '#1a1a2e', border: '1.5px solid #555',
-          color: '#777', fontSize: 13, lineHeight: 1,
-        }}>●</span>
-      );
+      return <CmdImg src="/icons/key-all.png" size={20} />;
 
     case 'throw':
       return (
@@ -205,10 +231,10 @@ function Token({ tok }) {
       );
 
     case 'plus':
-      return <span style={{ color: '#555', fontSize: 12, margin: '0 1px' }}>+</span>;
+      return <CmdImg src="/icons/key-plus.png" size={16} />;
 
     case 'seq':
-      return <span style={{ color: '#555', fontSize: 11, margin: '0 1px' }}>▶</span>;
+      return <CmdImg src="/icons/seq.png" size={16} />;
 
     case 'txt':
       if (/[\s]/.test(tok.ch)) return null;

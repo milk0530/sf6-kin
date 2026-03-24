@@ -11,7 +11,28 @@
       "Bash(node scripts/seed-kimberly.mjs)",
       "Bash(node -e \":*)",
       "Bash(node scripts/seed-kimberly.mjs --delete)",
-      "Bash(node -e \"const https = require\\(''https''\\); const KEY = ''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvcW9oc2N1dnFtc2NteHlyZ29hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyNDAwMzksImV4cCI6MjA4OTgxNjAzOX0.GKc6Od5FYxZh-BYz5kYiqXIw48INQXPqEDT3WBY2jQU''; const del = \\(p\\) => new Promise\\(r => { const req = https.request\\({ hostname: ''hoqohscuvqmscmxyrgoa.supabase.co'', path: ''/rest/v1/'' + p + ''?char_id=eq.kimberly'', method: ''DELETE'', headers: { apikey: KEY, Authorization: ''Bearer '' + KEY } }, res => r\\(res.statusCode\\)\\); req.end\\(\\); }\\); Promise.all\\([del\\(''combos''\\), del\\(''setplays''\\)]\\).then\\(\\([c,s]\\) => { console.log\\(''combos:'', c, ''setplays:'', s\\); process.exit\\(0\\); }\\);\")"
+      "Bash(node -e \"const https = require\\(''https''\\); const KEY = ''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvcW9oc2N1dnFtc2NteHlyZ29hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyNDAwMzksImV4cCI6MjA4OTgxNjAzOX0.GKc6Od5FYxZh-BYz5kYiqXIw48INQXPqEDT3WBY2jQU''; const del = \\(p\\) => new Promise\\(r => { const req = https.request\\({ hostname: ''hoqohscuvqmscmxyrgoa.supabase.co'', path: ''/rest/v1/'' + p + ''?char_id=eq.kimberly'', method: ''DELETE'', headers: { apikey: KEY, Authorization: ''Bearer '' + KEY } }, res => r\\(res.statusCode\\)\\); req.end\\(\\); }\\); Promise.all\\([del\\(''combos''\\), del\\(''setplays''\\)]\\).then\\(\\([c,s]\\) => { console.log\\(''combos:'', c, ''setplays:'', s\\); process.exit\\(0\\); }\\);\")",
+      "Bash(powershell -Command \":*)",
+      "Bash(mv r0_i2.png btn-lp.png)",
+      "Bash(mv r0_i0.png btn-mp.png)",
+      "Bash(mv r0_i1.png btn-hp.png)",
+      "Bash(mv r0_i5.png btn-lk.png)",
+      "Bash(mv r0_i3.png btn-mk.png)",
+      "Bash(mv r0_i6.png circle-mid.png)",
+      "Bash(mv r0_i7.png circle-strong.png)",
+      "Bash(mv r0_i8.png circle-weak.png)",
+      "Bash(mv r0_i9.png circle-any.png)",
+      "Bash(cp \"C:/Users/81903/Desktop/SF6icon/icon_punch_l.png\" \"C:/Users/81903/Documents/sf6-dood/public/icons/btn-lp.png\")",
+      "Bash(cp \"C:/Users/81903/Desktop/SF6icon/icon_punch_m.png\" \"C:/Users/81903/Documents/sf6-dood/public/icons/btn-mp.png\")",
+      "Bash(cp \"C:/Users/81903/Desktop/SF6icon/icon_punch_h.png\" \"C:/Users/81903/Documents/sf6-dood/public/icons/btn-hp.png\")",
+      "Bash(cp \"C:/Users/81903/Desktop/SF6icon/icon_kick_l.png\" \"C:/Users/81903/Documents/sf6-dood/public/icons/btn-lk.png\")",
+      "Bash(cp \"C:/Users/81903/Desktop/SF6icon/icon_kick_m.png\" \"C:/Users/81903/Documents/sf6-dood/public/icons/btn-mk.png\")",
+      "Bash(cp \"C:/Users/81903/Desktop/SF6icon/key-dl.png\" \"C:/Users/81903/Documents/sf6-dood/public/icons/dir-1.png\")",
+      "Bash(cp \"C:/Users/81903/Desktop/SF6icon/key-all.png\" \"C:/Users/81903/Documents/sf6-dood/public/icons/circle-any.png\")",
+      "Bash(cp \"C:/Users/81903/Desktop/SF6icon/key-circle.png\" \"C:/Users/81903/Documents/sf6-dood/public/icons/motion-360.png\")",
+      "Bash(python -c \":*)",
+      "Bash(python -c \"import sys; sys.stdout.buffer.write\\(sys.stdin.buffer.read\\(\\)\\)\")",
+      "Bash(python scripts/convert_frames.py)"
     ]
   }
 }

@@ -51,7 +51,7 @@ export default function FramePage({ data, char, defaultMode = "classic" }) {
       if (filterBlock === "-" && !s.startsWith("-")) return false;
     }
     if (filterAttr && !(m.attribute ?? "").includes(filterAttr)) return false;
-    if (filterCancel && m.cancel !== "○") return false;
+    if (filterCancel && !m.cancel) return false;
     return true;
   }), [allMoves, search, filterBlock, filterAttr, filterCancel]);
 
@@ -228,7 +228,7 @@ export default function FramePage({ data, char, defaultMode = "classic" }) {
                         <td style={{ padding: "9px 12px", color: "var(--text-4)", whiteSpace: "nowrap" }}>{m.recovery ?? "-"}</td>
                         <td style={{ padding: "9px 12px", color: advantageColor(m.onHit),   fontWeight: 700, whiteSpace: "nowrap" }}>{m.onHit}</td>
                         <td style={{ padding: "9px 12px", color: advantageColor(m.onBlock), fontWeight: 700, whiteSpace: "nowrap" }}>{m.onBlock}</td>
-                        <td style={{ padding: "9px 12px", color: m.cancel === "○" ? "#27ae60" : "var(--text-5)", textAlign: "center", whiteSpace: "nowrap" }}>{m.cancel ?? "-"}</td>
+                        <td style={{ padding: "9px 12px", color: m.cancel ? "#27ae60" : "var(--text-5)", textAlign: "center", whiteSpace: "nowrap" }}>{m.cancel ?? "-"}</td>
                         <td style={{ padding: "9px 12px", color: "var(--text-3)", whiteSpace: "nowrap" }}>{m.damage ?? "-"}</td>
                         <td style={{ padding: "9px 12px", whiteSpace: "nowrap" }}>
                           {m.attribute && m.attribute !== "-"
