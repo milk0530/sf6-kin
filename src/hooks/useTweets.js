@@ -28,5 +28,10 @@ export function useTweets(charId) {
     await fetch();
   };
 
-  return { tweets, loading, add, remove };
+  const update = async (id, row) => {
+    await supabase.from("char_tweets").update(row).eq("id", id);
+    await fetch();
+  };
+
+  return { tweets, loading, add, remove, update };
 }
