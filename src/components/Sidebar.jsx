@@ -35,8 +35,18 @@ function CharButton({ c, active, isFav, onSelect, onToggleFav }) {
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 11, fontWeight: 900, color: c.color,
           transition: "border-color 0.15s",
+          overflow: "hidden",
         }}>
-          {c.name[0]}
+          <img
+            src={`/chara/${c.id}.png`}
+            width={26} height={26}
+            draggable={false}
+            style={{ objectFit: "cover", display: "block" }}
+            onError={e => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }}
+          />
+          <span style={{ display: "none", width: "100%", height: "100%", alignItems: "center", justifyContent: "center" }}>
+            {c.name[0]}
+          </span>
         </div>
         <div style={{ fontSize: 12, fontWeight: active ? 700 : 400, color: active ? "var(--text)" : "var(--text-3)", transition: "color 0.15s" }}>
           {c.name}

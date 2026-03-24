@@ -73,7 +73,19 @@ function CharSelectGrid({ onSelect, myColor }) {
             background: c.color + "22", border: `1px solid ${c.color}44`,
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: 18, fontWeight: 900, color: c.color,
-          }}>{c.name[0]}</div>
+            overflow: "hidden",
+          }}>
+            <img
+              src={`/chara/${c.tool}.png`}
+              width={44} height={44}
+              draggable={false}
+              style={{ objectFit: "cover", display: "block" }}
+              onError={e => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }}
+            />
+            <span style={{ display: "none", width: "100%", height: "100%", alignItems: "center", justifyContent: "center" }}>
+              {c.name[0]}
+            </span>
+          </div>
           <div style={{ fontSize: 11, color: "var(--text-2)", lineHeight: 1.3, textAlign: "center" }}>
             {c.name}
           </div>
@@ -108,7 +120,19 @@ function MatchupDetail({ myCharId, opp, myColor, onBack }) {
             background: opp.color + "22", border: `1px solid ${opp.color}55`,
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: 16, fontWeight: 900, color: opp.color,
-          }}>{opp.name[0]}</div>
+            overflow: "hidden",
+          }}>
+            <img
+              src={`/chara/${opp.tool}.png`}
+              width={36} height={36}
+              draggable={false}
+              style={{ objectFit: "cover", display: "block" }}
+              onError={e => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }}
+            />
+            <span style={{ display: "none", width: "100%", height: "100%", alignItems: "center", justifyContent: "center" }}>
+              {opp.name[0]}
+            </span>
+          </div>
           <div>
             <div style={{ fontSize: 16, fontWeight: 700, color: "var(--text)" }}>{opp.name}</div>
             <div style={{ fontSize: 10, color: "var(--text-6)", letterSpacing: 2 }}>vs {opp.tool.toUpperCase()}</div>

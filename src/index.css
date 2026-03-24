@@ -17,6 +17,7 @@ body {
 
 /* ── テーマ変数 ────────────────────────────── */
 :root {
+  --cmd-icon-filter: none;
   --bg:          #0e0e16;
   --bg-surface:  #13131f;
   --bg-active:   #161626;
@@ -37,6 +38,7 @@ body {
 }
 
 [data-theme="light"] {
+  --cmd-icon-filter: invert(1);
   --bg:          #f2f2f8;
   --bg-surface:  #ffffff;
   --bg-active:   #e8e8f4;

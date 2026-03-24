@@ -13,8 +13,18 @@ export default function CharHeader({ char, activeTab, onTabChange, isFav, onTogg
           background: char.color + "22", border: `2px solid ${char.color}55`,
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 24, fontWeight: 900, color: char.color,
+          overflow: "hidden",
         }}>
-          {char.name[0]}
+          <img
+            src={`/chara/${char.id}.png`}
+            width={58} height={58}
+            draggable={false}
+            style={{ objectFit: "cover", display: "block" }}
+            onError={e => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }}
+          />
+          <span style={{ display: "none", width: "100%", height: "100%", alignItems: "center", justifyContent: "center" }}>
+            {char.name[0]}
+          </span>
         </div>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

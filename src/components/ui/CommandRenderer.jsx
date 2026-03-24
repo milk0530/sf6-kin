@@ -117,13 +117,13 @@ const IMG_STYLE = {
   flexShrink: 0,
 };
 
-function CmdImg({ src, size = 22 }) {
+function CmdImg({ src, size = 22, mono = false }) {
   return (
     <img
       src={src}
       width={size}
       height={size}
-      style={IMG_STYLE}
+      style={{ ...IMG_STYLE, filter: mono ? 'var(--cmd-icon-filter)' : undefined }}
       draggable={false}
     />
   );
@@ -181,7 +181,7 @@ function Token({ tok }) {
       );
 
     case 'neutral':
-      return <CmdImg src="/icons/key-nutral.png" size={22} />;
+      return <CmdImg src="/icons/key-nutral.png" size={22} mono />;
 
     case 'di':
       return <BadgeImg src="/icons/badge-di.png" h={18} />;
@@ -193,7 +193,7 @@ function Token({ tok }) {
     case 'numpad': {
       const arrow = tok.type === 'numpad' ? (NUMPAD[tok.d] ?? tok.d) : tok.d;
       const src = DIR_ICON[arrow];
-      if (src) return <CmdImg src={src} size={20} />;
+      if (src) return <CmdImg src={src} size={20} mono />;
       // '5' (ニュートラル) など矢印のないケース
       return (
         <span style={{ color: '#ccc', fontSize: 14, lineHeight: 1, fontFamily: 'monospace' }}>
@@ -219,7 +219,7 @@ function Token({ tok }) {
     }
 
     case 'anybtn':
-      return <CmdImg src="/icons/key-all.png" size={20} />;
+      return <CmdImg src="/icons/key-all.png" size={20} mono />;
 
     case 'throw':
       return (
@@ -231,10 +231,10 @@ function Token({ tok }) {
       );
 
     case 'plus':
-      return <CmdImg src="/icons/key-plus.png" size={16} />;
+      return <CmdImg src="/icons/key-plus.png" size={16} mono />;
 
     case 'seq':
-      return <CmdImg src="/icons/seq.png" size={16} />;
+      return <CmdImg src="/icons/seq.png" size={16} mono />;
 
     case 'txt':
       if (/[\s]/.test(tok.ch)) return null;

@@ -29,7 +29,7 @@ const PAGE_COMPONENTS = {
 };
 
 export default function App() {
-  const [activeChar,  setActiveChar]  = useState("kimberly");
+  const [activeChar,  setActiveChar]  = useState(() => localStorage.getItem("sf6_last_char") ?? "kimberly");
   const [activeTab,   setActiveTab]   = useState("top");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showStats,   setShowStats]   = useState(false);
@@ -50,6 +50,7 @@ export default function App() {
 
   const handleCharChange = id => {
     setActiveChar(id);
+    localStorage.setItem("sf6_last_char", id);
     setActiveTab("top");
     setShowStats(false);
     setShowHelp(false);

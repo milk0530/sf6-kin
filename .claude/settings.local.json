@@ -34,7 +34,12 @@
       "Bash(python -c \"import sys; sys.stdout.buffer.write\\(sys.stdin.buffer.read\\(\\)\\)\")",
       "Bash(python scripts/convert_frames.py)",
       "Bash(grep -l \"wip: true\" /c/Users/81903/Documents/sf6-dood/src/data/charData/*.js)",
-      "Bash(grep -h \"wip:\" /c/Users/81903/Documents/sf6-dood/src/data/charData/*.js)"
+      "Bash(grep -h \"wip:\" /c/Users/81903/Documents/sf6-dood/src/data/charData/*.js)",
+      "Bash(cp /c/Users/81903/Desktop/SF6chara/character_aki_l.png /c/Users/81903/Documents/sf6-dood/public/chara/aki.png)",
+      "Bash(cp /c/Users/81903/Desktop/SF6chara/character_alex_l.png /c/Users/81903/Documents/sf6-dood/public/chara/alex.png)",
+      "Bash(cp /c/Users/81903/Desktop/SF6chara/character_blanka_l.png /c/Users/81903/Documents/sf6-dood/public/chara/blanka.png)",
+      "Bash(cp /c/Users/81903/Desktop/SF6chara/character_cammy_l.png /c/Users/81903/Documents/sf6-dood/public/chara/cammy.png)",
+      "Bash(cp /c/Users/81903/Desktop/SF6chara/character_chunli_l.png /c/Users/81903/Documents/sf6-dood/public/chara/chunli.png)"
     ]
   }
 }
