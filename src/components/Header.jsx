@@ -1,4 +1,4 @@
-export default function Header({ char, sidebarOpen, onToggleSidebar, darkMode, onToggleTheme }) {
+export default function Header({ char, sidebarOpen, onToggleSidebar, darkMode, onToggleTheme, showHelp, onToggleHelp, defaultMode, onToggleDefaultMode }) {
   return (
     <header style={{
       background: "var(--bg-surface)",
@@ -41,6 +41,47 @@ export default function Header({ char, sidebarOpen, onToggleSidebar, darkMode, o
       <span style={{ fontSize: 11, color: "var(--text-dim)", whiteSpace: "nowrap", marginLeft: "auto" }}>
         by ミルク
       </span>
+
+      <button
+        onClick={onToggleDefaultMode}
+        title={`デフォルト入力タイプ: ${defaultMode === "classic" ? "クラシック" : "モダン"}（クリックで切替）`}
+        style={{
+          background: "transparent",
+          border: "1px solid var(--border)",
+          borderRadius: 6,
+          height: 32,
+          padding: "0 10px",
+          display: "flex", alignItems: "center", gap: 5,
+          cursor: "pointer",
+          fontSize: 11, fontWeight: 700,
+          color: defaultMode === "classic" ? char.color : "#a78bfa",
+          transition: "all 0.15s",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-hover)"; }}
+        onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+      >
+        <span style={{ fontSize: 13 }}>{defaultMode === "classic" ? "🕹️" : "⚡"}</span>
+        {defaultMode === "classic" ? "C" : "M"}
+      </button>
+
+      <button
+        onClick={onToggleHelp}
+        title="使い方"
+        style={{
+          background: showHelp ? "var(--bg-hover)" : "transparent",
+          border: `1px solid ${showHelp ? "var(--border)" : "var(--border)"}`,
+          borderRadius: 6,
+          width: 32, height: 32,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          cursor: "pointer", color: showHelp ? "var(--text)" : "var(--text-4)",
+          fontSize: 13, fontWeight: 700,
+          transition: "all 0.15s",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-hover)"; }}
+        onMouseLeave={e => { e.currentTarget.style.background = showHelp ? "var(--bg-hover)" : "transparent"; }}
+      >
+        ?
+      </button>
 
       <button
         onClick={onToggleTheme}

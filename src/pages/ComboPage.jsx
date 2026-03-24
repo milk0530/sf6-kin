@@ -5,8 +5,8 @@ import ComboPostForm from "../components/community/ComboPostForm";
 import { useCombos } from "../hooks/useCombos";
 import { useIsMobile } from "../hooks/useIsMobile";
 
-export default function ComboPage({ data, char }) {
-  const [mode, setMode] = useState("classic");
+export default function ComboPage({ data, char, defaultMode = "classic" }) {
+  const [mode, setMode] = useState(defaultMode);
   const [showForm, setShowForm] = useState(false);
   const [search, setSearch] = useState("");
   const [activeStarter, setActiveStarter] = useState(null);

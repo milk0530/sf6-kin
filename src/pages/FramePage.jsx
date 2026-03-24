@@ -24,8 +24,8 @@ function Chip({ label, active, color = "#ff6b2b", onClick }) {
   );
 }
 
-export default function FramePage({ data, char }) {
-  const [mode, setMode] = useState("classic");
+export default function FramePage({ data, char, defaultMode = "classic" }) {
+  const [mode, setMode] = useState(defaultMode);
   const [search, setSearch] = useState("");
   const [filterBlock, setFilterBlock] = useState(null); // "+" | "0" | "-"
   const [filterAttr, setFilterAttr] = useState(null);   // "上" | "中" | "下"

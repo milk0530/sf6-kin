@@ -5,8 +5,8 @@ import SetplayPostForm from "../components/community/SetplayPostForm";
 import { useSetplays } from "../hooks/useSetplays";
 import { useIsMobile } from "../hooks/useIsMobile";
 
-export default function SetplayPage({ data, char }) {
-  const [mode, setMode] = useState("classic");
+export default function SetplayPage({ data, char, defaultMode = "classic" }) {
+  const [mode, setMode] = useState(defaultMode);
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState(null);
   const color = char?.color ?? "#ff6b2b";

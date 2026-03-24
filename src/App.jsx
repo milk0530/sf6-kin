@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useFavorites } from "./hooks/useFavorites";
+import { useFavorites }    from "./hooks/useFavorites";
+import { useDefaultMode }  from "./hooks/useDefaultMode";
 import { CHARACTERS, CHAR_DATA, TABS } from "./data";
 
 import Header     from "./components/Header";
@@ -14,6 +15,7 @@ import FramePage   from "./pages/FramePage";
 import MatchupPage from "./pages/MatchupPage";
 import WipPage     from "./pages/WipPage";
 import StatsPage   from "./pages/StatsPage";
+import HelpPage    from "./pages/HelpPage";
 
 const PAGE_COMPONENTS = {
   top:     TopPage,
@@ -29,10 +31,12 @@ export default function App() {
   const [activeTab,   setActiveTab]   = useState("top");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showStats,   setShowStats]   = useState(false);
+  const [showHelp,    setShowHelp]    = useState(false);
   const [darkMode,    setDarkMode]    = useState(() => {
     return localStorage.getItem("sf6_theme") !== "light";
   });
   const { favorites, toggle: toggleFav } = useFavorites();
+  const { defaultMode, toggle: toggleDefaultMode } = useDefaultMode();
 
   useEffect(() => {
     document.documentElement.dataset.theme = darkMode ? "" : "light";
@@ -46,6 +50,7 @@ export default function App() {
     setActiveChar(id);
     setActiveTab("top");
     setShowStats(false);
+    setShowHelp(false);
   };
 
   const pageTitle = () => {
@@ -74,6 +79,10 @@ export default function App() {
         onToggleSidebar={() => setSidebarOpen(v => !v)}
         darkMode={darkMode}
         onToggleTheme={() => setDarkMode(v => !v)}
+        showHelp={showHelp}
+        onToggleHelp={() => { setShowHelp(v => !v); setShowStats(false); }}
+        defaultMode={defaultMode}
+        onToggleDefaultMode={toggleDefaultMode}
       />
 
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
@@ -82,13 +91,17 @@ export default function App() {
           activeChar={activeChar}
           onCharChange={handleCharChange}
           showStats={showStats}
-          onShowStats={() => setShowStats(v => !v)}
+          onShowStats={() => { setShowStats(v => !v); setShowHelp(false); }}
           favorites={favorites}
           onToggleFav={toggleFav}
         />
 
         <main style={{ flex: 1, minWidth: 0, overflowY: "auto", padding: "24px 28px" }}>
-          {showStats ? (
+          {showHelp ? (
+            <div className="page-fade" key="help">
+              <HelpPage />
+            </div>
+          ) : showStats ? (
             <div className="page-fade" key="stats">
               <StatsPage />
             </div>
@@ -97,7 +110,7 @@ export default function App() {
               <CharHeader
                 char={char}
                 activeTab={activeTab}
-                onTabChange={setActiveTab}
+                onTabChange={tab => { setActiveTab(tab); setShowHelp(false); }}
                 isFav={favorites.includes(activeChar)}
                 onToggleFav={() => toggleFav(activeChar)}
               />
@@ -114,7 +127,7 @@ export default function App() {
               <div className="page-fade" key={`${activeChar}-${activeTab}`}>
                 {isWip
                   ? <WipPage char={char} />
-                  : PageComponent && <PageComponent data={data} char={char} />
+                  : PageComponent && <PageComponent data={data} char={char} defaultMode={defaultMode} />
                 }
               </div>
             </>
