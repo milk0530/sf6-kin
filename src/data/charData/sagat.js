@@ -1,13 +1,11 @@
-const blanka = {
+const sagat = {
   wip: false,
   overview: "",
-  hp: 10500,
+  hp: 11000,
   stats: [],
   strengths: [],
   weaknesses: [],
   modernUnavailable: [],
-  modernOnly: [],
-  modernNotes: "",
   classicAdvantage: "",
   modernAdvantage: "",
   matchups: [],
@@ -15,4 +13,4 @@ const blanka = {
   modern:  { playstyle: "", moves: [], combos: [], setplays: [] },
 };
 
-export default blanka;
+export default sagat;

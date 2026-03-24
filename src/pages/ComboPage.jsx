@@ -88,8 +88,8 @@ export default function ComboPage({ data, char }) {
               placeholder="レシピ・タグで検索..."
               style={{
                 width: "100%", boxSizing: "border-box",
-                background: "#13131f", border: "1px solid #2a2a3e", borderRadius: 8,
-                color: "#e8e8f0", fontSize: 12, padding: "9px 14px",
+                background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 8,
+                color: "var(--text)", fontSize: 12, padding: "9px 14px",
                 outline: "none", marginBottom: 10,
               }}
             />
@@ -101,14 +101,14 @@ export default function ComboPage({ data, char }) {
                     onClick={() => setActiveStarter(prev => prev === g ? null : g)}
                     style={{
                       padding: "5px 12px", borderRadius: 20, fontSize: 12, cursor: "pointer",
-                      border: activeStarter === g ? `1px solid ${color}` : "1px solid #2a2a3e",
-                      background: activeStarter === g ? color + "22" : "#13131f",
-                      color: activeStarter === g ? color : "#666",
+                      border: activeStarter === g ? `1px solid ${color}` : "1px solid var(--border)",
+                      background: activeStarter === g ? color + "22" : "var(--bg-surface)",
+                      color: activeStarter === g ? color : "var(--text-3)",
                       fontWeight: 700, transition: "all 0.12s",
                     }}
                   >
                     {g}
-                    <span style={{ marginLeft: 6, fontSize: 11, color: activeStarter === g ? color : "#444" }}>
+                    <span style={{ marginLeft: 6, fontSize: 11, color: activeStarter === g ? color : "var(--text-5)" }}>
                       ({groupMap[g].length})
                     </span>
                   </button>
@@ -119,11 +119,11 @@ export default function ComboPage({ data, char }) {
         )}
 
         {loading ? (
-          <div style={{ color: "#333", fontSize: 12, padding: "24px 0", textAlign: "center" }}>読み込み中…</div>
+          <div style={{ color: "var(--text-6)", fontSize: 12, padding: "24px 0", textAlign: "center" }}>読み込み中…</div>
         ) : combos.length === 0 ? (
-          <div style={{ color: "#2a2a3e", fontSize: 12, padding: "24px 0", textAlign: "center" }}>まだ投稿がありません</div>
+          <div style={{ color: "var(--text-dim)", fontSize: 12, padding: "24px 0", textAlign: "center" }}>まだ投稿がありません</div>
         ) : filtered.length === 0 ? (
-          <div style={{ color: "#444", fontSize: 12, padding: "24px 0", textAlign: "center" }}>一致するコンボがありません</div>
+          <div style={{ color: "var(--text-5)", fontSize: 12, padding: "24px 0", textAlign: "center" }}>一致するコンボがありません</div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             {visibleGroups.map(group => (
@@ -132,19 +132,19 @@ export default function ComboPage({ data, char }) {
                   onClick={() => setCollapsed(p => ({ ...p, [group]: !p[group] }))}
                   style={{
                     width: "100%", display: "flex", alignItems: "center", gap: 10,
-                    marginBottom: 8, background: "#13131f", border: "none",
+                    marginBottom: 8, background: "var(--bg-surface)", border: "none",
                     borderBottom: `2px solid ${color}33`, cursor: "pointer",
                     padding: "6px 10px", borderRadius: 6,
                   }}
                 >
-                  <span style={{ fontSize: 13, fontWeight: 700, color: "#e8e8f0" }}>{group}</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text)" }}>{group}</span>
                   <span style={{
-                    fontSize: 10, color: "#555", background: "#1a1a2e",
-                    border: "1px solid #2a2a3e", borderRadius: 4, padding: "1px 6px",
+                    fontSize: 10, color: "var(--text-4)", background: "var(--bg-elevated)",
+                    border: "1px solid var(--border)", borderRadius: 4, padding: "1px 6px",
                   }}>{groupMap[group].length}件</span>
                   <span style={{ flex: 1 }} />
                   <span style={{
-                    color: "#444", fontSize: 11,
+                    color: "var(--text-5)", fontSize: 11,
                     transform: collapsed[group] ? "rotate(-90deg)" : "rotate(0deg)",
                     transition: "transform 0.15s", display: "inline-block",
                   }}>∨</span>
@@ -174,7 +174,7 @@ export default function ComboPage({ data, char }) {
       {/* 右: メディアパネル（PC only） */}
       {!isMobile && <div style={{
         width: 260, flexShrink: 0, position: "sticky", top: 0,
-        background: "#13131f", border: "1px solid #2a2a3e", borderRadius: 12,
+        background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 12,
         overflow: "hidden",
       }}>
         {selected?.media_url ? (
@@ -194,7 +194,7 @@ export default function ComboPage({ data, char }) {
               />
             )}
             {selected.title && (
-              <div style={{ padding: "10px 12px", fontSize: 12, color: "#888" }}>
+              <div style={{ padding: "10px 12px", fontSize: 12, color: "var(--text-2)" }}>
                 {selected.title}
               </div>
             )}
@@ -204,8 +204,8 @@ export default function ComboPage({ data, char }) {
             height: 180, display: "flex", flexDirection: "column",
             alignItems: "center", justifyContent: "center", gap: 8,
           }}>
-            <span style={{ fontSize: 24, color: "#2a2a3e" }}>▷</span>
-            <span style={{ fontSize: 11, color: "#2a2a3e", textAlign: "center", lineHeight: 1.6 }}>
+            <span style={{ fontSize: 24, color: "var(--border)" }}>▷</span>
+            <span style={{ fontSize: 11, color: "var(--text-dim)", textAlign: "center", lineHeight: 1.6 }}>
               コンボをクリックすると<br />動画が再生されます
             </span>
           </div>

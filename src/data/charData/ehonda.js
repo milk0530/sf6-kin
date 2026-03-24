@@ -1,4 +1,4 @@
-const blanka = {
+const ehonda = {
   wip: false,
   overview: "",
   hp: 10500,
@@ -6,8 +6,6 @@ const blanka = {
   strengths: [],
   weaknesses: [],
   modernUnavailable: [],
-  modernOnly: [],
-  modernNotes: "",
   classicAdvantage: "",
   modernAdvantage: "",
   matchups: [],
@@ -15,4 +13,4 @@ const blanka = {
   modern:  { playstyle: "", moves: [], combos: [], setplays: [] },
 };
 
-export default blanka;
+export default ehonda;

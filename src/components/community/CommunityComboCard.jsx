@@ -29,8 +29,8 @@ export default function CommunityComboCard({ combo, index, color, onDelete, onUp
       <div
         onClick={() => onSelect(combo)}
         style={{
-          background: selected ? "#1a1a2e" : "#0e0e16",
-          border: `1px solid ${selected ? color + "55" : "#1e1e30"}`,
+          background: selected ? "var(--bg-elevated)" : "var(--bg)",
+          border: `1px solid ${selected ? color + "55" : "var(--border-sub)"}`,
           borderRadius: 10, padding: "12px 14px",
           display: "flex", gap: 12, cursor: "pointer",
           transition: "all 0.12s",
@@ -47,18 +47,18 @@ export default function CommunityComboCard({ combo, index, color, onDelete, onUp
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: 11, color, fontWeight: 700,
           }}>{index}</div>
-          <span style={{ fontSize: 11, color: hasMedia ? color + "88" : "#2a2a3e" }}>🎬</span>
+          <span style={{ fontSize: 11, color: hasMedia ? color + "88" : "var(--border)" }}>🎬</span>
         </div>
 
         {/* 中央: コンテンツ */}
         <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 8 }}>
           {combo.title && (
-            <span style={{ fontSize: 12, fontWeight: 700, color: "#e8e8f0" }}>{combo.title}</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text)" }}>{combo.title}</span>
           )}
 
           {/* コマンド */}
           <div style={{
-            background: "#13131f", border: "1px solid #1e1e30", borderRadius: 6,
+            background: "var(--bg-surface)", border: "1px solid var(--border-sub)", borderRadius: 6,
             padding: "8px 12px",
           }}>
             <CommandRenderer command={combo.route} />
@@ -67,13 +67,13 @@ export default function CommunityComboCard({ combo, index, color, onDelete, onUp
           {/* バッジ行 */}
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
             {combo.damage && (
-              <span style={{ fontSize: 12, color: "#888" }}>
+              <span style={{ fontSize: 12, color: "var(--text-2)" }}>
                 DMG <span style={{ color: "#22d3ee", fontWeight: 700 }}>{combo.damage}</span>
               </span>
             )}
             {combo.down && (
-              <span style={{ fontSize: 12, color: "#888" }}>
-                DOWN <span style={{ color: "#e8e8f0", fontWeight: 700 }}>{combo.down}</span>
+              <span style={{ fontSize: 12, color: "var(--text-2)" }}>
+                DOWN <span style={{ color: "var(--text)", fontWeight: 700 }}>{combo.down}</span>
               </span>
             )}
             {combo.drive && (
@@ -97,24 +97,24 @@ export default function CommunityComboCard({ combo, index, color, onDelete, onUp
             {combo.tags && combo.tags.split(",").map(t => t.trim()).filter(Boolean).map(t => (
               <span key={t} style={{
                 fontSize: 10, padding: "2px 7px", borderRadius: 3,
-                background: "#1a1a2e", border: "1px solid #2a2a3e", color: "#555",
+                background: "var(--bg-elevated)", border: "1px solid var(--border)", color: "var(--text-4)",
               }}>{t}</span>
             ))}
           </div>
 
           {combo.note && (
-            <p style={{ fontSize: 12, color: "#555", margin: 0, lineHeight: 1.6 }}>{combo.note}</p>
+            <p style={{ fontSize: 12, color: "var(--text-4)", margin: 0, lineHeight: 1.6 }}>{combo.note}</p>
           )}
 
           {/* 編集・削除 */}
           <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }} onClick={e => e.stopPropagation()}>
             <button
               onClick={() => setEditing(true)}
-              style={{ background: "none", border: "none", color: "#444", cursor: "pointer", fontSize: 11, padding: "0 2px" }}
+              style={{ background: "none", border: "none", color: "var(--text-5)", cursor: "pointer", fontSize: 11, padding: "0 2px" }}
             >編集</button>
             <button
               onClick={() => { if (window.confirm("このコンボを削除しますか？")) onDelete(combo.id); }}
-              style={{ background: "none", border: "none", color: "#2a2a3e", cursor: "pointer", fontSize: 12, padding: "0 2px" }}
+              style={{ background: "none", border: "none", color: "var(--border)", cursor: "pointer", fontSize: 12, padding: "0 2px" }}
             >✕</button>
           </div>
         </div>
@@ -131,10 +131,10 @@ export default function CommunityComboCard({ combo, index, color, onDelete, onUp
         >
           <div style={{
             width: 28, height: 28, borderRadius: 6,
-            background: hasMedia ? color + "22" : "#1a1a2e",
-            border: `1px solid ${hasMedia ? color : "#2a2a3e"}`,
+            background: hasMedia ? color + "22" : "var(--bg-elevated)",
+            border: `1px solid ${hasMedia ? color : "var(--border)"}`,
             display: "flex", alignItems: "center", justifyContent: "center",
-            color: hasMedia ? color : "#444", fontSize: 12,
+            color: hasMedia ? color : "var(--text-5)", fontSize: 12,
             cursor: hasMedia ? "pointer" : "default",
           }}>▶</div>
         </div>

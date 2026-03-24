@@ -15,14 +15,14 @@ export default function CommentSection({ color }) {
 
   return (
     <div style={{ marginTop: 32 }}>
-      <h2 style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 12, letterSpacing: 1 }}>
+      <h2 style={{ fontSize: 13, fontWeight: 700, color: "var(--text-white)", marginBottom: 12, letterSpacing: 1 }}>
         コメント ({list.length})
       </h2>
 
       {/* コメント一覧 */}
       <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
         {list.map((c, i) => (
-          <div key={i} style={{ background: "#13131f", border: "1px solid #2a2a3e", borderRadius: 8, padding: "10px 14px" }}>
+          <div key={i} style={{ background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 8, padding: "10px 14px" }}>
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 5 }}>
               <div style={{
                 width: 24, height: 24, borderRadius: "50%", flexShrink: 0,
@@ -32,23 +32,23 @@ export default function CommentSection({ color }) {
               }}>
                 {c.user[0]}
               </div>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#bbb" }}>{c.user}</span>
-              <span style={{ fontSize: 11, color: "#333", marginLeft: "auto" }}>{c.time}</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text-sub)" }}>{c.user}</span>
+              <span style={{ fontSize: 11, color: "var(--text-6)", marginLeft: "auto" }}>{c.time}</span>
             </div>
-            <p style={{ fontSize: 12, color: "#666", lineHeight: 1.6 }}>{c.text}</p>
+            <p style={{ fontSize: 12, color: "var(--text-3)", lineHeight: 1.6 }}>{c.text}</p>
           </div>
         ))}
       </div>
 
       {/* 投稿フォーム */}
-      <div style={{ background: "#13131f", border: "1px solid #2a2a3e", borderRadius: 8, padding: 12 }}>
+      <div style={{ background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 8, padding: 12 }}>
         <textarea
           value={input}
           onChange={e => setInput(e.target.value)}
           placeholder="コメントを入力..."
           style={{
-            width: "100%", background: "#0e0e16", border: "1px solid #2a2a3e",
-            borderRadius: 6, padding: "8px 12px", color: "#e8e8f0",
+            width: "100%", background: "var(--bg)", border: "1px solid var(--border)",
+            borderRadius: 6, padding: "8px 12px", color: "var(--text)",
             fontSize: 12, resize: "vertical", minHeight: 64,
             fontFamily: "inherit", outline: "none",
           }}

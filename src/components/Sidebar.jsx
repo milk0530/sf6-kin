@@ -1,12 +1,81 @@
+import { useState } from "react";
 import { CHARACTERS } from "../data";
 
-export default function Sidebar({ open, activeChar, onCharChange, showStats, onShowStats }) {
+function CharButton({ c, active, isFav, onSelect, onToggleFav }) {
+  const [hover, setHover] = useState(false);
+  const [starHover, setStarHover] = useState(false);
+
+  return (
+    <div
+      style={{ position: "relative" }}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => { setHover(false); setStarHover(false); }}
+    >
+      <button
+        onClick={() => onSelect(c.id)}
+        style={{
+          width: "100%",
+          background: active ? "var(--bg-active)" : hover ? "var(--bg-hover)" : "transparent",
+          border: "none",
+          borderLeft: `3px solid ${active ? c.color : "transparent"}`,
+          padding: "7px 12px",
+          paddingRight: hover || isFav ? 36 : 12,
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          transition: "all 0.15s",
+          fontFamily: "inherit",
+        }}
+      >
+        <div style={{
+          width: 26, height: 26, borderRadius: 6, flexShrink: 0,
+          background: c.color + "22",
+          border: `1px solid ${active ? c.color + "66" : c.color + "22"}`,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 11, fontWeight: 900, color: c.color,
+          transition: "border-color 0.15s",
+        }}>
+          {c.name[0]}
+        </div>
+        <div style={{ fontSize: 12, fontWeight: active ? 700 : 400, color: active ? "var(--text)" : "var(--text-3)", transition: "color 0.15s" }}>
+          {c.name}
+        </div>
+      </button>
+
+      {/* お気に入りボタン */}
+      {(hover || isFav) && (
+        <button
+          onClick={e => { e.stopPropagation(); onToggleFav(c.id); }}
+          onMouseEnter={() => setStarHover(true)}
+          onMouseLeave={() => setStarHover(false)}
+          title={isFav ? "お気に入り解除" : "お気に入りに追加"}
+          style={{
+            position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)",
+            background: "none", border: "none", cursor: "pointer",
+            fontSize: 13, lineHeight: 1,
+            color: isFav ? "#f1c40f" : starHover ? "#f1c40f88" : "var(--text-5)",
+            transition: "color 0.15s",
+            padding: 2,
+          }}
+        >
+          {isFav ? "★" : "☆"}
+        </button>
+      )}
+    </div>
+  );
+}
+
+export default function Sidebar({ open, activeChar, onCharChange, showStats, onShowStats, favorites = [], onToggleFav }) {
+  const favChars = CHARACTERS.filter(c => favorites.includes(c.id));
+  const allChars = CHARACTERS;
+
   return (
     <aside style={{
       width: open ? 196 : 0,
       opacity: open ? 1 : 0,
-      background: "#13131f",
-      borderRight: "1px solid #2a2a3e",
+      background: "var(--bg-surface)",
+      borderRight: "1px solid var(--border)",
       flexShrink: 0,
       overflowY: "auto",
       overflowX: "hidden",
@@ -21,7 +90,7 @@ export default function Sidebar({ open, activeChar, onCharChange, showStats, onS
             style={{
               width: "100%",
               background: showStats ? "#7c3aed22" : "transparent",
-              border: showStats ? "1px solid #7c3aed66" : "1px solid #2a2a3e",
+              border: showStats ? "1px solid #7c3aed66" : "1px solid var(--border)",
               borderRadius: 10,
               padding: "10px 12px",
               cursor: "pointer",
@@ -31,8 +100,8 @@ export default function Sidebar({ open, activeChar, onCharChange, showStats, onS
               transition: "all 0.15s",
               fontFamily: "inherit",
             }}
-            onMouseEnter={e => { if (!showStats) { e.currentTarget.style.background = "#111120"; e.currentTarget.style.borderColor = "#7c3aed44"; }}}
-            onMouseLeave={e => { if (!showStats) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "#2a2a3e"; }}}
+            onMouseEnter={e => { if (!showStats) { e.currentTarget.style.background = "var(--bg-hover)"; e.currentTarget.style.borderColor = "#7c3aed44"; }}}
+            onMouseLeave={e => { if (!showStats) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "var(--border)"; }}}
           >
             <div style={{
               width: 36, height: 36, borderRadius: 9, flexShrink: 0,
@@ -44,63 +113,50 @@ export default function Sidebar({ open, activeChar, onCharChange, showStats, onS
               📊
             </div>
             <div style={{ textAlign: "left" }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: showStats ? "#a78bfa" : "#777" }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: showStats ? "#a78bfa" : "var(--text-4)" }}>
                 戦績
               </div>
-              <div style={{ fontSize: 9, color: showStats ? "#7c3aed88" : "#333", letterSpacing: 1 }}>
+              <div style={{ fontSize: 9, color: showStats ? "#7c3aed88" : "var(--text-6)", letterSpacing: 1 }}>
                 BATTLE STATS
               </div>
             </div>
           </button>
         </div>
 
-        <div style={{ padding: "0 14px 10px", fontSize: 10, color: "#333", fontWeight: 700, letterSpacing: 2 }}>
+        {/* お気に入りセクション */}
+        {favChars.length > 0 && (
+          <>
+            <div style={{ padding: "0 14px 6px", fontSize: 10, color: "#f1c40f", fontWeight: 700, letterSpacing: 2 }}>
+              ★ FAVORITES
+            </div>
+            {favChars.map(c => (
+              <CharButton
+                key={c.id}
+                c={c}
+                active={activeChar === c.id}
+                isFav={true}
+                onSelect={onCharChange}
+                onToggleFav={onToggleFav}
+              />
+            ))}
+            <div style={{ margin: "10px 14px 8px", borderTop: "1px solid var(--border)" }} />
+          </>
+        )}
+
+        {/* 全キャラ */}
+        <div style={{ padding: "0 14px 8px", fontSize: 10, color: "var(--text-6)", fontWeight: 700, letterSpacing: 2 }}>
           CHARACTERS
         </div>
-
-        {CHARACTERS.map(c => {
-          const active = activeChar === c.id;
-          return (
-            <button
-              key={c.id}
-              onClick={() => onCharChange(c.id)}
-              style={{
-                width: "100%",
-                background: active ? "#161626" : "transparent",
-                border: "none",
-                borderLeft: `3px solid ${active ? c.color : "transparent"}`,
-                padding: "11px 14px",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                transition: "all 0.15s",
-                fontFamily: "inherit",
-              }}
-              onMouseEnter={e => { if (!active) e.currentTarget.style.background = "#111120"; }}
-              onMouseLeave={e => { if (!active) e.currentTarget.style.background = "transparent"; }}
-            >
-              <div style={{
-                width: 36, height: 36, borderRadius: 9, flexShrink: 0,
-                background: c.color + "22",
-                border: `1px solid ${active ? c.color + "66" : c.color + "22"}`,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 16, fontWeight: 900, color: c.color,
-                transition: "border-color 0.15s",
-              }}>
-                {c.name[0]}
-              </div>
-              <div style={{ textAlign: "left" }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: active ? "#fff" : "#777", transition: "color 0.15s" }}>
-                  {c.name}
-                </div>
-                <div style={{ fontSize: 9, color: active ? c.color + "88" : "#333", letterSpacing: 1.5 }}>
-                  {c.sub}
-                </div>
-              </div>
-            </button>
-          );
-        })}
+        {allChars.map(c => (
+          <CharButton
+            key={c.id}
+            c={c}
+            active={activeChar === c.id}
+            isFav={favorites.includes(c.id)}
+            onSelect={onCharChange}
+            onToggleFav={onToggleFav}
+          />
+        ))}
       </div>
     </aside>
   );

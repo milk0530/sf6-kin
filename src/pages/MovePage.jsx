@@ -18,7 +18,7 @@ export default function MovePage({ data, char }) {
             style={{
               display: "flex", alignItems: "center", gap: 6,
               padding: "5px 14px", borderRadius: 6, fontSize: 12, cursor: "pointer",
-              background: "transparent", border: "1px solid #2a2a3e", color: "#555",
+              background: "transparent", border: "1px solid var(--border)", color: "var(--text-4)",
             }}
           >
             <span style={{ fontSize: 11 }}>✏</span> 編集する
@@ -38,7 +38,7 @@ export default function MovePage({ data, char }) {
 
       {/* 記事表示 */}
       {loading ? (
-        <div style={{ color: "#333", fontSize: 12, padding: "48px 0", textAlign: "center" }}>読み込み中…</div>
+        <div style={{ color: "var(--text-6)", fontSize: 12, padding: "48px 0", textAlign: "center" }}>読み込み中…</div>
       ) : (
         <ArticleRenderer article={article} color={color} />
       )}

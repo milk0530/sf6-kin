@@ -57,9 +57,9 @@ export default function SetplayPage({ data, char }) {
         </div>
 
         {loading ? (
-          <div style={{ color: "#333", fontSize: 12, padding: "24px 0", textAlign: "center" }}>読み込み中…</div>
+          <div style={{ color: "var(--text-6)", fontSize: 12, padding: "24px 0", textAlign: "center" }}>読み込み中…</div>
         ) : setplays.length === 0 ? (
-          <div style={{ color: "#2a2a3e", fontSize: 12, padding: "24px 0", textAlign: "center" }}>まだ投稿がありません</div>
+          <div style={{ color: "var(--text-dim)", fontSize: 12, padding: "24px 0", textAlign: "center" }}>まだ投稿がありません</div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             {grouped.order.map(situation => (
@@ -69,10 +69,10 @@ export default function SetplayPage({ data, char }) {
                     width: 3, height: 14, borderRadius: 2, flexShrink: 0,
                     background: `linear-gradient(to bottom, ${color}, #7c3aed)`,
                   }} />
-                  <span style={{ fontSize: 12, fontWeight: 700, color: "#888" }}>{situation}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text-2)" }}>{situation}</span>
                   <span style={{
-                    fontSize: 10, color: "#555", background: "#1a1a2e",
-                    border: "1px solid #2a2a3e", borderRadius: 4, padding: "1px 5px",
+                    fontSize: 10, color: "var(--text-4)", background: "var(--bg-elevated)",
+                    border: "1px solid var(--border)", borderRadius: 4, padding: "1px 5px",
                   }}>{grouped.map[situation].length}</span>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingLeft: 11 }}>
@@ -98,7 +98,7 @@ export default function SetplayPage({ data, char }) {
       {/* 右: メディアパネル（PC only） */}
       {!isMobile && <div style={{
         width: 260, flexShrink: 0, position: "sticky", top: 0,
-        background: "#13131f", border: "1px solid #2a2a3e", borderRadius: 12,
+        background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 12,
         overflow: "hidden",
       }}>
         {selected?.media_url ? (
@@ -118,7 +118,7 @@ export default function SetplayPage({ data, char }) {
               />
             )}
             {selected.title && (
-              <div style={{ padding: "10px 12px", fontSize: 12, color: "#888" }}>
+              <div style={{ padding: "10px 12px", fontSize: 12, color: "var(--text-2)" }}>
                 {selected.title}
               </div>
             )}
@@ -128,8 +128,8 @@ export default function SetplayPage({ data, char }) {
             height: 180, display: "flex", flexDirection: "column",
             alignItems: "center", justifyContent: "center", gap: 8,
           }}>
-            <span style={{ fontSize: 24, color: "#2a2a3e" }}>▷</span>
-            <span style={{ fontSize: 11, color: "#2a2a3e", textAlign: "center", lineHeight: 1.6 }}>
+            <span style={{ fontSize: 24, color: "var(--border)" }}>▷</span>
+            <span style={{ fontSize: 11, color: "var(--text-dim)", textAlign: "center", lineHeight: 1.6 }}>
               クリックすると<br />動画が再生されます
             </span>
           </div>

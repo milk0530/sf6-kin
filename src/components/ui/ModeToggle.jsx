@@ -8,13 +8,13 @@ export default function ModeToggle({ mode, onChange, color = "#ff6b2b" }) {
             key={m}
             onClick={() => onChange(m)}
             style={{
-              background: active ? "#1a1a2e" : "transparent",
-              border: `1px solid ${active ? color + "66" : "#2a2a3e"}`,
+              background: active ? "var(--bg-elevated)" : "transparent",
+              border: `1px solid ${active ? color + "66" : "var(--border)"}`,
               borderRadius: 6,
               padding: "6px 18px",
               fontSize: 12,
               fontWeight: active ? 700 : 400,
-              color: active ? color : "#555",
+              color: active ? color : "var(--text-4)",
               cursor: "pointer",
               fontFamily: "inherit",
               transition: "all 0.15s",

@@ -4,8 +4,8 @@ import ArticleRenderer from "./ArticleRenderer";
 import { useIsMobile } from "../../hooks/useIsMobile";
 
 const INPUT = {
-  width: "100%", background: "#0e0e16", border: "1px solid #2a2a3e",
-  borderRadius: 6, color: "#e8e8f0", fontSize: 12, padding: "7px 10px",
+  width: "100%", background: "var(--bg)", border: "1px solid var(--border)",
+  borderRadius: 6, color: "var(--text)", fontSize: 12, padding: "7px 10px",
   outline: "none", boxSizing: "border-box",
 };
 
@@ -47,13 +47,13 @@ function ToolbarButton({ btn, onInsert, onUpload, color }) {
         title={btn.desc}
         style={{
           padding: "5px 10px", borderRadius: 5, fontSize: 11, cursor: "pointer",
-          background: hover ? "#1a1a2e" : "transparent",
-          border: "1px solid #2a2a3e", color: "#888",
+          background: hover ? "var(--bg-elevated)" : "transparent",
+          border: "1px solid var(--border)", color: "var(--text-2)",
           display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
         }}
       >
         <span>{btn.label}</span>
-        <span style={{ fontSize: 9, color: "#444" }}>{btn.desc}</span>
+        <span style={{ fontSize: 9, color: "var(--text-5)" }}>{btn.desc}</span>
       </button>
     );
   }
@@ -65,13 +65,13 @@ function ToolbarButton({ btn, onInsert, onUpload, color }) {
       title={btn.desc}
       style={{
         padding: "5px 10px", borderRadius: 5, fontSize: 11, cursor: "pointer",
-        background: hover ? "#1a1a2e" : "transparent",
-        border: "1px solid #2a2a3e", color: "#888",
+        background: hover ? "var(--bg-elevated)" : "transparent",
+        border: "1px solid var(--border)", color: "var(--text-2)",
         display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
       }}
     >
       <span style={{ fontWeight: 600 }}>{btn.label}</span>
-      <span style={{ fontSize: 9, color: "#444" }}>{btn.desc}</span>
+      <span style={{ fontSize: 9, color: "var(--text-5)" }}>{btn.desc}</span>
     </button>
   );
 }
@@ -132,7 +132,7 @@ export default function ArticleEditor({ article, color = "#ff6b2b", onSave, onCl
     <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "flex-start", marginBottom: 10 }}>
       {TOOLBAR_GROUPS.map(group => (
         <div key={group.label}>
-          <div style={{ fontSize: 9, color: "#333", marginBottom: 4, textTransform: "uppercase", letterSpacing: 1 }}>
+          <div style={{ fontSize: 9, color: "var(--text-6)", marginBottom: 4, textTransform: "uppercase", letterSpacing: 1 }}>
             {group.label}
           </div>
           <div style={{ display: "flex", gap: 4 }}>
@@ -167,7 +167,7 @@ export default function ArticleEditor({ article, color = "#ff6b2b", onSave, onCl
         }}
       />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span style={{ fontSize: 10, color: "#2a2a3e" }}>{content.length} 文字</span>
+        <span style={{ fontSize: 10, color: "var(--text-dim)" }}>{content.length} 文字</span>
       </div>
     </div>
   );
@@ -175,7 +175,7 @@ export default function ArticleEditor({ article, color = "#ff6b2b", onSave, onCl
   const previewPane = (
     <div style={{
       flex: 1, minWidth: 0,
-      background: "#0e0e16", border: "1px solid #2a2a3e", borderRadius: 8,
+      background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 8,
       padding: "20px", overflowY: "auto",
       minHeight: isMobile ? 320 : 480,
     }}>
@@ -185,31 +185,31 @@ export default function ArticleEditor({ article, color = "#ff6b2b", onSave, onCl
 
   return (
     <div style={{
-      background: "#13131f", border: "1px solid #2a2a3e", borderRadius: 14,
+      background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 14,
       padding: "24px", display: "flex", flexDirection: "column", gap: 16,
       marginBottom: 24,
     }}>
       {/* ヘッダー */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span style={{ fontSize: 14, fontWeight: 700, color: "#e8e8f0" }}>記事を編集</span>
-        <button onClick={onClose} style={{ background: "none", border: "none", color: "#555", fontSize: 18, cursor: "pointer" }}>×</button>
+        <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>記事を編集</span>
+        <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--text-4)", fontSize: 18, cursor: "pointer" }}>×</button>
       </div>
 
       {/* タイトル / 著者 */}
       <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 10 }}>
         <div>
-          <div style={{ fontSize: 10, color: "#555", marginBottom: 3 }}>タイトル</div>
+          <div style={{ fontSize: 10, color: "var(--text-4)", marginBottom: 3 }}>タイトル</div>
           <input style={INPUT} value={title} onChange={e => setTitle(e.target.value)} placeholder="例: 【スト6】キンバリーの使い方" />
         </div>
         <div>
-          <div style={{ fontSize: 10, color: "#555", marginBottom: 3 }}>著者</div>
+          <div style={{ fontSize: 10, color: "var(--text-4)", marginBottom: 3 }}>著者</div>
           <input style={INPUT} value={author} onChange={e => setAuthor(e.target.value)} placeholder="ハンドル名" />
         </div>
       </div>
 
       {/* スマホ: タブ切り替え */}
       {isMobile && (
-        <div style={{ display: "flex", borderBottom: "1px solid #2a2a3e" }}>
+        <div style={{ display: "flex", borderBottom: "1px solid var(--border)" }}>
           {[["edit", "編集"], ["preview", "プレビュー"]].map(([key, label]) => (
             <button
               key={key}
@@ -218,7 +218,7 @@ export default function ArticleEditor({ article, color = "#ff6b2b", onSave, onCl
                 padding: "6px 16px", fontSize: 12, cursor: "pointer",
                 background: "none", border: "none",
                 borderBottom: mobileTab === key ? `2px solid ${color}` : "2px solid transparent",
-                color: mobileTab === key ? color : "#555",
+                color: mobileTab === key ? color : "var(--text-4)",
                 fontWeight: mobileTab === key ? 700 : 400, marginBottom: -1,
               }}
             >{label}</button>
@@ -233,7 +233,7 @@ export default function ArticleEditor({ article, color = "#ff6b2b", onSave, onCl
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, alignItems: "flex-start" }}>
           {editorPane}
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            <div style={{ fontSize: 10, color: "#333", textTransform: "uppercase", letterSpacing: 1 }}>プレビュー</div>
+            <div style={{ fontSize: 10, color: "var(--text-6)", textTransform: "uppercase", letterSpacing: 1 }}>プレビュー</div>
             {previewPane}
           </div>
         </div>
@@ -243,7 +243,7 @@ export default function ArticleEditor({ article, color = "#ff6b2b", onSave, onCl
       <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
         <button
           onClick={onClose}
-          style={{ padding: "7px 20px", borderRadius: 6, fontSize: 12, cursor: "pointer", background: "transparent", border: "1px solid #2a2a3e", color: "#555" }}
+          style={{ padding: "7px 20px", borderRadius: 6, fontSize: 12, cursor: "pointer", background: "transparent", border: "1px solid var(--border)", color: "var(--text-4)" }}
         >キャンセル</button>
         <button
           onClick={handleSave}

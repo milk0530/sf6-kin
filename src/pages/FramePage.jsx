@@ -3,8 +3,8 @@ import CommandRenderer from "../components/ui/CommandRenderer";
 
 const CHIP_BASE = {
   padding: "4px 10px", borderRadius: 20, fontSize: 11,
-  cursor: "pointer", border: "1px solid #2a2a3e",
-  background: "transparent", color: "#555",
+  cursor: "pointer", border: "1px solid var(--border)",
+  background: "transparent", color: "var(--text-4)",
   fontWeight: 600, transition: "all 0.12s", whiteSpace: "nowrap",
 };
 
@@ -14,9 +14,9 @@ function Chip({ label, active, color = "#ff6b2b", onClick }) {
       onClick={onClick}
       style={{
         ...CHIP_BASE,
-        border: active ? `1px solid ${color}` : "1px solid #2a2a3e",
+        border: active ? `1px solid ${color}` : "1px solid var(--border)",
         background: active ? color + "22" : "transparent",
-        color: active ? color : "#555",
+        color: active ? color : "var(--text-4)",
       }}
     >
       {label}
@@ -72,7 +72,7 @@ export default function FramePage({ data, char }) {
     if (s.startsWith("+")) return "#27ae60";
     if (s.startsWith("-")) return "#e74c3c";
     if (s === "D" || s === "ダウン") return "#e67e22";
-    return "#888";
+    return "var(--text-2)";
   };
 
   const HEADERS = ["技名", "コマンド", "発生", "持続", "硬直", "ヒット", "ガード", "キャンセル", "DMG", "属性", "備考"];
@@ -96,9 +96,9 @@ export default function FramePage({ data, char }) {
               onClick={() => setMode(key)}
               style={{
                 padding: "6px 18px", borderRadius: 6, fontSize: 12, cursor: "pointer",
-                border: active ? `1px solid ${color}` : "1px solid #2a2a3e",
+                border: active ? `1px solid ${color}` : "1px solid var(--border)",
                 background: active ? color + "22" : "transparent",
-                color: active ? color : "#555",
+                color: active ? color : "var(--text-4)",
                 fontWeight: active ? 700 : 400, transition: "all 0.15s",
               }}
             >
@@ -112,7 +112,7 @@ export default function FramePage({ data, char }) {
       <div style={{
         display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8,
         padding: "10px 14px", marginBottom: 20,
-        background: "#0e0e16", border: "1px solid #2a2a3e", borderRadius: 10,
+        background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 10,
       }}>
         {/* テキスト検索 */}
         <input
@@ -120,29 +120,29 @@ export default function FramePage({ data, char }) {
           onChange={e => setSearch(e.target.value)}
           placeholder="技名で検索…"
           style={{
-            background: "#13131f", border: "1px solid #2a2a3e", borderRadius: 6,
-            color: "#e8e8f0", fontSize: 12, padding: "4px 10px",
+            background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 6,
+            color: "var(--text)", fontSize: 12, padding: "4px 10px",
             outline: "none", width: 140,
           }}
         />
 
-        <span style={{ color: "#2a2a3e", fontSize: 12 }}>|</span>
+        <span style={{ color: "var(--border)", fontSize: 12 }}>|</span>
 
         {/* ガード時有利 */}
-        <span style={{ color: "#444", fontSize: 11 }}>ガード</span>
+        <span style={{ color: "var(--text-5)", fontSize: 11 }}>ガード</span>
         <Chip label="+有利" active={filterBlock === "+"} color="#27ae60" onClick={() => toggleBlock("+")} />
-        <Chip label="±0" active={filterBlock === "0"} color="#888" onClick={() => toggleBlock("0")} />
+        <Chip label="±0" active={filterBlock === "0"} color="var(--text-2)" onClick={() => toggleBlock("0")} />
         <Chip label="-不利" active={filterBlock === "-"} color="#e74c3c" onClick={() => toggleBlock("-")} />
 
-        <span style={{ color: "#2a2a3e", fontSize: 12 }}>|</span>
+        <span style={{ color: "var(--border)", fontSize: 12 }}>|</span>
 
         {/* 属性 */}
-        <span style={{ color: "#444", fontSize: 11 }}>属性</span>
+        <span style={{ color: "var(--text-5)", fontSize: 11 }}>属性</span>
         {["上", "中", "下"].map(a => (
           <Chip key={a} label={a} active={filterAttr === a} onClick={() => toggleAttr(a)} />
         ))}
 
-        <span style={{ color: "#2a2a3e", fontSize: 12 }}>|</span>
+        <span style={{ color: "var(--border)", fontSize: 12 }}>|</span>
 
         {/* キャンセル可 */}
         <Chip label="キャンセル可" active={filterCancel} color="#27ae60" onClick={() => setFilterCancel(p => !p)} />
@@ -153,7 +153,7 @@ export default function FramePage({ data, char }) {
             onClick={clearFilters}
             style={{
               ...CHIP_BASE, marginLeft: "auto",
-              border: "1px solid #444", color: "#666",
+              border: "1px solid var(--border)", color: "var(--text-3)",
             }}
           >
             × クリア
@@ -162,7 +162,7 @@ export default function FramePage({ data, char }) {
 
         {/* ヒット数 */}
         {hasFilter && (
-          <span style={{ color: "#555", fontSize: 11, whiteSpace: "nowrap" }}>
+          <span style={{ color: "var(--text-4)", fontSize: 11, whiteSpace: "nowrap" }}>
             {filtered.length}件
           </span>
         )}
@@ -170,11 +170,11 @@ export default function FramePage({ data, char }) {
 
       {/* テーブル */}
       {allMoves.length === 0 ? (
-        <div style={{ color: "#333", padding: "48px 0", textAlign: "center", fontSize: 13 }}>
+        <div style={{ color: "var(--text-6)", padding: "48px 0", textAlign: "center", fontSize: 13 }}>
           フレームデータなし
         </div>
       ) : filtered.length === 0 ? (
-        <div style={{ color: "#444", padding: "48px 0", textAlign: "center", fontSize: 13 }}>
+        <div style={{ color: "var(--text-5)", padding: "48px 0", textAlign: "center", fontSize: 13 }}>
           条件に一致する技がありません
         </div>
       ) : (
@@ -186,24 +186,24 @@ export default function FramePage({ data, char }) {
                   width: 4, height: 20, borderRadius: 2, flexShrink: 0,
                   background: `linear-gradient(to bottom, ${color}, #7c3aed)`,
                 }} />
-                <span style={{ fontSize: 15, fontWeight: 700, color: "#e8e8f0" }}>{group}</span>
+                <span style={{ fontSize: 15, fontWeight: 700, color: "var(--text)" }}>{group}</span>
                 <span style={{
-                  fontSize: 10, fontWeight: 700, color: "#888",
-                  background: "#1a1a2e", border: "1px solid #2a2a3e",
+                  fontSize: 10, fontWeight: 700, color: "var(--text-2)",
+                  background: "var(--bg-elevated)", border: "1px solid var(--border)",
                   borderRadius: 4, padding: "2px 6px",
                 }}>
                   {groupMap[group].length}技
                 </span>
               </h3>
 
-              <div style={{ background: "#13131f", border: "1px solid #2a2a3e", borderRadius: 12, overflow: "hidden", overflowX: "auto" }}>
+              <div style={{ background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden", overflowX: "auto" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
                   <thead>
-                    <tr style={{ background: "#0e0e16" }}>
+                    <tr style={{ background: "var(--bg)" }}>
                       {HEADERS.map(h => (
                         <th key={h} style={{
-                          padding: "9px 12px", color: "#444", fontWeight: 700,
-                          textAlign: "left", borderBottom: "1px solid #2a2a3e",
+                          padding: "9px 12px", color: "var(--text-5)", fontWeight: 700,
+                          textAlign: "left", borderBottom: "1px solid var(--border)",
                           letterSpacing: 0.5, whiteSpace: "nowrap",
                         }}>
                           {h}
@@ -215,32 +215,32 @@ export default function FramePage({ data, char }) {
                     {groupMap[group].map((m, i) => (
                       <tr
                         key={i}
-                        style={{ borderBottom: "1px solid #1a1a2e", transition: "background 0.1s" }}
-                        onMouseEnter={e => (e.currentTarget.style.background = "#1a1a2e")}
+                        style={{ borderBottom: "1px solid var(--bg-elevated)", transition: "background 0.1s" }}
+                        onMouseEnter={e => (e.currentTarget.style.background = "var(--bg-elevated)")}
                         onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                       >
-                        <td style={{ padding: "9px 12px", color: "#e8e8f0", fontWeight: 700, whiteSpace: "nowrap" }}>{m.label}</td>
+                        <td style={{ padding: "9px 12px", color: "var(--text)", fontWeight: 700, whiteSpace: "nowrap" }}>{m.label}</td>
                         <td style={{ padding: "9px 12px", whiteSpace: "nowrap" }}><CommandRenderer command={m.command ?? "-"} /></td>
                         <td style={{ padding: "9px 12px", color: "#ff6b2b", whiteSpace: "nowrap" }}>
                           {m.startup != null && m.startup !== "-" ? (typeof m.startup === "number" ? m.startup + "F" : m.startup) : "-"}
                         </td>
-                        <td style={{ padding: "9px 12px", color: "#555", whiteSpace: "nowrap" }}>{m.active ?? "-"}</td>
-                        <td style={{ padding: "9px 12px", color: "#555", whiteSpace: "nowrap" }}>{m.recovery ?? "-"}</td>
+                        <td style={{ padding: "9px 12px", color: "var(--text-4)", whiteSpace: "nowrap" }}>{m.active ?? "-"}</td>
+                        <td style={{ padding: "9px 12px", color: "var(--text-4)", whiteSpace: "nowrap" }}>{m.recovery ?? "-"}</td>
                         <td style={{ padding: "9px 12px", color: advantageColor(m.onHit),   fontWeight: 700, whiteSpace: "nowrap" }}>{m.onHit}</td>
                         <td style={{ padding: "9px 12px", color: advantageColor(m.onBlock), fontWeight: 700, whiteSpace: "nowrap" }}>{m.onBlock}</td>
-                        <td style={{ padding: "9px 12px", color: m.cancel === "○" ? "#27ae60" : "#444", textAlign: "center", whiteSpace: "nowrap" }}>{m.cancel ?? "-"}</td>
-                        <td style={{ padding: "9px 12px", color: "#666", whiteSpace: "nowrap" }}>{m.damage ?? "-"}</td>
+                        <td style={{ padding: "9px 12px", color: m.cancel === "○" ? "#27ae60" : "var(--text-5)", textAlign: "center", whiteSpace: "nowrap" }}>{m.cancel ?? "-"}</td>
+                        <td style={{ padding: "9px 12px", color: "var(--text-3)", whiteSpace: "nowrap" }}>{m.damage ?? "-"}</td>
                         <td style={{ padding: "9px 12px", whiteSpace: "nowrap" }}>
                           {m.attribute && m.attribute !== "-"
                             ? <span style={{
                                 display: "inline-block", padding: "2px 6px", borderRadius: 3,
                                 fontSize: 10, fontWeight: 700,
-                                background: "#1a1a2e", color: "#666", border: "1px solid #2a2a3e",
+                                background: "var(--bg-elevated)", color: "var(--text-3)", border: "1px solid var(--border)",
                               }}>{m.attribute}</span>
-                            : <span style={{ color: "#333" }}>-</span>
+                            : <span style={{ color: "var(--text-6)" }}>-</span>
                           }
                         </td>
-                        <td style={{ padding: "9px 12px", color: "#444", fontSize: 11, minWidth: 160 }}>{m.note}</td>
+                        <td style={{ padding: "9px 12px", color: "var(--text-5)", fontSize: 11, minWidth: 160 }}>{m.note}</td>
                       </tr>
                     ))}
                   </tbody>

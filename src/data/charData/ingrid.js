@@ -1,13 +1,11 @@
-const blanka = {
-  wip: false,
+const ingrid = {
+  wip: true,
   overview: "",
-  hp: 10500,
+  hp: 10000,
   stats: [],
   strengths: [],
   weaknesses: [],
   modernUnavailable: [],
-  modernOnly: [],
-  modernNotes: "",
   classicAdvantage: "",
   modernAdvantage: "",
   matchups: [],
@@ -15,4 +13,4 @@ const blanka = {
   modern:  { playstyle: "", moves: [], combos: [], setplays: [] },
 };
 
-export default blanka;
+export default ingrid;

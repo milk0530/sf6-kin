@@ -6,10 +6,10 @@ export default function WipPage({ char }) {
       minHeight: 320, gap: 16, textAlign: "center",
     }}>
       <div style={{ fontSize: 48 }}>🚧</div>
-      <div style={{ fontSize: 18, fontWeight: 700, color: "#fff" }}>
+      <div style={{ fontSize: 18, fontWeight: 700, color: "var(--text-white)" }}>
         {char.name} は準備中です
       </div>
-      <div style={{ fontSize: 13, color: "#444", lineHeight: 1.8 }}>
+      <div style={{ fontSize: 13, color: "var(--text-5)", lineHeight: 1.8 }}>
         現在コンテンツを作成中です。<br />
         しばらくお待ちください。
       </div>

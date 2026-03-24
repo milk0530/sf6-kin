@@ -6,12 +6,13 @@ const CHAR_JA = {
   ryu:"リュウ", luke:"ルーク", kimberly:"キンバリー", chunli:"春麗",
   manon:"マノン", zangief:"ザンギエフ", jp:"JP", dhalsim:"ダルシム",
   cammy:"キャミィ", ken:"ケン", deejay:"ディージェイ", lily:"リリー",
-  rashid:"ラシード", blanka:"ブランカ", juri:"ユリ", marisa:"マリーザ",
+  rashid:"ラシード", blanka:"ブランカ", juri:"ジュリ", marisa:"マリーザ",
   guile:"ガイル", ehonda:"E.本田", jamie:"ジェイミー",
   gouki:"豪鬼", akuma:"豪鬼",   // gouki が実際のtool_name
   bison:"ベガ", mbison:"ベガ",
   ed:"エド", terry:"テリー", mai:"マイ", elena:"エレナ",
   alex:"アレックス",
+  aki:"A.K.I.", sagat:"サガット", cviper:"C・ヴァイパー", ingrid:"イングリッド",
 };
 function toJa(tool, eng) { return CHAR_JA[tool?.toLowerCase()] ?? eng ?? tool ?? "?"; }
 
@@ -71,13 +72,13 @@ const DEFAULT_DATE_FROM = toDateStr(new Date(_now.getFullYear(), _now.getMonth()
 const DEFAULT_DATE_TO   = toDateStr(_now);
 
 // ── スタイル ────────────────────────────────────────────
-const CARD = { background:"#13131f", border:"1px solid #2a2a3e", borderRadius:10 };
+const CARD = { background:"var(--bg-surface)", border:"1px solid var(--border)", borderRadius:10 };
 const SEL  = {
-  background:"#0e0e16", border:"1px solid #2a2a3e", borderRadius:6,
-  color:"#e8e8f0", fontSize:12, padding:"6px 10px", outline:"none", width:"100%",
+  background:"var(--bg)", border:"1px solid var(--border)", borderRadius:6,
+  color:"var(--text)", fontSize:12, padding:"6px 10px", outline:"none", width:"100%",
 };
-const LBL = { fontSize:10, color:"#555", marginBottom:3 };
-const TH  = { padding:"8px 12px", color:"#444", fontWeight:700, textAlign:"left", borderBottom:"1px solid #2a2a3e", whiteSpace:"nowrap", fontSize:11 };
+const LBL = { fontSize:10, color:"var(--text-4)", marginBottom:3 };
+const TH  = { padding:"8px 12px", color:"var(--text-5)", fontWeight:700, textAlign:"left", borderBottom:"1px solid var(--border)", whiteSpace:"nowrap", fontSize:11 };
 const TD  = { padding:"8px 10px", fontSize:12, whiteSpace:"nowrap" };
 
 // ── トレンドチャート ────────────────────────────────────
@@ -123,8 +124,8 @@ function TrendChart({ points, color, id }) {
       {/* グリッド線 + Y軸ラベル */}
       {yLevels.map((v, i) => (
         <g key={i}>
-          <line x1={PL} y1={cy(v)} x2={PL + CW} y2={cy(v)} stroke="#1e1e2e" strokeWidth={1} />
-          <text x={PL - 6} y={cy(v) + 4} textAnchor="end" fontSize={9} fill="#555">
+          <line x1={PL} y1={cy(v)} x2={PL + CW} y2={cy(v)} style={{ stroke: "var(--bg-hover)" }} strokeWidth={1} />
+          <text x={PL - 6} y={cy(v) + 4} textAnchor="end" fontSize={9} style={{ fill: "var(--text-4)" }}>
             {fmtVal(v)}
           </text>
         </g>
@@ -154,7 +155,7 @@ function TrendChart({ points, color, id }) {
       {xIdxs.map(idx => (
         <text key={idx}
           x={coords[idx][0]} y={PT + CH + 14}
-          textAnchor="end" fontSize={8} fill="#555"
+          textAnchor="end" fontSize={8} style={{ fill: "var(--text-4)" }}
           transform={`rotate(-35,${coords[idx][0]},${PT + CH + 14})`}>
           {dtLabel(points[idx].ts)}
         </text>
@@ -235,7 +236,7 @@ function FilterPanel({ draft, setDraft, onSearch, onReset, showOpp, showGameMode
       </div>
       <div style={{ display:"flex", gap:8 }}>
         <button onClick={onSearch} style={{ padding:"6px 20px", borderRadius:6, fontSize:12, cursor:"pointer", background:"#3b82f6", border:"none", color:"#fff", fontWeight:700 }}>検索</button>
-        <button onClick={onReset}  style={{ padding:"6px 20px", borderRadius:6, fontSize:12, cursor:"pointer", background:"transparent", border:"1px solid #2a2a3e", color:"#555" }}>リセット</button>
+        <button onClick={onReset}  style={{ padding:"6px 20px", borderRadius:6, fontSize:12, cursor:"pointer", background:"transparent", border:"1px solid var(--border)", color:"var(--text-4)" }}>リセット</button>
       </div>
     </div>
   );
@@ -260,8 +261,8 @@ function BattlesTab({ filtered, playerName }) {
       {tooltip && (
         <div style={{
           position:"fixed", left: tooltip.x + 14, top: tooltip.y - 10,
-          background:"#1a1a2e", border:"1px solid #2a2a3e", borderRadius:8,
-          padding:"10px 14px", zIndex:1000, fontSize:11, color:"#e8e8f0",
+          background:"var(--bg-elevated)", border:"1px solid var(--border)", borderRadius:8,
+          padding:"10px 14px", zIndex:1000, fontSize:11, color:"var(--text)",
           pointerEvents:"none", lineHeight:1.8, minWidth:160,
         }}>
           <div style={{ fontWeight:700, marginBottom:4, color: tooltip.b.win ? "#27ae60" : "#e74c3c" }}>
@@ -273,7 +274,7 @@ function BattlesTab({ filtered, playerName }) {
           {tooltip.b.masterRating != null && (
             <div style={{ color:"#3b82f6" }}>MR: {tooltip.b.masterRating}</div>
           )}
-          <div style={{ color:"#555", fontSize:10, marginTop:4 }}>
+          <div style={{ color:"var(--text-4)", fontSize:10, marginTop:4 }}>
             {modeName(tooltip.b.battle_type)}
           </div>
         </div>
@@ -282,7 +283,7 @@ function BattlesTab({ filtered, playerName }) {
       <div style={{ overflowX:"auto" }}>
         <table style={{ width:"100%", borderCollapse:"collapse" }}>
           <thead>
-            <tr style={{ background:"#0e0e16" }}>
+            <tr style={{ background:"var(--bg)" }}>
               {["私","キャラ","勝負","相手","キャラ","モード","リプレイID","日時"].map(h => (
                 <th key={h} style={TH}>{h}</th>
               ))}
@@ -291,52 +292,52 @@ function BattlesTab({ filtered, playerName }) {
           <tbody>
             {pageData.map((b, i) => (
               <tr key={i}
-                style={{ borderBottom:"1px solid #1a1a2e", cursor:"default" }}
+                style={{ borderBottom:"1px solid var(--bg-elevated)", cursor:"default" }}
                 onMouseMove={e => setTooltip({ x: e.clientX, y: e.clientY, b })}
                 onMouseLeave={() => setTooltip(null)}
               >
-                <td style={{...TD, color:"#e8e8f0"}}>{playerName ?? "?"}</td>
-                <td style={{...TD, color:"#888"}}>
+                <td style={{...TD, color:"var(--text)"}}>{playerName ?? "?"}</td>
+                <td style={{...TD, color:"var(--text-2)"}}>
                   {b.myCharName}
-                  <span style={{ fontSize:10, color:"#555", marginLeft:4 }}>{inputLabel(b.myInput)}</span>
+                  <span style={{ fontSize:10, color:"var(--text-4)", marginLeft:4 }}>{inputLabel(b.myInput)}</span>
                 </td>
                 <td style={{...TD, textAlign:"center"}}>
                   <span style={{ display:"inline-block", width:10, height:10, borderRadius:"50%", background: b.win ? "#27ae60" : "#e74c3c" }} />
                 </td>
-                <td style={{...TD, color:"#aaa"}}>{b.oppName}</td>
-                <td style={{...TD, color:"#888"}}>
+                <td style={{...TD, color:"var(--text-sub)"}}>{b.oppName}</td>
+                <td style={{...TD, color:"var(--text-2)"}}>
                   {b.oppCharName}
-                  <span style={{ fontSize:10, color:"#555", marginLeft:4 }}>{inputLabel(b.oppInput)}</span>
+                  <span style={{ fontSize:10, color:"var(--text-4)", marginLeft:4 }}>{inputLabel(b.oppInput)}</span>
                 </td>
-                <td style={{...TD, color:"#555"}}>{modeName(b.battle_type)}</td>
+                <td style={{...TD, color:"var(--text-4)"}}>{modeName(b.battle_type)}</td>
                 <td style={{...TD}}>
                   <span style={{ fontSize:11, color:"#3b82f6", fontFamily:"monospace" }}>{b.replayId ?? "-"}</span>
                 </td>
-                <td style={{...TD, color:"#444"}}>{formatDate(b.battle_at)}</td>
+                <td style={{...TD, color:"var(--text-5)"}}>{formatDate(b.battle_at)}</td>
               </tr>
             ))}
           </tbody>
         </table>
         {filtered.length === 0 && (
-          <div style={{ padding:"48px 0", textAlign:"center", color:"#2a2a3e", fontSize:12 }}>データなし</div>
+          <div style={{ padding:"48px 0", textAlign:"center", color:"var(--text-dim)", fontSize:12 }}>データなし</div>
         )}
       </div>
 
       {/* ページネーション */}
       {totalPages > 1 && (
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 16px", borderTop:"1px solid #1a1a2e" }}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 16px", borderTop:"1px solid var(--bg-elevated)" }}>
           <button
             onClick={() => setPage(p => Math.max(0, p - 1))}
             disabled={page === 0}
-            style={{ padding:"4px 14px", borderRadius:5, fontSize:12, cursor: page===0 ? "default":"pointer", background:"transparent", border:"1px solid #2a2a3e", color: page===0 ? "#333" : "#888" }}
+            style={{ padding:"4px 14px", borderRadius:5, fontSize:12, cursor: page===0 ? "default":"pointer", background:"transparent", border:"1px solid var(--border)", color: page===0 ? "var(--text-6)" : "var(--text-2)" }}
           >← 前</button>
-          <span style={{ fontSize:11, color:"#555" }}>
+          <span style={{ fontSize:11, color:"var(--text-4)" }}>
             {page + 1} / {totalPages}（{filtered.length}件）
           </span>
           <button
             onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
             disabled={page === totalPages - 1}
-            style={{ padding:"4px 14px", borderRadius:5, fontSize:12, cursor: page===totalPages-1 ? "default":"pointer", background:"transparent", border:"1px solid #2a2a3e", color: page===totalPages-1 ? "#333" : "#888" }}
+            style={{ padding:"4px 14px", borderRadius:5, fontSize:12, cursor: page===totalPages-1 ? "default":"pointer", background:"transparent", border:"1px solid var(--border)", color: page===totalPages-1 ? "var(--text-6)" : "var(--text-2)" }}
           >次 →</button>
         </div>
       )}
@@ -361,7 +362,7 @@ function CharStatsTab({ filtered }) {
       <div style={{ overflowX:"auto" }}>
         <table style={{ width:"100%", borderCollapse:"collapse" }}>
           <thead>
-            <tr style={{ background:"#0e0e16" }}>
+            <tr style={{ background:"var(--bg)" }}>
               {["キャラクター","操作タイプ","合計","勝利","敗北","勝利数","勝率"].map(h => (
                 <th key={h} style={TH}>{h}</th>
               ))}
@@ -374,10 +375,10 @@ function CharStatsTab({ filtered }) {
               const rate  = total > 0 ? (g.wins / total * 100).toFixed(1) : "-";
               const rateN = total > 0 ? g.wins / total * 100 : 50;
               return (
-                <tr key={i} style={{ borderBottom:"1px solid #1a1a2e", background: i%2===0 ? "#0e0e1640" : "transparent" }}>
-                  <td style={{...TD, color:"#e8e8f0"}}>{g.name}</td>
-                  <td style={{...TD, color:"#888"}}>{inputLabel(g.input)}</td>
-                  <td style={{...TD, color:"#888"}}>{total}</td>
+                <tr key={i} style={{ borderBottom:"1px solid var(--bg-elevated)", background: i%2===0 ? "var(--bg-surface)" : "transparent" }}>
+                  <td style={{...TD, color:"var(--text)"}}>{g.name}</td>
+                  <td style={{...TD, color:"var(--text-2)"}}>{inputLabel(g.input)}</td>
+                  <td style={{...TD, color:"var(--text-2)"}}>{total}</td>
                   <td style={{...TD, color:"#27ae60"}}>{g.wins}</td>
                   <td style={{...TD, color:"#e74c3c"}}>{g.losses}</td>
                   <td style={{...TD, fontWeight:700, color: diff >= 0 ? "#27ae60" : "#e74c3c"}}>
@@ -392,7 +393,7 @@ function CharStatsTab({ filtered }) {
           </tbody>
         </table>
         {groups.length === 0 && (
-          <div style={{ padding:"48px 0", textAlign:"center", color:"#2a2a3e", fontSize:12 }}>データなし</div>
+          <div style={{ padding:"48px 0", textAlign:"center", color:"var(--text-dim)", fontSize:12 }}>データなし</div>
         )}
       </div>
     </div>
@@ -409,20 +410,20 @@ function RankStatsTab({ parsed, rankFilter }) {
   const mrPoints = ranked.filter(b => b.masterRating != null).map(b => ({ value: b.masterRating, ts: b.battle_at }));
 
   if (ranked.length === 0) {
-    return <div style={{ ...CARD, padding:"48px 0", textAlign:"center", color:"#2a2a3e", fontSize:12 }}>ランクマのデータがありません</div>;
+    return <div style={{ ...CARD, padding:"48px 0", textAlign:"center", color:"var(--text-dim)", fontSize:12 }}>ランクマのデータがありません</div>;
   }
 
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
       {lpPoints.length >= 2 && (
         <div style={{ ...CARD, padding:"20px" }}>
-          <div style={{ fontSize:12, fontWeight:700, color:"#888", marginBottom:16 }}>LP 推移</div>
+          <div style={{ fontSize:12, fontWeight:700, color:"var(--text-2)", marginBottom:16 }}>LP 推移</div>
           <TrendChart points={lpPoints} color="#ec4899" id="lp" />
         </div>
       )}
       {mrPoints.length >= 2 && (
         <div style={{ ...CARD, padding:"20px" }}>
-          <div style={{ fontSize:12, fontWeight:700, color:"#888", marginBottom:16 }}>マスターレーティング推移</div>
+          <div style={{ fontSize:12, fontWeight:700, color:"var(--text-2)", marginBottom:16 }}>マスターレーティング推移</div>
           <TrendChart points={mrPoints} color="#3b82f6" id="mr" />
         </div>
       )}
@@ -555,32 +556,32 @@ export default function StatsPage() {
         </div>
       )}
       {loading && (
-        <div style={{ color:"#444", fontSize:13, padding:"48px 0", textAlign:"center" }}>取得中…</div>
+        <div style={{ color:"var(--text-5)", fontSize:13, padding:"48px 0", textAlign:"center" }}>取得中…</div>
       )}
 
       {!loading && playerName && (
         <>
           <div style={{ marginBottom:16 }}>
-            <span style={{ fontSize:22, fontWeight:700, color:"#e8e8f0" }}>{playerName}</span>
+            <span style={{ fontSize:22, fontWeight:700, color:"var(--text)" }}>{playerName}</span>
           </div>
 
           {/* タブ */}
-          <div style={{ display:"flex", borderBottom:"1px solid #2a2a3e", marginBottom:14 }}>
+          <div style={{ display:"flex", borderBottom:"1px solid var(--border)", marginBottom:14 }}>
             {TABS.map(t => {
               const active = activeTab === t.id;
               return (
                 <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
                   background:"none", border:"none",
                   padding:"9px 20px", fontSize:12,
-                  color: active ? "#ff6b2b" : "#555",
+                  color: active ? "#ff6b2b" : "var(--text-4)",
                   cursor:"pointer", whiteSpace:"nowrap",
                   borderBottom: active ? "2px solid #ff6b2b" : "2px solid transparent",
                   marginBottom:-1,
                   fontFamily:"inherit",
                   transition:"color 0.15s, border-color 0.15s",
                 }}
-                onMouseEnter={e => { if (!active) e.currentTarget.style.color = "#888"; }}
-                onMouseLeave={e => { if (!active) e.currentTarget.style.color = "#555"; }}
+                onMouseEnter={e => { if (!active) e.currentTarget.style.color = "var(--text-2)"; }}
+                onMouseLeave={e => { if (!active) e.currentTarget.style.color = "var(--text-4)"; }}
                 >{t.label}</button>
               );
             })}
@@ -615,14 +616,14 @@ export default function StatsPage() {
       )}
 
       {!loading && !error && !playerName && playerId && (
-        <div style={{ color:"#2a2a3e", fontSize:13, padding:"48px 0", textAlign:"center" }}>
+        <div style={{ color:"var(--text-dim)", fontSize:13, padding:"48px 0", textAlign:"center" }}>
           データが見つかりませんでした
         </div>
       )}
 
       {!playerId && history.length > 0 && (
         <div style={{ marginTop:8 }}>
-          <div style={{ fontSize:10, color:"#333", fontWeight:700, letterSpacing:2, marginBottom:10 }}>RECENT PLAYERS</div>
+          <div style={{ fontSize:10, color:"var(--text-6)", fontWeight:700, letterSpacing:2, marginBottom:10 }}>RECENT PLAYERS</div>
           <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
             {history.map(h => (
               <button
@@ -630,15 +631,15 @@ export default function StatsPage() {
                 onClick={() => search(h.id)}
                 style={{
                   display:"flex", alignItems:"center", gap:12,
-                  background:"transparent", border:"1px solid #1e1e2e",
+                  background:"transparent", border:"1px solid var(--border-sub)",
                   borderRadius:8, padding:"10px 14px", cursor:"pointer",
                   textAlign:"left", fontFamily:"inherit", transition:"all 0.15s",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.background="#13131f"; e.currentTarget.style.borderColor="#2a2a3e"; }}
-                onMouseLeave={e => { e.currentTarget.style.background="transparent"; e.currentTarget.style.borderColor="#1e1e2e"; }}
+                onMouseEnter={e => { e.currentTarget.style.background="var(--bg-surface)"; e.currentTarget.style.borderColor="var(--border)"; }}
+                onMouseLeave={e => { e.currentTarget.style.background="transparent"; e.currentTarget.style.borderColor="var(--border-sub)"; }}
               >
-                <div style={{ fontSize:13, fontWeight:700, color:"#e8e8f0" }}>{h.name}</div>
-                <div style={{ fontSize:11, color:"#333" }}>{h.id}</div>
+                <div style={{ fontSize:13, fontWeight:700, color:"var(--text)" }}>{h.name}</div>
+                <div style={{ fontSize:11, color:"var(--text-6)" }}>{h.id}</div>
               </button>
             ))}
           </div>

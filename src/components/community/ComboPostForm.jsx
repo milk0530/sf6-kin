@@ -7,7 +7,7 @@ const OVERLAY = {
   zIndex: 1000, overflowY: "auto", padding: "32px 16px",
 };
 const MODAL = {
-  background: "#13131f", border: "1px solid #2a2a3e", borderRadius: 14,
+  background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 14,
   padding: "28px 28px 24px", width: "100%", boxSizing: "border-box",
   display: "flex", flexDirection: "column", gap: 16,
 };
@@ -15,11 +15,11 @@ const MODAL_FIXED = {
   ...MODAL, width: 560, maxWidth: "100%", flexShrink: 0,
 };
 const INPUT = {
-  width: "100%", background: "#0e0e16", border: "1px solid #2a2a3e",
-  borderRadius: 6, color: "#e8e8f0", fontSize: 12, padding: "8px 10px",
+  width: "100%", background: "var(--bg)", border: "1px solid var(--border)",
+  borderRadius: 6, color: "var(--text)", fontSize: 12, padding: "8px 10px",
   outline: "none", boxSizing: "border-box",
 };
-const LABEL = { fontSize: 11, color: "#666", marginBottom: 4, display: "block" };
+const LABEL = { fontSize: 11, color: "var(--text-3)", marginBottom: 4, display: "block" };
 
 function Field({ label, required, children }) {
   return (
@@ -90,10 +90,10 @@ export default function ComboPostForm({ initialValues, color = "#ff6b2b", onSubm
     <div style={asModal ? MODAL_FIXED : MODAL}>
         {/* ヘッダー */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: 14, fontWeight: 700, color: "#e8e8f0" }}>
+          <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>
             {initialValues ? "コンボを編集" : "コンボを投稿"}
           </span>
-          <button onClick={onClose} style={{ background: "none", border: "none", color: "#555", fontSize: 18, cursor: "pointer" }}>×</button>
+          <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--text-4)", fontSize: 18, cursor: "pointer" }}>×</button>
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -157,8 +157,8 @@ export default function ComboPostForm({ initialValues, color = "#ff6b2b", onSubm
               onDragOver={e => e.preventDefault()}
               onDrop={handleDrop}
               style={{
-                border: "1.5px dashed #2a2a3e", borderRadius: 8,
-                background: "#0e0e16", cursor: "pointer",
+                border: "1.5px dashed var(--border)", borderRadius: 8,
+                background: "var(--bg)", cursor: "pointer",
                 display: "flex", flexDirection: "column", alignItems: "center",
                 justifyContent: "center", minHeight: 100, gap: 6, padding: 12,
                 transition: "border-color 0.15s",
@@ -170,9 +170,9 @@ export default function ComboPostForm({ initialValues, color = "#ff6b2b", onSubm
                   : <img src={preview} style={{ maxHeight: 120, maxWidth: "100%", borderRadius: 6, objectFit: "contain" }} alt="preview" />
               ) : (
                 <>
-                  <span style={{ fontSize: 22, color: "#2a2a3e" }}>↑</span>
-                  <span style={{ fontSize: 12, color: "#555" }}>ドラッグ&ドロップ または クリックで選択</span>
-                  <span style={{ fontSize: 10, color: "#333" }}>動画: MP4, WebM（最大50MB）/ 画像: JPG, PNG, GIF, WebP（最大5MB）</span>
+                  <span style={{ fontSize: 22, color: "var(--border)" }}>↑</span>
+                  <span style={{ fontSize: 12, color: "var(--text-4)" }}>ドラッグ&ドロップ または クリックで選択</span>
+                  <span style={{ fontSize: 10, color: "var(--text-6)" }}>動画: MP4, WebM（最大50MB）/ 画像: JPG, PNG, GIF, WebP（最大5MB）</span>
                 </>
               )}
             </div>
@@ -191,7 +191,7 @@ export default function ComboPostForm({ initialValues, color = "#ff6b2b", onSubm
               type="button" onClick={onClose}
               style={{
                 padding: "7px 20px", borderRadius: 6, fontSize: 12, cursor: "pointer",
-                background: "transparent", border: "1px solid #2a2a3e", color: "#555",
+                background: "transparent", border: "1px solid var(--border)", color: "var(--text-4)",
               }}
             >キャンセル</button>
             <button

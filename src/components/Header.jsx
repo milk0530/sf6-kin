@@ -1,8 +1,8 @@
-export default function Header({ char, sidebarOpen, onToggleSidebar }) {
+export default function Header({ char, sidebarOpen, onToggleSidebar, darkMode, onToggleTheme }) {
   return (
     <header style={{
-      background: "#13131f",
-      borderBottom: "1px solid #2a2a3e",
+      background: "var(--bg-surface)",
+      borderBottom: "1px solid var(--border)",
       padding: "0 16px",
       height: 50,
       display: "flex",
@@ -14,15 +14,15 @@ export default function Header({ char, sidebarOpen, onToggleSidebar }) {
         onClick={onToggleSidebar}
         style={{
           background: "transparent",
-          border: "1px solid #2a2a3e",
+          border: "1px solid var(--border)",
           borderRadius: 6,
           width: 32, height: 32,
           display: "flex", alignItems: "center", justifyContent: "center",
-          cursor: "pointer", color: "#555", fontSize: 11,
+          cursor: "pointer", color: "var(--text-4)", fontSize: 11,
           transition: "all 0.15s",
         }}
-        onMouseEnter={e => { e.currentTarget.style.background = "#1e1e2e"; e.currentTarget.style.color = char.color; }}
-        onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#555"; }}
+        onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-hover)"; e.currentTarget.style.color = char.color; }}
+        onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-4)"; }}
       >
         {sidebarOpen ? "◀" : "▶"}
       </button>
@@ -38,9 +38,27 @@ export default function Header({ char, sidebarOpen, onToggleSidebar }) {
         SF6支部
       </span>
 
-      <span style={{ fontSize: 11, color: "#2a2a3e", whiteSpace: "nowrap", marginLeft: "auto" }}>
+      <span style={{ fontSize: 11, color: "var(--text-dim)", whiteSpace: "nowrap", marginLeft: "auto" }}>
         by ミルク
       </span>
+
+      <button
+        onClick={onToggleTheme}
+        title={darkMode ? "ライトモードに切り替え" : "ダークモードに切り替え"}
+        style={{
+          background: "transparent",
+          border: "1px solid var(--border)",
+          borderRadius: 6,
+          width: 32, height: 32,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          cursor: "pointer", fontSize: 14,
+          transition: "all 0.15s",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-hover)"; }}
+        onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+      >
+        {darkMode ? "☀️" : "🌙"}
+      </button>
     </header>
   );
 }

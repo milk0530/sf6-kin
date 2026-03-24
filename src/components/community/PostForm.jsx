@@ -6,14 +6,14 @@ const OVERLAY = {
   zIndex: 1000,
 };
 const MODAL = {
-  background: "#13131f", border: "1px solid #2a2a3e", borderRadius: 14,
+  background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 14,
   padding: "28px 28px 24px", width: 480, maxWidth: "90vw",
   display: "flex", flexDirection: "column", gap: 14,
 };
-const LABEL = { fontSize: 11, color: "#888", marginBottom: 4, display: "block" };
+const LABEL = { fontSize: 11, color: "var(--text-2)", marginBottom: 4, display: "block" };
 const INPUT = {
-  width: "100%", background: "#0e0e16", border: "1px solid #2a2a3e",
-  borderRadius: 6, color: "#e8e8f0", fontSize: 12, padding: "7px 10px",
+  width: "100%", background: "var(--bg)", border: "1px solid var(--border)",
+  borderRadius: 6, color: "var(--text)", fontSize: 12, padding: "7px 10px",
   outline: "none", boxSizing: "border-box",
 };
 const TEXTAREA = { ...INPUT, resize: "vertical", minHeight: 72 };
@@ -52,10 +52,10 @@ export default function PostForm({ title, fields, initialValues, onSubmit, onClo
     <div style={OVERLAY} onClick={e => e.target === e.currentTarget && onClose()}>
       <div style={MODAL}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: 14, fontWeight: 700, color: "#e8e8f0" }}>{title}</span>
+          <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>{title}</span>
           <button
             onClick={onClose}
-            style={{ background: "none", border: "none", color: "#555", fontSize: 18, cursor: "pointer" }}
+            style={{ background: "none", border: "none", color: "var(--text-4)", fontSize: 18, cursor: "pointer" }}
           >×</button>
         </div>
 
@@ -77,7 +77,7 @@ export default function PostForm({ title, fields, initialValues, onSubmit, onClo
                 >
                   <option value="">選択…</option>
                   {(f.options ?? []).map(o => (
-                    <option key={o} value={o}>{o}</option>
+                    <option key={o} value={o}>{f.optionLabels?.[o] ?? o}</option>
                   ))}
                 </select>
               ) : (
@@ -97,7 +97,7 @@ export default function PostForm({ title, fields, initialValues, onSubmit, onClo
               onClick={onClose}
               style={{
                 padding: "7px 18px", borderRadius: 6, fontSize: 12, cursor: "pointer",
-                background: "transparent", border: "1px solid #2a2a3e", color: "#555",
+                background: "transparent", border: "1px solid var(--border)", color: "var(--text-4)",
               }}
             >キャンセル</button>
             <button

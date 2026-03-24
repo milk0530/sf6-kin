@@ -1,5 +1,5 @@
 const S = {
-  card:   { background: "#13131f", border: "1px solid #2a2a3e", borderRadius: 12 },
+  card:   { background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 12 },
   label:  { fontSize: 10, fontWeight: 700, letterSpacing: 1, marginBottom: 8 },
 };
 
@@ -8,32 +8,32 @@ export default function TopPage({ data, char }) {
     <div>
       {/* 概要 */}
       <div style={{ ...S.card, padding: 20, marginBottom: 14 }}>
-        <h2 style={{ ...S.label, color: "#fff", marginBottom: 10 }}>キャラクター概要</h2>
-        <p style={{ fontSize: 13, color: "#888", lineHeight: 1.85 }}>{data.overview}</p>
+        <h2 style={{ ...S.label, color: "var(--text-white)", marginBottom: 10 }}>キャラクター概要</h2>
+        <p style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.85 }}>{data.overview}</p>
       </div>
 
       {/* 基本ステータス */}
       <div style={{ ...S.card, padding: 18, marginBottom: 14 }}>
-        <h3 style={{ ...S.label, color: "#fff" }}>基本ステータス</h3>
+        <h3 style={{ ...S.label, color: "var(--text-white)" }}>基本ステータス</h3>
 
         {/* 体力 */}
         <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 16 }}>
-          <span style={{ fontSize: 11, color: "#555" }}>体力</span>
+          <span style={{ fontSize: 11, color: "var(--text-4)" }}>体力</span>
           <span style={{ fontSize: 36, fontWeight: 900, color: char.color, letterSpacing: 2 }}>
             {data.hp.toLocaleString()}
           </span>
-          <span style={{ fontSize: 13, color: "#555" }}>HP</span>
+          <span style={{ fontSize: 13, color: "var(--text-4)" }}>HP</span>
         </div>
 
         {/* その他ステータス */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8 }}>
           {data.stats.map(s => (
             <div key={s.label} style={{
-              background: "#0e0e16", border: "1px solid #2a2a3e",
+              background: "var(--bg)", border: "1px solid var(--border)",
               borderRadius: 8, padding: "10px 14px",
               display: "flex", alignItems: "center", justifyContent: "space-between",
             }}>
-              <span style={{ fontSize: 11, color: "#555" }}>{s.label}</span>
+              <span style={{ fontSize: 11, color: "var(--text-4)" }}>{s.label}</span>
               <span style={{
                 fontSize: 14, fontWeight: 700,
                 color: s.value === "無" ? "#e74c3c" : s.value === "有" ? "#27ae60" : char.color,
@@ -50,7 +50,7 @@ export default function TopPage({ data, char }) {
         <div style={{ ...S.card, padding: 18 }}>
           <h3 style={{ ...S.label, color: "#27ae60" }}>▲ 強み</h3>
           {data.strengths.map((s, i) => (
-            <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8, fontSize: 12, color: "#bbb", alignItems: "flex-start" }}>
+            <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8, fontSize: 12, color: "var(--text-sub)", alignItems: "flex-start" }}>
               <span style={{ color: "#27ae60", flexShrink: 0, marginTop: 1 }}>✓</span>{s}
             </div>
           ))}
@@ -58,7 +58,7 @@ export default function TopPage({ data, char }) {
         <div style={{ ...S.card, padding: 18 }}>
           <h3 style={{ ...S.label, color: "#e74c3c" }}>▼ 弱み</h3>
           {data.weaknesses.map((s, i) => (
-            <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8, fontSize: 12, color: "#bbb", alignItems: "flex-start" }}>
+            <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8, fontSize: 12, color: "var(--text-sub)", alignItems: "flex-start" }}>
               <span style={{ color: "#e74c3c", flexShrink: 0, marginTop: 1 }}>✕</span>{s}
             </div>
           ))}
@@ -67,7 +67,7 @@ export default function TopPage({ data, char }) {
 
       {/* クラシック / モダンの違い */}
       <div style={{ ...S.card, padding: 18 }}>
-        <h3 style={{ ...S.label, color: "#fff" }}>🕹️ クラシック / ⚡ モダンの違い</h3>
+        <h3 style={{ ...S.label, color: "var(--text-white)" }}>🕹️ クラシック / ⚡ モダンの違い</h3>
 
         {/* モダンで使えない通常技 */}
         <div style={{ marginBottom: 14 }}>
@@ -107,13 +107,13 @@ export default function TopPage({ data, char }) {
 
         {/* クラシックとモダンの比較 */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          <div style={{ background: "#0e0e16", border: "1px solid #2a2a3e", borderRadius: 8, padding: "12px 14px" }}>
-            <div style={{ fontSize: 11, color: "#888", fontWeight: 700, marginBottom: 8 }}>🕹️ クラシックが有利な点</div>
-            <p style={{ fontSize: 12, color: "#666", lineHeight: 1.75 }}>{data.classicAdvantage}</p>
+          <div style={{ background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 8, padding: "12px 14px" }}>
+            <div style={{ fontSize: 11, color: "var(--text-2)", fontWeight: 700, marginBottom: 8 }}>🕹️ クラシックが有利な点</div>
+            <p style={{ fontSize: 12, color: "var(--text-3)", lineHeight: 1.75 }}>{data.classicAdvantage}</p>
           </div>
-          <div style={{ background: "#0e0e16", border: "1px solid #2a2a3e", borderRadius: 8, padding: "12px 14px" }}>
-            <div style={{ fontSize: 11, color: "#888", fontWeight: 700, marginBottom: 8 }}>⚡ モダンが有利な点</div>
-            <p style={{ fontSize: 12, color: "#666", lineHeight: 1.75 }}>{data.modernAdvantage}</p>
+          <div style={{ background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 8, padding: "12px 14px" }}>
+            <div style={{ fontSize: 11, color: "var(--text-2)", fontWeight: 700, marginBottom: 8 }}>⚡ モダンが有利な点</div>
+            <p style={{ fontSize: 12, color: "var(--text-3)", lineHeight: 1.75 }}>{data.modernAdvantage}</p>
           </div>
         </div>
       </div>

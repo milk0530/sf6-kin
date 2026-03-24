@@ -35,7 +35,7 @@ function InlineText({ text }) {
             : <span key={i}>{p.val}</span>
         );
         return seg.bold
-          ? <strong key={si} style={{ color: "#e8e8f0", fontWeight: 700 }}>{inner}</strong>
+          ? <strong key={si} style={{ color: "var(--text)", fontWeight: 700 }}>{inner}</strong>
           : <span key={si}>{inner}</span>;
       })}
     </>
@@ -115,25 +115,25 @@ export default function ArticleRenderer({ article, color = "#ff6b2b" }) {
   return (
     <div>
       {article.title && (
-        <h1 style={{ fontSize: 18, fontWeight: 700, color: "#fff", marginBottom: 4, marginTop: 0 }}>
+        <h1 style={{ fontSize: 18, fontWeight: 700, color: "var(--text-white)", marginBottom: 4, marginTop: 0 }}>
           {article.title}
         </h1>
       )}
       {article.author && (
-        <p style={{ fontSize: 11, color: "#444", marginBottom: 28, marginTop: 0 }}>by {article.author}</p>
+        <p style={{ fontSize: 11, color: "var(--text-5)", marginBottom: 28, marginTop: 0 }}>by {article.author}</p>
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         {blocks.length === 0 && (
-          <p style={{ color: "#2a2a3e", fontSize: 13, textAlign: "center", padding: "48px 0" }}>
+          <p style={{ color: "var(--text-dim)", fontSize: 13, textAlign: "center", padding: "48px 0" }}>
             まだ記事がありません
           </p>
         )}
         {blocks.map((block, i) => {
           if (block.type === "h2") return (
             <h2 key={i} style={{
-              fontSize: 15, fontWeight: 700, color: "#e8e8f0",
-              borderBottom: "1px solid #2a2a3e", paddingBottom: 8, margin: "6px 0 0",
+              fontSize: 15, fontWeight: 700, color: "var(--text)",
+              borderBottom: "1px solid var(--border)", paddingBottom: 8, margin: "6px 0 0",
             }}>{block.text}</h2>
           );
 
@@ -142,29 +142,29 @@ export default function ArticleRenderer({ article, color = "#ff6b2b" }) {
               <h3 style={{ fontSize: 13, fontWeight: 700, color, margin: 0 }}>{block.text}</h3>
               {block.command && (
                 <>
-                  <span style={{ fontSize: 11, color: "#444" }}>（</span>
+                  <span style={{ fontSize: 11, color: "var(--text-5)" }}>（</span>
                   <CommandRenderer command={block.command} />
-                  <span style={{ fontSize: 11, color: "#444" }}>）</span>
+                  <span style={{ fontSize: 11, color: "var(--text-5)" }}>）</span>
                 </>
               )}
             </div>
           );
 
           if (block.type === "p") return (
-            <p key={i} style={{ fontSize: 13, color: "#aaa", lineHeight: 1.85, margin: 0, whiteSpace: "pre-wrap" }}>
+            <p key={i} style={{ fontSize: 13, color: "var(--text-sub)", lineHeight: 1.85, margin: 0, whiteSpace: "pre-wrap" }}>
               <InlineText text={block.text} />
             </p>
           );
 
           if (block.type === "hr") return (
-            <hr key={i} style={{ border: "none", borderTop: "1px solid #2a2a3e", margin: "4px 0" }} />
+            <hr key={i} style={{ border: "none", borderTop: "1px solid var(--border)", margin: "4px 0" }} />
           );
 
           if (block.type === "image") return (
             <div key={i} style={{ marginTop: 4 }}>
               <img src={block.url} alt={block.caption} style={{ maxWidth: 220, borderRadius: 8, display: "block" }} />
               {block.caption && (
-                <p style={{ fontSize: 11, color: "#555", marginTop: 4, marginBottom: 0 }}>{block.caption}</p>
+                <p style={{ fontSize: 11, color: "var(--text-4)", marginTop: 4, marginBottom: 0 }}>{block.caption}</p>
               )}
             </div>
           );

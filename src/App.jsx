@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useFavorites } from "./hooks/useFavorites";
 import { CHARACTERS, CHAR_DATA, TABS } from "./data";
 
 import Header     from "./components/Header";
@@ -28,6 +29,15 @@ export default function App() {
   const [activeTab,   setActiveTab]   = useState("top");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showStats,   setShowStats]   = useState(false);
+  const [darkMode,    setDarkMode]    = useState(() => {
+    return localStorage.getItem("sf6_theme") !== "light";
+  });
+  const { favorites, toggle: toggleFav } = useFavorites();
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = darkMode ? "" : "light";
+    localStorage.setItem("sf6_theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
 
   const char = CHARACTERS.find(c => c.id === activeChar);
   const data = CHAR_DATA[activeChar];
@@ -51,8 +61,8 @@ export default function App() {
   return (
     <div style={{
       fontFamily: "sans-serif",
-      background: "#0e0e16",
-      color: "#e8e8f0",
+      background: "var(--bg)",
+      color: "var(--text)",
       height: "100vh",
       display: "flex",
       flexDirection: "column",
@@ -62,6 +72,8 @@ export default function App() {
         char={char}
         sidebarOpen={sidebarOpen}
         onToggleSidebar={() => setSidebarOpen(v => !v)}
+        darkMode={darkMode}
+        onToggleTheme={() => setDarkMode(v => !v)}
       />
 
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
@@ -71,6 +83,8 @@ export default function App() {
           onCharChange={handleCharChange}
           showStats={showStats}
           onShowStats={() => setShowStats(v => !v)}
+          favorites={favorites}
+          onToggleFav={toggleFav}
         />
 
         <main style={{ flex: 1, minWidth: 0, overflowY: "auto", padding: "24px 28px" }}>
@@ -84,14 +98,16 @@ export default function App() {
                 char={char}
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
+                isFav={favorites.includes(activeChar)}
+                onToggleFav={() => toggleFav(activeChar)}
               />
 
               {!isWip && (
                 <div style={{ marginBottom: 16 }}>
-                  <h1 style={{ fontSize: 16, fontWeight: 700, color: "#fff", marginBottom: 3 }}>
+                  <h1 style={{ fontSize: 16, fontWeight: 700, color: "var(--text-white)", marginBottom: 3 }}>
                     {pageTitle()}
                   </h1>
-                  <p style={{ fontSize: 11, color: "#2a2a3e" }}>Street Fighter 6 攻略情報</p>
+                  <p style={{ fontSize: 11, color: "var(--text-dim)" }}>Street Fighter 6 攻略情報</p>
                 </div>
               )}
 
@@ -107,16 +123,16 @@ export default function App() {
       </div>
 
       <footer style={{
-        background: "#0a0a12",
-        borderTop: "1px solid #161626",
+        background: "var(--bg-deep)",
+        borderTop: "1px solid var(--bg-active)",
         padding: "11px 28px",
         flexShrink: 0,
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
       }}>
-        <div style={{ fontSize: 11, color: "#2a2a3e" }}>🚬 喫煙所 ~SF6支部~</div>
-        <div style={{ fontSize: 11, color: "#2a2a3e" }}>© 2026 ミルク All rights reserved.</div>
+        <div style={{ fontSize: 11, color: "var(--text-dim)" }}>🚬 喫煙所 ~SF6支部~</div>
+        <div style={{ fontSize: 11, color: "var(--text-dim)" }}>© 2026 ミルク All rights reserved.</div>
       </footer>
     </div>
   );
