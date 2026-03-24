@@ -20,8 +20,14 @@ export function useCombos(charId, mode) {
 
   useEffect(() => { fetch(); }, [fetch]);
 
+  const sanitize = (row) => Object.fromEntries(
+    Object.entries(row).map(([k, v]) => [k, v === "" ? null : v])
+  );
+
   const add = async (row) => {
-    const { error } = await supabase.from("combos").insert({ ...row, char_id: charId, mode });
+    const s = sanitize(row);
+    if (!s.starter) s.starter = "その他";
+    const { error } = await supabase.from("combos").insert({ ...s, char_id: charId, mode });
     if (error) throw error;
     await fetch();
   };
@@ -32,7 +38,7 @@ export function useCombos(charId, mode) {
   };
 
   const update = async (id, row) => {
-    await supabase.from("combos").update(row).eq("id", id);
+    await supabase.from("combos").update(sanitize(row)).eq("id", id);
     await fetch();
   };
 

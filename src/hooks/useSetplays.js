@@ -20,8 +20,12 @@ export function useSetplays(charId, mode) {
 
   useEffect(() => { fetch(); }, [fetch]);
 
+  const sanitize = (row) => Object.fromEntries(
+    Object.entries(row).map(([k, v]) => [k, v === "" ? null : v])
+  );
+
   const add = async (row) => {
-    const { error } = await supabase.from("setplays").insert({ ...row, char_id: charId, mode });
+    const { error } = await supabase.from("setplays").insert({ ...sanitize(row), char_id: charId, mode });
     if (error) throw error;
     await fetch();
   };
@@ -32,7 +36,7 @@ export function useSetplays(charId, mode) {
   };
 
   const update = async (id, row) => {
-    await supabase.from("setplays").update(row).eq("id", id);
+    await supabase.from("setplays").update(sanitize(row)).eq("id", id);
     await fetch();
   };
 
