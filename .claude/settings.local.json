@@ -2,7 +2,16 @@
   "permissions": {
     "allow": [
       "Bash(npm run:*)",
-      "WebSearch"
+      "WebSearch",
+      "WebFetch(domain:note.com)",
+      "WebFetch(domain:takukakugamer.com)",
+      "WebFetch(domain:kamigame.jp)",
+      "WebFetch(domain:kimberly.game-info.wiki)",
+      "WebFetch(domain:gomokugenmai.digick.jp)",
+      "Bash(node scripts/seed-kimberly.mjs)",
+      "Bash(node -e \":*)",
+      "Bash(node scripts/seed-kimberly.mjs --delete)",
+      "Bash(node -e \"const https = require\\(''https''\\); const KEY = ''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvcW9oc2N1dnFtc2NteHlyZ29hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyNDAwMzksImV4cCI6MjA4OTgxNjAzOX0.GKc6Od5FYxZh-BYz5kYiqXIw48INQXPqEDT3WBY2jQU''; const del = \\(p\\) => new Promise\\(r => { const req = https.request\\({ hostname: ''hoqohscuvqmscmxyrgoa.supabase.co'', path: ''/rest/v1/'' + p + ''?char_id=eq.kimberly'', method: ''DELETE'', headers: { apikey: KEY, Authorization: ''Bearer '' + KEY } }, res => r\\(res.statusCode\\)\\); req.end\\(\\); }\\); Promise.all\\([del\\(''combos''\\), del\\(''setplays''\\)]\\).then\\(\\([c,s]\\) => { console.log\\(''combos:'', c, ''setplays:'', s\\); process.exit\\(0\\); }\\);\")"
     ]
   }
 }
