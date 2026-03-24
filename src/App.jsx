@@ -16,6 +16,7 @@ import MatchupPage from "./pages/MatchupPage";
 import WipPage     from "./pages/WipPage";
 import StatsPage   from "./pages/StatsPage";
 import HelpPage    from "./pages/HelpPage";
+import TweetPage   from "./pages/TweetPage";
 
 const PAGE_COMPONENTS = {
   top:     TopPage,
@@ -24,6 +25,7 @@ const PAGE_COMPONENTS = {
   setplay: SetplayPage,
   frame:   FramePage,
   matchup: MatchupPage,
+  tweet:   TweetPage,
 };
 
 export default function App() {

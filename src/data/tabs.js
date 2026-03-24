@@ -6,4 +6,5 @@ export const TABS = [
   { id: "setplay", label: "🔄 セットプレイ"  },
   { id: "frame",   label: "📊 フレーム表"   },
   { id: "matchup", label: "⚔️ 各キャラ対策" },
+  { id: "tweet",   label: "𝕏 ポスト保管"   },
 ];
