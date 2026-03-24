@@ -32,7 +32,9 @@
       "Bash(cp \"C:/Users/81903/Desktop/SF6icon/key-circle.png\" \"C:/Users/81903/Documents/sf6-dood/public/icons/motion-360.png\")",
       "Bash(python -c \":*)",
       "Bash(python -c \"import sys; sys.stdout.buffer.write\\(sys.stdin.buffer.read\\(\\)\\)\")",
-      "Bash(python scripts/convert_frames.py)"
+      "Bash(python scripts/convert_frames.py)",
+      "Bash(grep -l \"wip: true\" /c/Users/81903/Documents/sf6-dood/src/data/charData/*.js)",
+      "Bash(grep -h \"wip:\" /c/Users/81903/Documents/sf6-dood/src/data/charData/*.js)"
     ]
   }
 }

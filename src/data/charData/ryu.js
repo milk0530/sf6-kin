@@ -1,5 +1,5 @@
 const ryu = {
-  wip: true,
+  wip: false,
   overview: "",
   hp: 10000,
   stats: [],
