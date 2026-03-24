@@ -40,6 +40,7 @@ export default function ComboPostForm({ initialValues, color = "#ff6b2b", onSubm
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(iv.media_url ?? null);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
   const fileRef = useRef();
 
   const set = (k, v) => setValues(p => ({ ...p, [k]: v }));
@@ -63,6 +64,7 @@ export default function ComboPostForm({ initialValues, color = "#ff6b2b", onSubm
     e.preventDefault();
     if (!values.route.trim()) return;
     setSubmitting(true);
+    setError(null);
 
     let media_url = iv.media_url ?? null;
     if (file) {
@@ -79,9 +81,14 @@ export default function ComboPostForm({ initialValues, color = "#ff6b2b", onSubm
       }
     }
 
-    await onSubmit({ ...values, media_url });
-    setSubmitting(false);
-    onClose();
+    try {
+      await onSubmit({ ...values, media_url });
+      setSubmitting(false);
+      onClose();
+    } catch (err) {
+      setSubmitting(false);
+      setError(err.message ?? "投稿に失敗しました");
+    }
   };
 
   const isVideo = preview && (preview.includes(".mp4") || preview.includes(".webm") || file?.type?.startsWith("video"));
@@ -184,6 +191,13 @@ export default function ComboPostForm({ initialValues, color = "#ff6b2b", onSubm
               onChange={handleFile}
             />
           </Field>
+
+          {/* エラー */}
+          {error && (
+            <div style={{ fontSize: 12, color: "#e74c3c", background: "#2a0a0a", border: "1px solid #e74c3c44", borderRadius: 6, padding: "8px 12px" }}>
+              {error}
+            </div>
+          )}
 
           {/* ボタン */}
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 4 }}>

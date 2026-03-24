@@ -21,7 +21,8 @@ export function useSetplays(charId, mode) {
   useEffect(() => { fetch(); }, [fetch]);
 
   const add = async (row) => {
-    await supabase.from("setplays").insert({ ...row, char_id: charId, mode });
+    const { error } = await supabase.from("setplays").insert({ ...row, char_id: charId, mode });
+    if (error) throw error;
     await fetch();
   };
 
