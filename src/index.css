@@ -58,6 +58,24 @@ body {
   --text-dim:    #bbb;
 }
 
+/* フレーム表: 技名列の固定 */
+.frame-table td.sticky-col,
+.frame-table th.sticky-col {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+.frame-table th.sticky-col {
+  background: var(--bg);
+  z-index: 2;
+}
+.frame-table td.sticky-col {
+  background: var(--bg-surface);
+}
+.frame-table tr:hover td.sticky-col {
+  background: var(--bg-elevated);
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg); }

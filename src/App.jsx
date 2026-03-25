@@ -28,9 +28,20 @@ const PAGE_COMPONENTS = {
   tweet:   TweetPage,
 };
 
+const VALID_TABS = ["top", "move", "combo", "setplay", "frame", "matchup", "tweet"];
+
 export default function App() {
-  const [activeChar,  setActiveChar]  = useState(() => localStorage.getItem("sf6_last_char") ?? "kimberly");
-  const [activeTab,   setActiveTab]   = useState("top");
+  const [activeChar, setActiveChar] = useState(() => {
+    const p = new URLSearchParams(window.location.search);
+    const c = p.get("char");
+    if (c && CHARACTERS.find(ch => ch.id === c)) return c;
+    return localStorage.getItem("sf6_last_char") ?? "kimberly";
+  });
+  const [activeTab, setActiveTab] = useState(() => {
+    const p = new URLSearchParams(window.location.search);
+    const t = p.get("tab");
+    return t && VALID_TABS.includes(t) ? t : "top";
+  });
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showStats,   setShowStats]   = useState(false);
   const [showHelp,    setShowHelp]    = useState(false);
@@ -44,6 +55,13 @@ export default function App() {
     document.documentElement.dataset.theme = darkMode ? "" : "light";
     localStorage.setItem("sf6_theme", darkMode ? "dark" : "light");
   }, [darkMode]);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    params.set("char", activeChar);
+    if (activeTab !== "top") params.set("tab", activeTab);
+    history.replaceState(null, "", "?" + params.toString());
+  }, [activeChar, activeTab]);
 
   const char = CHARACTERS.find(c => c.id === activeChar);
   const data = CHAR_DATA[activeChar];

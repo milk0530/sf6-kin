@@ -1,4 +1,5 @@
 import CommandRenderer from "../ui/CommandRenderer";
+import { formatDate } from "../../utils/formatDate";
 
 function parseInline(text) {
   const parts = [];
@@ -119,9 +120,12 @@ export default function ArticleRenderer({ article, color = "#ff6b2b" }) {
           {article.title}
         </h1>
       )}
-      {article.author && (
-        <p style={{ fontSize: 11, color: "var(--text-5)", marginBottom: 28, marginTop: 0 }}>by {article.author}</p>
-      )}
+      <p style={{ fontSize: 11, color: "var(--text-5)", marginBottom: 28, marginTop: 0, display: "flex", gap: 12, flexWrap: "wrap" }}>
+        {article.author && <span>by {article.author}</span>}
+        {(article.updated_at || article.created_at) && (
+          <span>更新: {formatDate(article.updated_at ?? article.created_at)}</span>
+        )}
+      </p>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         {blocks.length === 0 && (

@@ -3,6 +3,7 @@ import CommandRenderer from "../ui/CommandRenderer";
 import SetplayPostForm from "./SetplayPostForm";
 import MediaModal from "./MediaModal";
 import { useIsMobile } from "../../hooks/useIsMobile";
+import { formatDate } from "../../utils/formatDate";
 
 export default function CommunitySetplayCard({ sp, index, color, onDelete, onUpdate, onSelect, selected }) {
   const [editing, setEditing] = useState(false);
@@ -102,8 +103,13 @@ export default function CommunitySetplayCard({ sp, index, color, onDelete, onUpd
             <p style={{ fontSize: 12, color: "var(--text-4)", margin: 0, lineHeight: 1.6 }}>{sp.note}</p>
           )}
 
-          {/* 編集・削除 */}
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }} onClick={e => e.stopPropagation()}>
+          {/* 編集・削除・日付 */}
+          <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 8 }} onClick={e => e.stopPropagation()}>
+            {sp.created_at && (
+              <span style={{ fontSize: 10, color: "var(--text-6)", marginRight: "auto" }}>
+                {formatDate(sp.created_at)}
+              </span>
+            )}
             <button
               onClick={() => setEditing(true)}
               style={{ background: "none", border: "none", color: "var(--text-5)", cursor: "pointer", fontSize: 11, padding: "0 2px" }}

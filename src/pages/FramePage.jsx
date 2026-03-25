@@ -203,11 +203,11 @@ export default function FramePage({ data, char, defaultMode = "classic" }) {
               </h3>
 
               <div style={{ background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden", overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+                <table className="frame-table" style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
                   <thead>
                     <tr style={{ background: "var(--bg)" }}>
                       {HEADERS.map(h => (
-                        <th key={h} style={{
+                        <th key={h} className={h === "技名" ? "sticky-col" : undefined} style={{
                           padding: "9px 12px", color: "var(--text-5)", fontWeight: 700,
                           textAlign: "left", borderBottom: "1px solid var(--border)",
                           letterSpacing: 0.5, whiteSpace: "nowrap",
@@ -225,7 +225,7 @@ export default function FramePage({ data, char, defaultMode = "classic" }) {
                         onMouseEnter={e => (e.currentTarget.style.background = "var(--bg-elevated)")}
                         onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                       >
-                        <td style={{ padding: "9px 12px", color: "var(--text)", fontWeight: 700, whiteSpace: "nowrap" }}>{m.label}</td>
+                        <td className="sticky-col" style={{ padding: "9px 12px", color: "var(--text)", fontWeight: 700, whiteSpace: "nowrap" }}>{m.label}</td>
                         <td style={{ padding: "9px 12px", whiteSpace: "nowrap" }}><CommandRenderer command={m.command ?? "-"} /></td>
                         <td style={{ padding: "9px 12px", color: "#ff6b2b", whiteSpace: "nowrap" }}>
                           {m.startup != null && m.startup !== "-" ? (typeof m.startup === "number" ? m.startup + "F" : m.startup) : "-"}
