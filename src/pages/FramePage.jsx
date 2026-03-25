@@ -100,8 +100,14 @@ export default function FramePage({ data, char, defaultMode = "classic" }) {
                 background: active ? color + "22" : "transparent",
                 color: active ? color : "var(--text-4)",
                 fontWeight: active ? 700 : 400, transition: "all 0.15s",
+                display: "flex", alignItems: "center", gap: 6,
               }}
             >
+              <img
+                src={key === "classic" ? "/icons/mode-classic.png" : "/icons/mode-modern.png"}
+                width={16} height={16} draggable={false}
+                style={{ verticalAlign: "middle" }}
+              />
               {label}
             </button>
           );

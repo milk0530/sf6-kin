@@ -45,7 +45,9 @@
       "WebFetch(domain:www.gamingdeputy.com)",
       "WebFetch(domain:game.capcom.com)",
       "WebFetch(domain:www.streetfighter.com)",
-      "WebFetch(domain:dood.jp)"
+      "WebFetch(domain:dood.jp)",
+      "Bash(cp /c/Users/81903/Desktop/contrsf66/icon_controltype0.png /c/Users/81903/Documents/sf6-dood/public/icons/mode-classic.png)",
+      "Bash(cp /c/Users/81903/Desktop/contrsf66/icon_controltype1.png /c/Users/81903/Documents/sf6-dood/public/icons/mode-modern.png)"
     ]
   }
 }

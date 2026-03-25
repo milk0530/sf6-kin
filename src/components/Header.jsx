@@ -60,8 +60,11 @@ export default function Header({ char, sidebarOpen, onToggleSidebar, darkMode, o
         onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-hover)"; }}
         onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
       >
-        <span style={{ fontSize: 13 }}>{defaultMode === "classic" ? "🕹️" : "⚡"}</span>
-        {defaultMode === "classic" ? "C" : "M"}
+        <img
+          src={defaultMode === "classic" ? "/icons/mode-classic.png" : "/icons/mode-modern.png"}
+          width={18} height={18} draggable={false}
+          style={{ verticalAlign: "middle" }}
+        />
       </button>
 
       <button

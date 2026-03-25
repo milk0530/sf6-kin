@@ -20,7 +20,13 @@ export default function ModeToggle({ mode, onChange, color = "#ff6b2b" }) {
               transition: "all 0.15s",
             }}
           >
-            {m === "classic" ? "🕹️ クラシック" : "⚡ モダン"}
+            <img
+              src={m === "classic" ? "/icons/mode-classic.png" : "/icons/mode-modern.png"}
+              width={18} height={18}
+              draggable={false}
+              style={{ verticalAlign: "middle", marginRight: 6 }}
+            />
+            {m === "classic" ? "クラシック" : "モダン"}
           </button>
         );
       })}
