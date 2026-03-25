@@ -1,7 +1,7 @@
 const sagat = {
   wip: false,
   overview: "",
-  hp: 11000,
+  hp: 10000,
   stats: [],
   strengths: [],
   weaknesses: [],

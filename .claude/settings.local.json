@@ -39,7 +39,13 @@
       "Bash(cp /c/Users/81903/Desktop/SF6chara/character_alex_l.png /c/Users/81903/Documents/sf6-dood/public/chara/alex.png)",
       "Bash(cp /c/Users/81903/Desktop/SF6chara/character_blanka_l.png /c/Users/81903/Documents/sf6-dood/public/chara/blanka.png)",
       "Bash(cp /c/Users/81903/Desktop/SF6chara/character_cammy_l.png /c/Users/81903/Documents/sf6-dood/public/chara/cammy.png)",
-      "Bash(cp /c/Users/81903/Desktop/SF6chara/character_chunli_l.png /c/Users/81903/Documents/sf6-dood/public/chara/chunli.png)"
+      "Bash(cp /c/Users/81903/Desktop/SF6chara/character_chunli_l.png /c/Users/81903/Documents/sf6-dood/public/chara/chunli.png)",
+      "WebFetch(domain:exputer.com)",
+      "WebFetch(domain:game-logbook.com)",
+      "WebFetch(domain:www.gamingdeputy.com)",
+      "WebFetch(domain:game.capcom.com)",
+      "WebFetch(domain:www.streetfighter.com)",
+      "WebFetch(domain:dood.jp)"
     ]
   }
 }

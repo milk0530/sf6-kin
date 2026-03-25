@@ -1,7 +1,7 @@
 const blanka = {
   wip: false,
   overview: "",
-  hp: 10500,
+  hp: 10000,
   stats: [],
   strengths: [],
   weaknesses: [],

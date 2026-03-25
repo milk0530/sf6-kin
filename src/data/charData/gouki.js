@@ -1,7 +1,7 @@
 const gouki = {
   wip: false,
   overview: "",
-  hp: 10000,
+  hp: 9000,
   stats: [],
   strengths: [],
   weaknesses: [],

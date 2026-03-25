@@ -1,7 +1,7 @@
 const marisa = {
   wip: false,
   overview: "",
-  hp: 11000,
+  hp: 10500,
   stats: [],
   strengths: [],
   weaknesses: [],

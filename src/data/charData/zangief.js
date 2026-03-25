@@ -1,7 +1,7 @@
 const zangief = {
   wip: false,
   overview: "",
-  hp: 11500,
+  hp: 11000,
   stats: [],
   strengths: [],
   weaknesses: [],
