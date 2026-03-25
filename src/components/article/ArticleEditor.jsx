@@ -16,7 +16,7 @@ const TOOLBAR_GROUPS = [
     buttons: [
       { label: "H2",  desc: "大見出し",   insert: (sel) => `\n## ${sel || "見出し"}\n` },
       { label: "H3",  desc: "小見出し",   insert: (sel) => `\n### ${sel || "小見出し"}\n` },
-      { label: "H3+コマンド", desc: "コマンド付き見出し", insert: (sel) => `\n### ${sel || "技名"} [コマンド]\n` },
+      { label: "H3+コマンド", desc: "コマンド付き見出し", insert: (sel) => `\n### ${sel || "技名"} [[コマンド]]\n` },
     ],
   },
   {
@@ -160,7 +160,7 @@ export default function ArticleEditor({ article, color = "#ff6b2b", onSave, onCl
         value={content}
         onChange={e => setContent(e.target.value)}
         spellCheck={false}
-        placeholder={`自由に書いてください。\n\n## 大見出し\n### 小見出し\n### 技名 [コマンド]\n\n[[コマンド]] でインライン表示\n**太字テキスト**\n![画像URL]\n---（区切り線）`}
+        placeholder={`自由に書いてください。\n\n## 大見出し（セクション）\n### 小見出し\n### 技名 [[236K]]  ← コマンドは [[ ]] で統一\n\n文中にも [[236K]] で使えます。\n**太字テキスト**\n---（◆ 区切り線）`}
         style={{
           ...INPUT, flex: 1, minHeight: isMobile ? 320 : 480,
           resize: "none", fontFamily: "monospace", lineHeight: 1.75, fontSize: 13,

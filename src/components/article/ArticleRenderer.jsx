@@ -76,11 +76,11 @@ function parseContent(content) {
       continue;
     }
 
-    // ### 小見出し（末尾 [cmd] 省略可）
+    // ### 小見出し（末尾 [[cmd]] または [cmd] 省略可）
     if (line.startsWith("### ")) {
       flushPara();
       const rest = line.slice(4);
-      const cmdMatch = rest.match(/\[(.+)\]\s*$/);
+      const cmdMatch = rest.match(/\[\[(.+?)\]\]\s*$/) ?? rest.match(/\[(.+?)\]\s*$/);
       if (cmdMatch) {
         blocks.push({ type: "h3", text: rest.slice(0, cmdMatch.index).trim(), command: cmdMatch[1] });
       } else {
@@ -157,7 +157,11 @@ export default function ArticleRenderer({ article, color = "#ff6b2b" }) {
           );
 
           if (block.type === "hr") return (
-            <hr key={i} style={{ border: "none", borderTop: "1px solid var(--border)", margin: "4px 0" }} />
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, margin: "8px 0" }}>
+              <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
+              <span style={{ fontSize: 9, color: "var(--text-6)", letterSpacing: 2 }}>◆</span>
+              <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
+            </div>
           );
 
           if (block.type === "image") return (

@@ -1,3 +1,5 @@
+import CommandRenderer from "../components/ui/CommandRenderer";
+
 const S = {
   card:    { background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 12, padding: "20px 24px", marginBottom: 14 },
   h2:      { fontSize: 14, fontWeight: 700, color: "var(--text-white)", marginBottom: 14, marginTop: 0, display: "flex", alignItems: "center", gap: 8 },
@@ -124,6 +126,148 @@ export default function HelpPage() {
         />
       </Section>
 
+      {/* コマンド対応表 */}
+      <Section emoji="🕹️" title="コマンド入力対応表">
+        <p style={S.p}>コンボ・セットプレイ・記事のコマンド欄で使える記法の一覧です。</p>
+
+        {/* 方向入力 */}
+        <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-4)", marginBottom: 8, marginTop: 4, letterSpacing: 1 }}>方向入力（テンキー or 矢印どちらでも可）</div>
+        <div style={{
+          display: "grid", gridTemplateColumns: "repeat(3, 1fr)",
+          gap: 4, maxWidth: 200, marginBottom: 16,
+        }}>
+          {[["7↖","8↑","9↗"],["4←","5N","6→"],["1↙","2↓","3↘"]].map((row, ri) =>
+            row.map((cell, ci) => {
+              const [num, arrow] = [cell[0], cell.slice(1)];
+              return (
+                <div key={`${ri}-${ci}`} style={{
+                  background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 6,
+                  padding: "6px 4px", display: "flex", flexDirection: "column",
+                  alignItems: "center", gap: 4,
+                }}>
+                  <CommandRenderer command={num} />
+                  <span style={{ fontSize: 9, color: "var(--text-5)" }}>{num} / {arrow}</span>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* ボタン */}
+        <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-4)", marginBottom: 8, letterSpacing: 1 }}>ボタン（日本語・英語どちらでも同じアイコン）</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
+          {[
+            ["弱P / LP", "弱P"],
+            ["中P / MP", "中P"],
+            ["強P / HP", "強P"],
+            ["弱K / LK", "弱K"],
+            ["中K / MK", "中K"],
+            ["強K / HK", "強K"],
+            ["P（パンチ）", "P"],
+            ["K（キック）", "K"],
+          ].map(([label, cmd]) => (
+            <div key={cmd} style={{
+              background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 6,
+              padding: "6px 10px", display: "flex", alignItems: "center", gap: 6,
+            }}>
+              <CommandRenderer command={cmd} />
+              <span style={{ fontSize: 10, color: "var(--text-4)" }}>{label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* モダン */}
+        <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-4)", marginBottom: 8, letterSpacing: 1 }}>モダン操作（弱/L・中/M・強/H どちらでも可）</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
+          {[["弱 / L", "弱"], ["中 / M", "中"], ["強 / H", "強"], ["SP（必殺技）", "SP"], ["ANY（何でも攻撃）", "ANY"], ["AUTO", "AUTO"]].map(([label, cmd]) => (
+            <div key={cmd} style={{
+              background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 6,
+              padding: "6px 10px", display: "flex", alignItems: "center", gap: 6,
+            }}>
+              <CommandRenderer command={cmd} />
+              <span style={{ fontSize: 10, color: "var(--text-4)" }}>{label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* 溜め */}
+        <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-4)", marginBottom: 8, letterSpacing: 1 }}>溜め入力（[ ] で囲む）</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
+          {[
+            ["[4]6LP → ソニックブーム風", "[4]6LP"],
+            ["[2]8LK → フラッシュキック風", "[2]8LK"],
+          ].map(([label, cmd]) => (
+            <div key={cmd} style={{
+              background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 6,
+              padding: "6px 10px", display: "flex", alignItems: "center", gap: 6,
+            }}>
+              <CommandRenderer command={cmd} />
+              <span style={{ fontSize: 10, color: "var(--text-4)" }}>{label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* モーションショートカット */}
+        <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-4)", marginBottom: 8, letterSpacing: 1 }}>モーションショートカット</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
+          {[
+            ["QCF（236）", "QCF"],
+            ["QCB（214）", "QCB"],
+            ["360", "360"],
+          ].map(([label, cmd]) => (
+            <div key={cmd} style={{
+              background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 6,
+              padding: "6px 10px", display: "flex", alignItems: "center", gap: 6,
+            }}>
+              <CommandRenderer command={cmd} />
+              <span style={{ fontSize: 10, color: "var(--text-4)" }}>{label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* バッジ */}
+        <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-4)", marginBottom: 8, letterSpacing: 1 }}>特殊バッジ</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
+          {[
+            ["SA1 / SA2 / SA3", "SA1"], ["CA", "CA"],
+            ["OD（オーバードライブ）", "OD"],
+            ["DI（ドライブインパクト）", "DI"],
+            ["DP（ドライブパリィ）", "DP"],
+            ["DASH（ダッシュ）", "DASH"],
+            ["3x（3回）", "3x"],
+          ].map(([label, cmd]) => (
+            <div key={cmd} style={{
+              background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 6,
+              padding: "6px 10px", display: "flex", alignItems: "center", gap: 6,
+            }}>
+              <CommandRenderer command={cmd} />
+              <span style={{ fontSize: 10, color: "var(--text-4)" }}>{label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* セパレータ */}
+        <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-4)", marginBottom: 8, letterSpacing: 1 }}>セパレータ・修飾</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+          {[
+            ["＋ 同時押し", "LP+LK"],
+            ["▶ or > 連続入力", "236LP>CA"],
+            ["J. ジャンプ", "J.HP"],
+            ["投（投げ）", "投"],
+            ["N（ニュートラル）", "N"],
+            ["（メモ）コンテキスト", "236LP（ヒット確認）"],
+          ].map(([label, cmd]) => (
+            <div key={label} style={{
+              background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 6,
+              padding: "6px 10px", display: "flex", alignItems: "center", gap: 6,
+            }}>
+              <CommandRenderer command={cmd} />
+              <span style={{ fontSize: 10, color: "var(--text-4)" }}>{label}</span>
+            </div>
+          ))}
+        </div>
+      </Section>
+
       {/* 対策記事 */}
       <Section emoji="📝" title="記事の書き方（立ち回り・対策）">
         <Item
@@ -134,16 +278,16 @@ export default function HelpPage() {
         <div style={{ background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 8, padding: "12px 16px", marginTop: 8 }}>
           <div style={{ fontSize: 11, color: "var(--text-4)", marginBottom: 8, fontWeight: 700 }}>記事の書式</div>
           {[
-            ["## テキスト",        "大見出し"],
-            ["### テキスト",       "小見出し"],
-            ["### 技名 [コマンド]", "コマンド付き小見出し"],
-            ["**テキスト**",       "太字"],
-            ["[[コマンド]]",       "インラインコマンドアイコン"],
-            ["---",               "区切り線"],
-            ["![画像URL]",         "画像の挿入"],
+            ["## テキスト",           "大見出し（セクション区切り）"],
+            ["### テキスト",          "小見出し"],
+            ["### 技名 [[236K]]",     "コマンド付き小見出し"],
+            ["**テキスト**",          "太字"],
+            ["[[236K]]",             "コマンドアイコン（見出し・文中ともに統一）"],
+            ["---",                  "◆ 区切り線（同一セクション内の小区切り）"],
+            ["![画像URL]",            "画像の挿入"],
           ].map(([syntax, desc]) => (
             <div key={syntax} style={{ display: "flex", gap: 16, marginBottom: 5, alignItems: "baseline" }}>
-              <code style={{ fontSize: 11, color: "#5aad5a", fontFamily: "monospace", flexShrink: 0, minWidth: 180 }}>{syntax}</code>
+              <code style={{ fontSize: 11, color: "#5aad5a", fontFamily: "monospace", flexShrink: 0, minWidth: 190 }}>{syntax}</code>
               <span style={{ fontSize: 11, color: "var(--text-4)" }}>{desc}</span>
             </div>
           ))}
