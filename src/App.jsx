@@ -15,6 +15,7 @@ import FramePage   from "./pages/FramePage";
 import MatchupPage from "./pages/MatchupPage";
 import WipPage     from "./pages/WipPage";
 import StatsPage   from "./pages/StatsPage";
+import LegendPage  from "./pages/LegendPage";
 import HelpPage    from "./pages/HelpPage";
 import TweetPage   from "./pages/TweetPage";
 
@@ -44,6 +45,7 @@ export default function App() {
   });
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showStats,   setShowStats]   = useState(false);
+  const [showLegend,  setShowLegend]  = useState(false);
   const [showHelp,    setShowHelp]    = useState(false);
   const [darkMode,    setDarkMode]    = useState(() => {
     return localStorage.getItem("sf6_theme") !== "light";
@@ -72,6 +74,7 @@ export default function App() {
     setActiveTab("top");
     setShowStats(false);
     setShowHelp(false);
+    setShowLegend(false);
   };
 
   const pageTitle = () => {
@@ -112,7 +115,9 @@ export default function App() {
           activeChar={activeChar}
           onCharChange={handleCharChange}
           showStats={showStats}
-          onShowStats={() => { setShowStats(v => !v); setShowHelp(false); }}
+          onShowStats={() => { setShowStats(v => !v); setShowHelp(false); setShowLegend(false); }}
+          showLegend={showLegend}
+          onShowLegend={() => { setShowLegend(v => !v); setShowHelp(false); setShowStats(false); }}
           favorites={favorites}
           onToggleFav={toggleFav}
         />
@@ -125,6 +130,10 @@ export default function App() {
           ) : showStats ? (
             <div className="page-fade" key="stats">
               <StatsPage />
+            </div>
+          ) : showLegend ? (
+            <div className="page-fade" key="legend">
+              <LegendPage />
             </div>
           ) : (
             <>

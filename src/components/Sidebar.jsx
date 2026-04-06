@@ -76,7 +76,7 @@ function CharButton({ c, active, isFav, onSelect, onToggleFav }) {
   );
 }
 
-export default function Sidebar({ open, activeChar, onCharChange, showStats, onShowStats, favorites = [], onToggleFav }) {
+export default function Sidebar({ open, activeChar, onCharChange, showStats, onShowStats, showLegend, onShowLegend, favorites = [], onToggleFav }) {
   const favChars = CHARACTERS.filter(c => favorites.includes(c.id));
   const allChars = CHARACTERS;
 
@@ -94,7 +94,7 @@ export default function Sidebar({ open, activeChar, onCharChange, showStats, onS
       <div style={{ minWidth: 196, padding: "16px 0" }}>
 
         {/* 戦績ボタン */}
-        <div style={{ padding: "0 10px 12px" }}>
+        <div style={{ padding: "0 10px 6px" }}>
           <button
             onClick={onShowStats}
             style={{
@@ -128,6 +128,46 @@ export default function Sidebar({ open, activeChar, onCharChange, showStats, onS
               </div>
               <div style={{ fontSize: 9, color: showStats ? "#7c3aed88" : "var(--text-6)", letterSpacing: 1 }}>
                 BATTLE STATS
+              </div>
+            </div>
+          </button>
+        </div>
+
+        {/* レジェンドボタン */}
+        <div style={{ padding: "0 10px 12px" }}>
+          <button
+            onClick={onShowLegend}
+            style={{
+              width: "100%",
+              background: showLegend ? "#ff6b2b22" : "transparent",
+              border: showLegend ? "1px solid #ff6b2b66" : "1px solid var(--border)",
+              borderRadius: 10,
+              padding: "10px 12px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              transition: "all 0.15s",
+              fontFamily: "inherit",
+            }}
+            onMouseEnter={e => { if (!showLegend) { e.currentTarget.style.background = "var(--bg-hover)"; e.currentTarget.style.borderColor = "#ff6b2b44"; }}}
+            onMouseLeave={e => { if (!showLegend) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "var(--border)"; }}}
+          >
+            <div style={{
+              width: 36, height: 36, borderRadius: 9, flexShrink: 0,
+              background: showLegend ? "#ff6b2b33" : "#ff6b2b11",
+              border: `1px solid ${showLegend ? "#ff6b2b88" : "#ff6b2b33"}`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 18,
+            }}>
+              👑
+            </div>
+            <div style={{ textAlign: "left" }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: showLegend ? "#ff6b2b" : "var(--text-4)" }}>
+                レジェンド
+              </div>
+              <div style={{ fontSize: 9, color: showLegend ? "#ff6b2b88" : "var(--text-6)", letterSpacing: 1 }}>
+                LEGEND STATS
               </div>
             </div>
           </button>
