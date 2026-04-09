@@ -25,9 +25,14 @@ export function useSetplays(charId, mode) {
   );
 
   const add = async (row) => {
-    const { error } = await supabase.from("setplays").insert({ ...sanitize(row), char_id: charId, mode });
+    const { data, error } = await supabase
+      .from("setplays")
+      .insert({ ...sanitize(row), char_id: charId, mode })
+      .select("id")
+      .single();
     if (error) throw error;
     await fetch();
+    return data; // { id } を返す
   };
 
   const remove = async (id) => {

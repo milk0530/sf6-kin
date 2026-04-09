@@ -6,6 +6,9 @@ const FORM = {
   padding: "24px 24px 20px", width: "100%", boxSizing: "border-box",
   display: "flex", flexDirection: "column", gap: 14,
 };
+const FORM_MODAL_CHILD = {
+  ...FORM, borderRadius: "0 0 14px 14px", borderTop: "none",
+};
 const INPUT = {
   width: "100%", background: "var(--bg)", border: "1px solid var(--border)",
   borderRadius: 6, color: "var(--text)", fontSize: 12, padding: "8px 10px",
@@ -22,18 +25,20 @@ function Field({ label, required, children }) {
   );
 }
 
-export default function SetplayPostForm({ initialValues, color = "#ff6b2b", onSubmit, onClose }) {
+export default function SetplayPostForm({ initialValues, color = "#ff6b2b", onSubmit, onClose, combos = [], defaultComboId = null, asModalChild = false }) {
   const iv = initialValues ?? {};
   const [values, setValues] = useState({
     situation: iv.situation ?? "",
     title:     iv.title     ?? "",
     steps:     iv.steps     ?? "",
+    tags:      iv.tags      ?? "",
+    note:      iv.note      ?? "",
+    combo_id:  iv.combo_id  ?? defaultComboId ?? "",
+    // 既存データの互換性のため保持
     damage:    iv.damage    ?? "",
     down:      iv.down      ?? "",
     hit:       iv.hit       ?? "",
     guard:     iv.guard     ?? "",
-    tags:      iv.tags      ?? "",
-    note:      iv.note      ?? "",
   });
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(iv.media_url ?? null);
@@ -92,19 +97,34 @@ export default function SetplayPostForm({ initialValues, color = "#ff6b2b", onSu
   const isVideo = preview && (preview.includes(".mp4") || preview.includes(".webm") || file?.type?.startsWith("video"));
 
   return (
-    <div style={FORM}>
+    <div style={asModalChild ? FORM_MODAL_CHILD : FORM}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>
-          {initialValues ? "セットプレイを編集" : "セットプレイを投稿"}
+          {initialValues ? "起き攻めを編集" : "起き攻めを投稿"}
         </span>
         <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--text-4)", fontSize: 18, cursor: "pointer" }}>×</button>
       </div>
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        {/* コンボ選択（defaultComboIdがない場合のみ表示） */}
+        {combos.length > 0 && !defaultComboId && (
+          <Field label="紐付けるコンボ（省略可）">
+            <select style={INPUT} value={values.combo_id ?? ""} onChange={e => set("combo_id", e.target.value || null)}>
+              <option value="">コンボと紐付けない</option>
+              {combos.map(c => (
+                <option key={c.id} value={c.id}>
+                  {c.title || c.route || `コンボ #${c.id.slice(0, 6)}`}
+                  {c.starter ? ` (${c.starter})` : ""}
+                </option>
+              ))}
+            </select>
+          </Field>
+        )}
+
         {/* 状況 / タイトル */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          <Field label="状況（グループ名）" required>
-            <input style={INPUT} value={values.situation} onChange={e => set("situation", e.target.value)} placeholder="例: ダウン 17F" />
+          <Field label="状況" required>
+            <input style={INPUT} value={values.situation} onChange={e => set("situation", e.target.value)} placeholder="例: 投げ後, 画面端" />
           </Field>
           <Field label="タイトル">
             <input style={INPUT} value={values.title} onChange={e => set("title", e.target.value)} placeholder="例: 重ね択" />
@@ -117,40 +137,22 @@ export default function SetplayPostForm({ initialValues, color = "#ff6b2b", onSu
             style={{ ...INPUT, minHeight: 60, resize: "vertical" }}
             value={values.steps}
             onChange={e => set("steps", e.target.value)}
-            placeholder="例: 2MK > 214LP"
+            placeholder="例: 前ステ > 2MK重ね"
           />
         </Field>
 
-        {/* ダメージ / ダウンF */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          <Field label="ダメージ">
-            <input style={INPUT} value={values.damage} onChange={e => set("damage", e.target.value)} placeholder="例: 2800" />
-          </Field>
-          <Field label="ダウンF">
-            <input style={INPUT} value={values.down} onChange={e => set("down", e.target.value)} placeholder="例: 26F" />
-          </Field>
-        </div>
-
-        {/* HIT有利 / ガード有利 / タグ */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 2fr", gap: 10 }}>
-          <Field label="HIT有利">
-            <input style={INPUT} value={values.hit} onChange={e => set("hit", e.target.value)} placeholder="例: +4" />
-          </Field>
-          <Field label="ガード有利">
-            <input style={INPUT} value={values.guard} onChange={e => set("guard", e.target.value)} placeholder="例: -2" />
-          </Field>
-          <Field label="タグ（カンマ区切り）">
-            <input style={INPUT} value={values.tags} onChange={e => set("tags", e.target.value)} placeholder="例: 投げ後, 9F詐欺重ね" />
-          </Field>
-        </div>
+        {/* タグ */}
+        <Field label="タグ（カンマ区切り）">
+          <input style={INPUT} value={values.tags} onChange={e => set("tags", e.target.value)} placeholder="例: 詐欺重ね, 投げ択" />
+        </Field>
 
         {/* メモ */}
         <Field label="メモ">
           <textarea
-            style={{ ...INPUT, minHeight: 60, resize: "vertical" }}
+            style={{ ...INPUT, minHeight: 52, resize: "vertical" }}
             value={values.note}
             onChange={e => set("note", e.target.value)}
-            placeholder="補足説明など"
+            placeholder="補足があれば"
           />
         </Field>
 
@@ -164,7 +166,7 @@ export default function SetplayPostForm({ initialValues, color = "#ff6b2b", onSu
               border: "1.5px dashed var(--border)", borderRadius: 8,
               background: "var(--bg)", cursor: "pointer",
               display: "flex", flexDirection: "column", alignItems: "center",
-              justifyContent: "center", minHeight: 80, gap: 6, padding: 12,
+              justifyContent: "center", minHeight: 72, gap: 6, padding: 12,
             }}
           >
             {preview ? (
@@ -175,7 +177,6 @@ export default function SetplayPostForm({ initialValues, color = "#ff6b2b", onSu
               <>
                 <span style={{ fontSize: 20, color: "var(--border)" }}>↑</span>
                 <span style={{ fontSize: 12, color: "var(--text-4)" }}>ドラッグ&ドロップ または クリックで選択</span>
-                <span style={{ fontSize: 10, color: "var(--text-6)" }}>動画: MP4, WebM / 画像: JPG, PNG, GIF, WebP</span>
               </>
             )}
           </div>

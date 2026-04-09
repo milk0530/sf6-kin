@@ -32,87 +32,32 @@ export default function CommunityComboCard({ combo, index, color, onDelete, onUp
         style={{
           background: selected ? "var(--bg-elevated)" : "var(--bg)",
           border: `1px solid ${selected ? color + "55" : "var(--border-sub)"}`,
-          borderRadius: 10, padding: "12px 14px",
-          display: "flex", gap: 12, cursor: "pointer",
+          borderRadius: 8, padding: "9px 12px",
+          display: "flex", gap: 10, cursor: "pointer",
           transition: "all 0.12s",
         }}
       >
-        {/* 左: 番号 + ビデオアイコン */}
-        <div style={{
-          display: "flex", flexDirection: "column", alignItems: "center",
-          gap: 6, flexShrink: 0, paddingTop: 2,
-        }}>
+        {/* 左: 番号 */}
+        <div style={{ flexShrink: 0, paddingTop: 2 }}>
           <div style={{
-            width: 24, height: 24, borderRadius: 6,
+            width: 20, height: 20, borderRadius: 5,
             background: color + "22", border: `1px solid ${color}44`,
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 11, color, fontWeight: 700,
+            fontSize: 10, color, fontWeight: 700,
           }}>{index}</div>
-          <span style={{ fontSize: 11, color: hasMedia ? color + "88" : "var(--border)" }}>🎬</span>
         </div>
 
         {/* 中央: コンテンツ */}
-        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 8 }}>
-          {combo.title && (
-            <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text)" }}>{combo.title}</span>
-          )}
-
-          {/* コマンド */}
-          <div style={{
-            background: "var(--bg-surface)", border: "1px solid var(--border-sub)", borderRadius: 6,
-            padding: "8px 12px",
-          }}>
-            <CommandRenderer command={combo.route} />
-          </div>
-
-          {/* バッジ行 */}
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-            {combo.damage && (
-              <span style={{ fontSize: 12, color: "var(--text-2)" }}>
-                DMG <span style={{ color: "#22d3ee", fontWeight: 700 }}>{combo.damage}</span>
-              </span>
+        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 5 }}>
+          {/* タイトル + 編集・削除 を1行に */}
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }} onClick={e => e.stopPropagation()}>
+            {combo.title && (
+              <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text)" }}>{combo.title}</span>
             )}
-            {combo.down && (
-              <span style={{ fontSize: 12, color: "var(--text-2)" }}>
-                DOWN <span style={{ color: "var(--text)", fontWeight: 700 }}>{combo.down}</span>
-              </span>
-            )}
-            {combo.drive && (
-              <span style={{
-                fontSize: 10, padding: "2px 7px", borderRadius: 3,
-                background: "#0a2a2a", border: "1px solid #06b6d4", color: "#67e8f9",
-              }}>DR {combo.drive}</span>
-            )}
-            {combo.sa && (
-              <span style={{
-                fontSize: 10, padding: "2px 7px", borderRadius: 3,
-                background: "#1e1240", border: "1px solid #7c3aed", color: "#a78bfa",
-              }}>{combo.sa}</span>
-            )}
-            {diff && (
-              <span style={{
-                fontSize: 10, padding: "2px 7px", borderRadius: 3,
-                background: diffColor + "22", border: `1px solid ${diffColor}`, color: diffColor, fontWeight: 700,
-              }}>{diff}</span>
-            )}
-            {combo.tags && combo.tags.split(",").map(t => t.trim()).filter(Boolean).map(t => (
-              <span key={t} style={{
-                fontSize: 10, padding: "2px 7px", borderRadius: 3,
-                background: "var(--bg-elevated)", border: "1px solid var(--border)", color: "var(--text-4)",
-              }}>{t}</span>
-            ))}
-          </div>
-
-          {combo.note && (
-            <p style={{ fontSize: 12, color: "var(--text-4)", margin: 0, lineHeight: 1.6 }}>{combo.note}</p>
-          )}
-
-          {/* 編集・削除・日付 */}
-          <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 8 }} onClick={e => e.stopPropagation()}>
+            <span style={{ flex: 1 }} />
+            <span style={{ fontSize: 10, color: hasMedia ? color + "99" : "var(--border)" }}>🎬</span>
             {combo.created_at && (
-              <span style={{ fontSize: 10, color: "var(--text-6)", marginRight: "auto" }}>
-                {formatDate(combo.created_at)}
-              </span>
+              <span style={{ fontSize: 10, color: "var(--text-6)" }}>{formatDate(combo.created_at)}</span>
             )}
             <button
               onClick={() => setEditing(true)}
@@ -123,6 +68,58 @@ export default function CommunityComboCard({ combo, index, color, onDelete, onUp
               style={{ background: "none", border: "none", color: "var(--border)", cursor: "pointer", fontSize: 12, padding: "0 2px" }}
             >✕</button>
           </div>
+
+          {/* バッジ行 */}
+          <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+            {combo.damage && (
+              <span style={{ fontSize: 11, color: "var(--text-3)" }}>
+                <span style={{ color: "#22d3ee", fontWeight: 700 }}>{combo.damage}</span>
+                <span style={{ color: "var(--text-5)", fontSize: 10 }}>dmg</span>
+              </span>
+            )}
+            {combo.down && (
+              <span style={{ fontSize: 11, color: "var(--text-3)" }}>
+                <span style={{ color: "var(--text)", fontWeight: 700 }}>{combo.down}</span>
+                <span style={{ color: "var(--text-5)", fontSize: 10 }}>F↓</span>
+              </span>
+            )}
+            {combo.drive && (
+              <span style={{
+                fontSize: 10, padding: "1px 6px", borderRadius: 3,
+                background: "#0a2a2a", border: "1px solid #06b6d4", color: "#67e8f9",
+              }}>DR {combo.drive}</span>
+            )}
+            {combo.sa && (
+              <span style={{
+                fontSize: 10, padding: "1px 6px", borderRadius: 3,
+                background: "#1e1240", border: "1px solid #7c3aed", color: "#a78bfa",
+              }}>{combo.sa}</span>
+            )}
+            {diff && (
+              <span style={{
+                fontSize: 10, padding: "1px 6px", borderRadius: 3,
+                background: diffColor + "22", border: `1px solid ${diffColor}`, color: diffColor, fontWeight: 700,
+              }}>{diff}</span>
+            )}
+            {combo.tags && combo.tags.split(",").map(t => t.trim()).filter(Boolean).map(t => (
+              <span key={t} style={{
+                fontSize: 10, padding: "1px 6px", borderRadius: 3,
+                background: "var(--bg-elevated)", border: "1px solid var(--border)", color: "var(--text-4)",
+              }}>{t}</span>
+            ))}
+          </div>
+
+          {/* コマンド */}
+          <div style={{
+            background: "var(--bg-surface)", border: "1px solid var(--border-sub)", borderRadius: 5,
+            padding: "5px 10px",
+          }}>
+            <CommandRenderer command={combo.route} />
+          </div>
+
+          {combo.note && (
+            <p style={{ fontSize: 11, color: "var(--text-5)", margin: 0, lineHeight: 1.5 }}>{combo.note}</p>
+          )}
         </div>
 
         {/* 右: 再生ボタン */}
@@ -136,11 +133,11 @@ export default function CommunityComboCard({ combo, index, color, onDelete, onUp
           }}
         >
           <div style={{
-            width: 28, height: 28, borderRadius: 6,
+            width: 26, height: 26, borderRadius: 5,
             background: hasMedia ? color + "22" : "var(--bg-elevated)",
             border: `1px solid ${hasMedia ? color : "var(--border)"}`,
             display: "flex", alignItems: "center", justifyContent: "center",
-            color: hasMedia ? color : "var(--text-5)", fontSize: 12,
+            color: hasMedia ? color : "var(--text-5)", fontSize: 11,
             cursor: hasMedia ? "pointer" : "default",
           }}>▶</div>
         </div>

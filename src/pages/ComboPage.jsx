@@ -2,7 +2,11 @@ import { useState, useMemo } from "react";
 import ModeToggle from "../components/ui/ModeToggle";
 import CommunityComboCard from "../components/community/CommunityComboCard";
 import ComboPostForm from "../components/community/ComboPostForm";
+import SetplayLinkModal from "../components/community/SetplayLinkModal";
+import CommunitySetplayCard from "../components/community/CommunitySetplayCard";
 import { useCombos } from "../hooks/useCombos";
+import { useSetplays } from "../hooks/useSetplays";
+import { useComboSetplayLinks } from "../hooks/useComboSetplayLinks";
 import { useIsMobile } from "../hooks/useIsMobile";
 
 export default function ComboPage({ data, char, defaultMode = "classic" }) {
@@ -12,10 +16,13 @@ export default function ComboPage({ data, char, defaultMode = "classic" }) {
   const [activeStarter, setActiveStarter] = useState(null);
   const [collapsed, setCollapsed] = useState({});
   const [selected, setSelected] = useState(null);
+  const [showLinkModal, setShowLinkModal] = useState(false);
 
   const color = char?.color ?? "#ff6b2b";
   const isMobile = useIsMobile();
   const { combos, loading, add, remove, update } = useCombos(char.id, mode);
+  const { setplays, add: addSetplay, remove: removeSetplay, update: updateSetplay } = useSetplays(char.id, mode);
+  const { linkedIds, link, unlink, refetch: refetchLinks } = useComboSetplayLinks(selected?.id);
 
   const filtered = useMemo(() => {
     if (!search) return combos;
@@ -29,14 +36,19 @@ export default function ComboPage({ data, char, defaultMode = "classic" }) {
     );
   }, [combos, search]);
 
+  const STARTER_ORDER = ["小技始動", "中技始動", "大技始動", "コマンド技始動", "スタン時", "SA始動", "その他"];
+
   const { groupOrder, groupMap } = useMemo(() => {
     const map = {};
-    const order = [];
     filtered.forEach(c => {
       const s = c.starter || "その他";
-      if (!map[s]) { map[s] = []; order.push(s); }
+      if (!map[s]) map[s] = [];
       map[s].push(c);
     });
+    const order = [
+      ...STARTER_ORDER.filter(s => map[s]),
+      ...Object.keys(map).filter(s => !STARTER_ORDER.includes(s)),
+    ];
     return { groupOrder: order, groupMap: map };
   }, [filtered]);
 
@@ -45,16 +57,22 @@ export default function ComboPage({ data, char, defaultMode = "classic" }) {
     : groupOrder;
 
   const handleModeChange = m => {
-    setMode(m); setActiveStarter(null); setSearch(""); setCollapsed({}); setSelected(null);
+    setMode(m); setActiveStarter(null); setSearch(""); setCollapsed({}); setSelected(null); setShowLinkModal(false);
   };
 
   const handleSelect = combo => {
     setSelected(prev => prev?.id === combo.id ? null : combo);
+    setShowLinkModal(false);
   };
+
+  const linkedSetplays = useMemo(() =>
+    setplays.filter(sp => linkedIds.includes(sp.id))
+  , [setplays, linkedIds]);
 
   const isVideo = url => url && (url.includes(".mp4") || url.includes(".webm"));
 
   return (
+    <>
     <div style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
       {/* 左: コンボリスト */}
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -152,16 +170,67 @@ export default function ComboPage({ data, char, defaultMode = "classic" }) {
                 {!collapsed[group] && (
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     {groupMap[group].map((c, i) => (
-                      <CommunityComboCard
-                        key={c.id}
-                        combo={c}
-                        index={i + 1}
-                        color={color}
-                        selected={selected?.id === c.id}
-                        onSelect={handleSelect}
-                        onDelete={remove}
-                        onUpdate={update}
-                      />
+                      <div key={c.id}>
+                        <CommunityComboCard
+                          combo={c}
+                          index={i + 1}
+                          color={color}
+                          selected={selected?.id === c.id}
+                          onSelect={handleSelect}
+                          onDelete={remove}
+                          onUpdate={update}
+                        />
+
+                        {/* 選択中コンボの直下に起き攻めセクション */}
+                        {selected?.id === c.id && (
+                          <div style={{
+                            margin: "6px 0 4px 12px",
+                            borderLeft: `2px solid ${color}44`,
+                            paddingLeft: 12,
+                          }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                              <span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-4)" }}>
+                                このコンボ後の起き攻め
+                              </span>
+                              {c.down && (
+                                <span style={{
+                                  fontSize: 10, padding: "1px 7px", borderRadius: 4,
+                                  background: "var(--bg-elevated)", border: "1px solid var(--border)",
+                                  color: "var(--text-5)",
+                                }}>DOWN {c.down}F</span>
+                              )}
+                              <span style={{ flex: 1 }} />
+                              <button
+                                onClick={e => { e.stopPropagation(); setShowLinkModal(true); }}
+                                style={{
+                                  padding: "3px 10px", borderRadius: 5, fontSize: 11,
+                                  cursor: "pointer", background: color + "11",
+                                  border: `1px dashed ${color}88`, color, fontWeight: 700,
+                                }}
+                              >+ 起き攻めを追加 / 紐付け</button>
+                            </div>
+
+                            {linkedSetplays.length === 0 ? (
+                              <div style={{ fontSize: 11, color: "var(--text-6)", padding: "8px 0 12px", lineHeight: 1.6 }}>
+                                まだ登録されていません
+                              </div>
+                            ) : (
+                              <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 4 }}>
+                                {linkedSetplays.map((sp, si) => (
+                                  <CommunitySetplayCard
+                                    key={sp.id}
+                                    sp={sp}
+                                    index={si + 1}
+                                    color={color}
+                                    onDelete={removeSetplay}
+                                    onUpdate={updateSetplay}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     ))}
                   </div>
                 )}
@@ -172,46 +241,65 @@ export default function ComboPage({ data, char, defaultMode = "classic" }) {
       </div>
 
       {/* 右: メディアパネル（PC only） */}
-      {!isMobile && <div style={{
-        width: 260, flexShrink: 0, position: "sticky", top: 0,
-        background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 12,
-        overflow: "hidden",
-      }}>
-        {selected?.media_url ? (
-          <>
-            {isVideo(selected.media_url) ? (
-              <video
-                key={selected.id}
-                src={selected.media_url}
-                style={{ width: "100%", display: "block" }}
-                controls autoPlay
-              />
-            ) : (
-              <img
-                src={selected.media_url}
-                style={{ width: "100%", display: "block", objectFit: "contain" }}
-                alt=""
-              />
-            )}
-            {selected.title && (
-              <div style={{ padding: "10px 12px", fontSize: 12, color: "var(--text-2)" }}>
-                {selected.title}
-              </div>
-            )}
-          </>
-        ) : (
-          <div style={{
-            height: 180, display: "flex", flexDirection: "column",
-            alignItems: "center", justifyContent: "center", gap: 8,
-          }}>
-            <span style={{ fontSize: 24, color: "var(--border)" }}>▷</span>
-            <span style={{ fontSize: 11, color: "var(--text-dim)", textAlign: "center", lineHeight: 1.6 }}>
-              コンボをクリックすると<br />動画が再生されます
-            </span>
-          </div>
-        )}
-      </div>}
-
+      {!isMobile && (
+        <div style={{
+          width: 320, flexShrink: 0, position: "sticky", top: 0,
+          background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 12,
+          overflow: "hidden",
+        }}>
+          {selected?.media_url ? (
+            <>
+              {isVideo(selected.media_url) ? (
+                <video
+                  key={selected.id}
+                  src={selected.media_url}
+                  style={{ width: "100%", display: "block" }}
+                  controls autoPlay
+                />
+              ) : (
+                <img
+                  src={selected.media_url}
+                  style={{ width: "100%", display: "block", objectFit: "contain" }}
+                  alt=""
+                />
+              )}
+              {selected.title && (
+                <div style={{ padding: "10px 12px", fontSize: 12, color: "var(--text-2)" }}>
+                  {selected.title}
+                </div>
+              )}
+            </>
+          ) : (
+            <div style={{
+              height: 180, display: "flex", flexDirection: "column",
+              alignItems: "center", justifyContent: "center", gap: 8,
+            }}>
+              <span style={{ fontSize: 24, color: "var(--border)" }}>▷</span>
+              <span style={{ fontSize: 11, color: "var(--text-dim)", textAlign: "center", lineHeight: 1.6 }}>
+                コンボをクリックすると<br />動画が再生されます
+              </span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
+
+    {/* 起き攻め紐付けモーダル */}
+    {showLinkModal && selected && (
+      <SetplayLinkModal
+        color={color}
+        combo={selected}
+        allSetplays={setplays}
+        linkedIds={linkedIds}
+        onLink={link}
+        onUnlink={unlink}
+        onAddNew={async v => {
+          const created = await addSetplay(v);
+          if (created?.id) await link(created.id);
+        }}
+        onClose={() => setShowLinkModal(false)}
+      />
+    )}
+    </>
   );
 }

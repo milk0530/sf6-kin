@@ -21,10 +21,13 @@ const INPUT = {
 };
 const LABEL = { fontSize: 11, color: "var(--text-3)", marginBottom: 4, display: "block" };
 
-function Field({ label, required, children }) {
+function Field({ label, required, hint, children }) {
   return (
     <div>
-      <label style={LABEL}>{label}{required && <span style={{ color: "#e74c3c" }}> *</span>}</label>
+      <label style={LABEL}>
+        {label}{required && <span style={{ color: "#e74c3c" }}> *</span>}
+        {hint && <span style={{ color: "var(--text-6)", fontWeight: 400, marginLeft: 6 }}>{hint}</span>}
+      </label>
       {children}
     </div>
   );
@@ -120,7 +123,7 @@ export default function ComboPostForm({ initialValues, color = "#ff6b2b", onSubm
               <input style={INPUT} value={values.title} onChange={e => set("title", e.target.value)} placeholder="例: 基本BnBコンボ" />
             </Field>
             <Field label="ダメージ">
-              <input style={INPUT} value={values.damage} onChange={e => set("damage", e.target.value)} placeholder="例: 3200" />
+              <input style={INPUT} type="number" min="0" value={values.damage} onChange={e => set("damage", e.target.value)} placeholder="例: 3200" />
             </Field>
           </div>
 
@@ -129,15 +132,24 @@ export default function ComboPostForm({ initialValues, color = "#ff6b2b", onSubm
             <Field label="タグ（カンマ区切り）">
               <input style={INPUT} value={values.tags} onChange={e => set("tags", e.target.value)} placeholder="例: 基本, 画面端" />
             </Field>
-            <Field label="始動技">
-              <input style={INPUT} value={values.starter} onChange={e => set("starter", e.target.value)} placeholder="例: 2MK" />
+            <Field label="始動技カテゴリ">
+              <select style={INPUT} value={values.starter} onChange={e => set("starter", e.target.value)}>
+                <option value="">選択してください</option>
+                <option value="小技始動">小技始動</option>
+                <option value="中技始動">中技始動</option>
+                <option value="大技始動">大技始動</option>
+                <option value="コマンド技始動">コマンド技始動</option>
+                <option value="スタン時">スタン時</option>
+                <option value="SA始動">SA始動</option>
+                <option value="その他">その他</option>
+              </select>
             </Field>
           </div>
 
           {/* ダウンF / ドライブ / SA */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
-            <Field label="ダウンF">
-              <input style={INPUT} value={values.down} onChange={e => set("down", e.target.value)} placeholder="例: 26F" />
+            <Field label="ダウンF" hint="相手が受け身を取るまでのF数">
+              <input style={INPUT} type="number" min="0" value={values.down} onChange={e => set("down", e.target.value)} placeholder="例: 26" />
             </Field>
             <Field label="ドライブ">
               <input style={INPUT} value={values.drive} onChange={e => set("drive", e.target.value)} placeholder="例: 2本" />
